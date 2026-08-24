@@ -22,12 +22,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install Python dependencies
 COPY requirements.txt /app/
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --root-user-action=ignore --upgrade pip \
+    && pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
 
 # Create application non-root user
-RUN addgroup --system --gid 1001 appgroup \
-    && adduser --system --uid 1001 --gid 1001 --no-create-home appuser
+RUN addgroup --system appgroup \
+    && adduser --system --ingroup appgroup --no-create-home appuser
 
 # Create persistent storage directories and assign permissions
 RUN mkdir -p /app/media /app/staticfiles /app/backups \
