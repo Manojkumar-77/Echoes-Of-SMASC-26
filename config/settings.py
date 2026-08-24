@@ -214,7 +214,7 @@ if USE_S3:
             'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
         },
         'staticfiles': {
-            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+            'BACKEND': 'core.storage.ProductionManifestStaticFilesStorage',
         },
     }
 else:
@@ -223,7 +223,7 @@ else:
             'BACKEND': 'django.core.files.storage.FileSystemStorage',
         },
         'staticfiles': {
-            'BACKEND': 'core.storage.DevAutoVersionStaticFilesStorage' if DEBUG else 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+            'BACKEND': 'core.storage.DevAutoVersionStaticFilesStorage' if DEBUG else 'core.storage.ProductionManifestStaticFilesStorage',
         },
     }
 
@@ -237,28 +237,35 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Django Unfold Admin Theme & Navigation Configuration
 from django.urls import reverse_lazy
+from django.templatetags.static import static
 
 UNFOLD = {
     "SITE_HEADER": "Echoes Of SMASC '26",
     "SITE_TITLE": "Echoes Of SMASC '26",
     "INDEX_TITLE": "Echoes Of SMASC '26 Administration",
     "SITE_ICON": {
-        "light": lambda request: "/static/branding/03_RESPONSIVE_ICONS/ES26_256x256.png",
-        "dark": lambda request: "/static/branding/03_RESPONSIVE_ICONS/ES26_256x256.png",
+        "light": lambda request: static("branding/03_RESPONSIVE_ICONS/ES26_256x256.png"),
+        "dark": lambda request: static("branding/03_RESPONSIVE_ICONS/ES26_256x256.png"),
     },
     "SITE_LOGO": {
-        "light": lambda request: "/static/branding/02_LOGO_VARIANTS/ES26_ROUNDED_512.png",
-        "dark": lambda request: "/static/branding/02_LOGO_VARIANTS/ES26_ROUNDED_512.png",
+        "light": lambda request: static("branding/02_LOGO_VARIANTS/ES26_ROUNDED_512.png"),
+        "dark": lambda request: static("branding/02_LOGO_VARIANTS/ES26_ROUNDED_512.png"),
     },
-    "SITE_FAVICON": lambda request: "/static/branding/04_FAVICONS_PWA/favicon.ico",
+    "SITE_FAVICONS": [
+        {
+            "rel": "icon",
+            "type": "image/x-icon",
+            "href": lambda request: static("branding/04_FAVICONS_PWA/favicon.ico"),
+        },
+    ],
     "SHOW_HISTORY": True,
     "SHOW_VIEW_ON_SITE": True,
     "THEME": "dark",
     "STYLES": [
-        lambda request: "/static/admin/css/image-preview.css",
+        lambda request: static("admin/css/image-preview.css"),
     ],
     "SCRIPTS": [
-        lambda request: "/static/admin/js/image-preview.js",
+        lambda request: static("admin/js/image-preview.js"),
     ],
     "COLORS": {
         "primary": {

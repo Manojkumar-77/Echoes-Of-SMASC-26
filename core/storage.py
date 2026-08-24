@@ -1,6 +1,7 @@
 import os
 from django.conf import settings
 from django.contrib.staticfiles.storage import StaticFilesStorage
+from whitenoise.storage import CompressedManifestStaticFilesStorage
 
 
 class DevAutoVersionStaticFilesStorage(StaticFilesStorage):
@@ -24,3 +25,14 @@ class DevAutoVersionStaticFilesStorage(StaticFilesStorage):
                 except OSError:
                     pass
         return url
+
+
+class ProductionManifestStaticFilesStorage(CompressedManifestStaticFilesStorage):
+    """
+    Production Static Files Storage using WhiteNoise compression and manifest caching.
+    manifest_strict = False ensures that if a static reference or favicon lookup occurs
+    before post-processing or without a hashed entry, it safely falls back to the clean static URL
+    instead of raising a fatal ValueError.
+    """
+    manifest_strict = False
+
