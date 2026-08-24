@@ -1,0 +1,21 @@
+{
+  "name": "Echoes Of SMASC '26",
+  "short_name": "ES26",
+  "description": "Echoes Of SMASC '26 — A premium digital collection of college memories, moments, stories, photographs and experiences.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050507",
+  "theme_color": "#050507",
+  "icons": [
+    {
+      "src": "/static/branding/04_FAVICONS_PWA/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/branding/04_FAVICONS_PWA/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,2562 @@
+/* ==========================================================================
+   COLLEGE MEMORIES '26
+   GALLERY — FINAL CLEAN PREMIUM ARCHIVE SYSTEM
+   ==========================================================================
+
+   IMPORTANT ARCHITECTURE RULE
+   --------------------------------------------------------------------------
+   gallery.css controls ONLY:
+
+   - Gallery Hero
+   - Memory Atlas
+   - Category filters
+   - Main gallery grid
+   - Gallery cards
+   - Load More
+   - Empty states
+   - Selected Memories
+   - Gallery responsive behavior
+   - Gallery light/dark appearance
+   - Gallery accessibility
+   - Gallery performance
+
+   FULLSCREEN VIEWER IS NOT STYLED HERE.
+
+   vertical-viewer.css is the ONLY source of truth for:
+
+   .vertical-viewer-overlay
+   .vertical-viewer-shell
+   .vertical-viewer-main
+   .vertical-viewer-stage
+   .vertical-viewer-img
+   .vertical-viewer-blur
+   .vertical-viewer-thumbs
+   .vertical-viewer-thumb
+   .vertical-viewer-footer
+   .vertical-viewer-controls
+   #gallery-lightbox-prev
+   #gallery-lightbox-next
+   #gallery-lightbox-close
+
+   ========================================================================== */
+
+
+/* ==========================================================================
+   01. LOCAL DESIGN TOKENS
+   ========================================================================== */
+
+:root {
+  --gallery-max-width: 1540px;
+
+  --gallery-card-radius: 15px;
+  --gallery-card-radius-mobile: 11px;
+
+  --gallery-gap-xl: 16px;
+  --gallery-gap-lg: 14px;
+  --gallery-gap-md: 12px;
+  --gallery-gap-sm: 9px;
+
+  --gallery-gold:
+    var(--accent-gold, #d7b377);
+
+  --gallery-gold-soft:
+    rgba(215, 179, 119, 0.11);
+
+  --gallery-gold-soft-strong:
+    rgba(215, 179, 119, 0.18);
+
+  --gallery-gold-border:
+    rgba(215, 179, 119, 0.34);
+
+  --gallery-bg:
+    var(--bg-primary, #080808);
+
+  --gallery-card:
+    var(--bg-card, #121212);
+
+  --gallery-card-raised:
+    #151515;
+
+  --gallery-text:
+    var(--text-primary, #f5f1e8);
+
+  --gallery-muted:
+    var(--text-secondary, #aaa59b);
+
+  --gallery-dim:
+    var(--text-muted, #74706a);
+
+  --gallery-border:
+    var(
+      --border-color,
+      rgba(255, 255, 255, 0.09)
+    );
+
+  --gallery-ease:
+    cubic-bezier(0.16, 1, 0.3, 1);
+
+  --gallery-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.22);
+
+  --gallery-shadow-hover:
+    0 22px 54px rgba(0, 0, 0, 0.36),
+    0 0 0 1px rgba(215, 179, 119, 0.1);
+}
+
+
+/* ==========================================================================
+   02. PAGE SAFETY
+   ========================================================================== */
+
+html,
+body {
+  max-width: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.page-gallery,
+.page-gallery main,
+.gallery-section,
+.atlas-section,
+.selected-memories-section {
+  width: 100%;
+  max-width: 100%;
+}
+
+
+/* ==========================================================================
+   03. GALLERY HERO
+   ========================================================================== */
+
+.page-hero.gallery-hero {
+  margin-top:
+    var(--header-height, 70px);
+
+  min-height: auto;
+
+  padding:
+    clamp(36px, 4.5vw, 64px)
+    20px
+    clamp(25px, 3.2vw, 42px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  border-bottom:
+    1px solid
+    var(--gallery-border);
+
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(215, 179, 119, 0.14),
+      transparent 50%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(215, 179, 119, 0.018),
+      transparent
+    ),
+    var(--gallery-bg);
+}
+
+
+.page-hero.gallery-hero .container {
+  width:
+    min(100%, 900px);
+
+  margin-inline: auto;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+
+.page-hero.gallery-hero .section-tag {
+  width: fit-content;
+
+  margin-bottom: 15px;
+
+  padding:
+    7px 16px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid
+    var(--gallery-gold-border);
+
+  border-radius: 999px;
+
+  background:
+    rgba(215, 179, 119, 0.055);
+
+  color:
+    var(--gallery-gold);
+
+  font-size: 11px;
+  font-weight: 700;
+
+  line-height: 1;
+
+  letter-spacing: 0.18em;
+
+  text-transform: uppercase;
+}
+
+
+.page-hero.gallery-hero .hero-title {
+  margin:
+    0 0 13px;
+
+  color:
+    var(--gallery-text);
+
+  font-family:
+    var(
+      --font-heading,
+      "Cinzel",
+      serif
+    );
+
+  font-size:
+    clamp(31px, 4vw, 54px);
+
+  font-weight: 700;
+
+  line-height: 1.08;
+
+  letter-spacing: -0.018em;
+
+  text-align: center;
+
+  text-transform: uppercase;
+}
+
+
+.page-hero.gallery-hero
+.hero-description {
+  width:
+    min(100%, 700px);
+
+  margin: 0 auto;
+
+  color:
+    var(--gallery-muted);
+
+  font-size:
+    clamp(
+      0.92rem,
+      1.35vw,
+      1.08rem
+    );
+
+  line-height: 1.65;
+
+  text-align: center;
+}
+
+
+/* ==========================================================================
+   04. COMMON SECTION CONTAINER
+   ========================================================================== */
+
+.atlas-section > .container,
+.gallery-section > .container,
+.selected-memories-section > .container {
+  width:
+    min(
+      calc(100% - 40px),
+      var(--gallery-max-width)
+    );
+
+  margin-inline: auto;
+}
+
+
+/* ==========================================================================
+   05. MEMORY ATLAS SECTION
+   ========================================================================== */
+
+.atlas-section {
+  padding:
+    clamp(42px, 5vw, 72px)
+    0;
+
+  border-bottom:
+    1px solid
+    var(--gallery-border);
+
+  background:
+    var(--gallery-bg);
+}
+
+
+.atlas-portals-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(
+        min(100%, 320px),
+        1fr
+      )
+    );
+
+  gap:
+    clamp(18px, 2.3vw, 28px);
+
+  margin-top:
+    clamp(25px, 3vw, 40px);
+}
+
+
+/* ==========================================================================
+   06. MEMORY ATLAS PORTAL
+   ========================================================================== */
+
+.atlas-portal-card {
+  position: relative;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    var(--gallery-border);
+
+  border-radius: 19px;
+
+  background:
+    var(--gallery-card);
+
+  box-shadow:
+    var(--gallery-shadow);
+
+  transform:
+    translateZ(0);
+
+  transition:
+    transform 300ms
+      var(--gallery-ease),
+    border-color 220ms ease,
+    box-shadow 300ms ease,
+    background-color 220ms ease;
+}
+
+
+.atlas-portal-card:hover {
+  transform:
+    translateY(-4px);
+
+  border-color:
+    var(--gallery-gold-border);
+
+  box-shadow:
+    var(--gallery-shadow-hover);
+}
+
+
+.atlas-portal-card.is-active {
+  border-color:
+    var(--gallery-gold);
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(215, 179, 119, 0.055),
+      var(--gallery-card)
+    );
+
+  box-shadow:
+    0 18px 50px
+      rgba(0, 0, 0, 0.32),
+    0 0 28px
+      rgba(215, 179, 119, 0.11);
+}
+
+
+.atlas-portal-link {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  box-sizing: border-box;
+
+  padding: 18px;
+
+  color: inherit;
+
+  text-decoration: none;
+
+  -webkit-tap-highlight-color:
+    transparent;
+}
+
+
+/* ==========================================================================
+   07. PORTAL PHOTO STACK
+   ========================================================================== */
+
+.portal-photo-stack {
+  position: relative;
+
+  width: 100%;
+
+  aspect-ratio:
+    16 / 10;
+
+  margin-bottom: 18px;
+
+  overflow: hidden;
+
+  border-radius: 14px;
+
+  background: #050505;
+
+  isolation: isolate;
+}
+
+
+.portal-photo-layer {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  transform-origin:
+    center bottom;
+
+  transition:
+    transform 420ms
+      var(--gallery-ease),
+    opacity 320ms ease;
+}
+
+
+.portal-photo-layer img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  object-position: center;
+
+  user-select: none;
+
+  -webkit-user-drag: none;
+}
+
+
+.portal-photo-layer.layer-1 {
+  z-index: 3;
+}
+
+
+.portal-photo-layer.layer-2 {
+  z-index: 2;
+
+  transform:
+    scale(0.965)
+    translateY(7px);
+
+  opacity: 0.72;
+}
+
+
+.portal-photo-layer.layer-3 {
+  z-index: 1;
+
+  transform:
+    scale(0.93)
+    translateY(14px);
+
+  opacity: 0.38;
+}
+
+
+.atlas-portal-card:hover
+.portal-photo-layer.layer-1 {
+  transform:
+    scale(1.025);
+}
+
+
+.atlas-portal-card:hover
+.portal-photo-layer.layer-2 {
+  transform:
+    scale(0.98)
+    translateY(4px);
+
+  opacity: 0.86;
+}
+
+
+.portal-placeholder-img {
+  width: 100%;
+  height: 100%;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(215, 179, 119, 0.11),
+      transparent 55%
+    ),
+    #0b0b0b;
+}
+
+
+/* ==========================================================================
+   08. PORTAL METADATA
+   ========================================================================== */
+
+.portal-meta {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+
+.portal-header-line,
+.portal-footer-line {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 12px;
+}
+
+
+.portal-index-badge {
+  color:
+    var(--gallery-gold);
+
+  font-family:
+    var(
+      --font-heading,
+      "Cinzel",
+      serif
+    );
+
+  font-size: 0.82rem;
+
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
+}
+
+
+.portal-count-badge {
+  max-width: 68%;
+
+  padding:
+    4px 9px;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    var(--gallery-border);
+
+  border-radius: 999px;
+
+  background:
+    rgba(255, 255, 255, 0.025);
+
+  color:
+    var(--gallery-dim);
+
+  font-size: 0.67rem;
+
+  font-weight: 700;
+
+  letter-spacing: 0.09em;
+
+  text-overflow: ellipsis;
+
+  text-transform: uppercase;
+
+  white-space: nowrap;
+}
+
+
+.portal-title {
+  margin:
+    3px 0;
+
+  color:
+    var(--gallery-text);
+
+  font-family:
+    var(
+      --font-heading,
+      "Cinzel",
+      serif
+    );
+
+  font-size:
+    clamp(
+      1.08rem,
+      1.6vw,
+      1.35rem
+    );
+
+  line-height: 1.2;
+}
+
+
+.portal-footer-line {
+  margin-top: 5px;
+
+  padding-top: 10px;
+
+  border-top:
+    1px solid
+    var(--gallery-border);
+}
+
+
+.portal-date-range {
+  color:
+    var(--gallery-muted);
+
+  font-size: 0.77rem;
+}
+
+
+.portal-arrow {
+  flex: 0 0 auto;
+
+  color:
+    var(--gallery-gold);
+
+  font-size: 0.78rem;
+
+  font-weight: 700;
+
+  transition:
+    transform 180ms ease;
+}
+
+
+.atlas-portal-card:hover
+.portal-arrow {
+  transform:
+    translateX(4px);
+}
+
+
+/* ==========================================================================
+   09. FILTER BAR
+   ========================================================================== */
+
+.filter-bar {
+  width: 100%;
+
+  margin:
+    clamp(22px, 3vw, 38px)
+    0
+    clamp(28px, 4vw, 48px);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex-wrap: wrap;
+
+  gap: 9px;
+}
+
+
+.filter-btn {
+  min-height: 38px;
+
+  padding:
+    0 17px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid
+    var(--gallery-border);
+
+  border-radius: 999px;
+
+  background:
+    var(--gallery-card);
+
+  color:
+    var(--gallery-muted);
+
+  font-family: inherit;
+
+  font-size: 0.79rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  -webkit-tap-highlight-color:
+    transparent;
+
+  transition:
+    transform 170ms
+      var(--gallery-ease),
+    background-color 170ms ease,
+    border-color 170ms ease,
+    color 170ms ease,
+    box-shadow 190ms ease;
+}
+
+
+.filter-btn:hover {
+  transform:
+    translateY(-1px);
+
+  border-color:
+    var(--gallery-gold-border);
+
+  color:
+    var(--gallery-text);
+}
+
+
+.filter-btn.active {
+  border-color:
+    var(--gallery-gold);
+
+  background:
+    var(--gallery-gold);
+
+  color: #11100d;
+
+  box-shadow:
+    0 10px 24px
+    rgba(215, 179, 119, 0.14);
+}
+
+
+/* ==========================================================================
+   10. MAIN GALLERY SECTION
+   ========================================================================== */
+
+.gallery-section {
+  padding:
+    clamp(28px, 3.7vw, 48px)
+    0
+    clamp(72px, 7vw, 112px);
+
+  border-bottom:
+    1px solid
+    var(--gallery-border);
+
+  background:
+    var(--gallery-bg);
+}
+
+
+/* ==========================================================================
+   11. MEMORY UNIVERSE GRID
+   ========================================================================== */
+
+.gallery-grid {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      6,
+      minmax(0, 1fr)
+    );
+
+  gap:
+    var(--gallery-gap-xl);
+
+  align-items: stretch;
+
+  margin-top:
+    clamp(18px, 2.7vw, 32px);
+}
+
+
+/* ==========================================================================
+   12. SPARSE GALLERY
+   ========================================================================== */
+
+.gallery-grid--sparse,
+.gallery-grid[data-count="1"],
+.gallery-grid[data-count="2"],
+.gallery-grid[data-count="3"],
+.gallery-grid[data-count="4"] {
+  width:
+    min(100%, 1050px);
+
+  margin-inline: auto;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(
+        min(100%, 250px),
+        330px
+      )
+    );
+
+  justify-content: center;
+}
+
+
+/* ==========================================================================
+   13. GALLERY CARD
+   ========================================================================== */
+
+.gallery-item {
+  position: relative;
+
+  min-width: 0;
+
+  overflow: hidden;
+
+  display: flex;
+
+  flex-direction: column;
+
+  border:
+    1px solid
+    var(--gallery-border);
+
+  border-radius:
+    var(--gallery-card-radius);
+
+  background:
+    var(--gallery-card);
+
+  box-shadow:
+    var(--gallery-shadow);
+
+  contain:
+    layout paint style;
+
+  transform:
+    translateZ(0);
+
+  backface-visibility:
+    hidden;
+
+  -webkit-backface-visibility:
+    hidden;
+
+  transition:
+    transform 240ms
+      var(--gallery-ease),
+    border-color 190ms ease,
+    box-shadow 240ms ease;
+}
+
+
+.gallery-item[hidden] {
+  display: none !important;
+}
+
+
+.gallery-item:hover {
+  z-index: 4;
+
+  transform:
+    translateY(-3px);
+
+  border-color:
+    var(--gallery-gold-border);
+
+  box-shadow:
+    var(--gallery-shadow-hover);
+}
+
+
+/* Wide editorial item, but never giant */
+
+.gallery-item.pattern-landscape-feature {
+  grid-column:
+    span 2;
+}
+
+
+/* ==========================================================================
+   14. IMAGE BUTTON
+   ========================================================================== */
+
+.gallery-image-button {
+  position: relative;
+
+  width: 100%;
+
+  aspect-ratio:
+    4 / 3;
+
+  flex: 0 0 auto;
+
+  display: block;
+
+  overflow: hidden;
+
+  padding: 0;
+  margin: 0;
+
+  border: 0;
+
+  outline: 0;
+
+  background: #060606;
+
+  cursor: zoom-in;
+
+  isolation: isolate;
+
+  -webkit-tap-highlight-color:
+    transparent;
+}
+
+
+.gallery-image-button img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  object-position: center;
+
+  user-select: none;
+
+  -webkit-user-drag: none;
+
+  backface-visibility:
+    hidden;
+
+  -webkit-backface-visibility:
+    hidden;
+
+  transform:
+    translate3d(0, 0, 0)
+    scale(1);
+
+  transition:
+    transform 480ms
+      var(--gallery-ease);
+}
+
+
+.gallery-image-button::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 2;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.18),
+      transparent 40%
+    );
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition:
+    opacity 220ms ease;
+}
+
+
+.gallery-image-button::after {
+  content: "VIEW";
+
+  position: absolute;
+
+  right: 10px;
+  bottom: 10px;
+
+  z-index: 3;
+
+  padding:
+    5px 9px;
+
+  border:
+    1px solid
+    rgba(215, 179, 119, 0.38);
+
+  border-radius: 999px;
+
+  background:
+    rgba(8, 8, 8, 0.68);
+
+  color:
+    var(--gallery-gold);
+
+  font-size: 0.57rem;
+
+  font-weight: 800;
+
+  letter-spacing: 0.11em;
+
+  opacity: 0;
+
+  transform:
+    translateY(5px);
+
+  backdrop-filter:
+    blur(8px);
+
+  -webkit-backdrop-filter:
+    blur(8px);
+
+  pointer-events: none;
+
+  transition:
+    opacity 190ms ease,
+    transform 220ms
+      var(--gallery-ease);
+}
+
+
+.gallery-item:hover
+.gallery-image-button img {
+  transform:
+    translate3d(0, 0, 0)
+    scale(1.035);
+}
+
+
+.gallery-item:hover
+.gallery-image-button::before {
+  opacity: 1;
+}
+
+
+.gallery-item:hover
+.gallery-image-button::after {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+
+/* ==========================================================================
+   15. CARD CONTENT
+   ========================================================================== */
+
+.gallery-item-content {
+  min-height: 108px;
+
+  padding:
+    11px 12px
+    12px;
+
+  display: flex;
+
+  flex: 1;
+
+  flex-direction: column;
+
+  box-sizing: border-box;
+
+  background:
+    var(--gallery-card);
+}
+
+
+.gallery-item-category {
+  margin-bottom: 4px;
+
+  overflow: hidden;
+
+  color:
+    var(--gallery-gold);
+
+  font-size: 0.63rem;
+
+  font-weight: 750;
+
+  letter-spacing: 0.09em;
+
+  line-height: 1.2;
+
+  text-transform: uppercase;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+.gallery-item-title {
+  margin:
+    0 0 5px;
+
+  overflow: hidden;
+
+  display:
+    -webkit-box;
+
+  -webkit-box-orient:
+    vertical;
+
+  -webkit-line-clamp: 2;
+
+  color:
+    var(--gallery-text);
+
+  font-family:
+    var(
+      --font-heading,
+      "Cinzel",
+      serif
+    );
+
+  font-size: 0.9rem;
+
+  font-weight: 650;
+
+  line-height: 1.26;
+}
+
+
+.gallery-item-caption {
+  margin:
+    0 0 8px;
+
+  overflow: hidden;
+
+  display:
+    -webkit-box;
+
+  -webkit-box-orient:
+    vertical;
+
+  -webkit-line-clamp: 2;
+
+  color:
+    var(--gallery-muted);
+
+  font-size: 0.75rem;
+
+  line-height: 1.43;
+}
+
+
+.gallery-item-date {
+  margin-top: auto;
+
+  color:
+    var(--gallery-dim);
+
+  font-size: 0.68rem;
+
+  font-weight: 500;
+}
+
+
+/* ==========================================================================
+   16. LOAD MORE
+   ========================================================================== */
+
+#gallery-load-more {
+  min-width: 176px;
+
+  min-height: 44px;
+
+  margin:
+    clamp(30px, 4vw, 50px)
+    auto
+    0;
+
+  padding:
+    0 23px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid
+    var(--gallery-gold-border);
+
+  border-radius: 999px;
+
+  background:
+    rgba(215, 179, 119, 0.035);
+
+  color:
+    var(--gallery-gold);
+
+  font-size: 0.76rem;
+
+  font-weight: 750;
+
+  letter-spacing: 0.065em;
+
+  cursor: pointer;
+
+  -webkit-tap-highlight-color:
+    transparent;
+
+  transition:
+    transform 190ms
+      var(--gallery-ease),
+    background-color 190ms ease,
+    color 190ms ease,
+    border-color 190ms ease,
+    box-shadow 200ms ease;
+}
+
+
+#gallery-load-more[hidden] {
+  display: none !important;
+}
+
+
+#gallery-load-more:hover {
+  transform:
+    translateY(-2px);
+
+  border-color:
+    var(--gallery-gold);
+
+  background:
+    var(--gallery-gold);
+
+  color: #11100d;
+
+  box-shadow:
+    0 12px 28px
+    rgba(215, 179, 119, 0.15);
+}
+
+
+/* ==========================================================================
+   17. PROGRESSIVE REVEAL
+   ========================================================================== */
+
+.gallery-item--just-revealed {
+  animation:
+    galleryReveal
+    480ms
+    var(--gallery-ease)
+    both;
+}
+
+
+@keyframes galleryReveal {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(14px)
+      scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+
+/* ==========================================================================
+   18. EMPTY STATE
+   ========================================================================== */
+
+.gallery-empty-state {
+  grid-column:
+    1 / -1;
+
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding:
+    clamp(58px, 8vw, 104px)
+    24px;
+
+  border:
+    1px solid
+    var(--gallery-border);
+
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(215, 179, 119, 0.025),
+      transparent
+    ),
+    var(--gallery-card);
+
+  color:
+    var(--gallery-muted);
+
+  text-align: center;
+}
+
+
+.gallery-empty-state h2 {
+  margin:
+    0 0 8px;
+
+  color:
+    var(--gallery-text);
+
+  font-family:
+    var(
+      --font-heading,
+      "Cinzel",
+      serif
+    );
+
+  font-size:
+    clamp(
+      1.2rem,
+      2vw,
+      1.55rem
+    );
+}
+
+
+.gallery-empty-state p {
+  width:
+    min(100%, 520px);
+
+  margin:
+    0 auto;
+
+  line-height: 1.6;
+}
+
+
+/* ==========================================================================
+   19. SELECTED MEMORIES SECTION
+   ========================================================================== */
+
+.selected-memories-section {
+  position: relative;
+
+  padding:
+    clamp(48px, 5.8vw, 86px)
+    0
+    clamp(66px, 7vw, 116px);
+
+  border-top:
+    1px solid
+    var(--gallery-border);
+
+  border-bottom:
+    1px solid
+    var(--gallery-border);
+
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(215, 179, 119, 0.045),
+      transparent 45%
+    ),
+    var(--gallery-bg);
+}
+
+
+.selected-memories-stage {
+  position: relative;
+
+  width: 100%;
+
+  margin-top:
+    clamp(24px, 3.5vw, 46px);
+
+  overflow: hidden;
+}
+
+
+/* ==========================================================================
+   20. SELECTED MEMORIES TRACK
+   ========================================================================== */
+
+.selected-memories-track {
+  width: 100%;
+
+  height:
+    clamp(
+      300px,
+      38vw,
+      520px
+    );
+
+  display: flex;
+
+  gap:
+    clamp(5px, 0.9vw, 13px);
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scrollbar-width: none;
+
+  -ms-overflow-style: none;
+
+  touch-action:
+    pan-y;
+
+  overscroll-behavior-x:
+    contain;
+
+  -webkit-overflow-scrolling:
+    touch;
+}
+
+
+.selected-memories-track::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* ==========================================================================
+   21. SELECTED MEMORY CARD
+   ========================================================================== */
+
+.selected-memory-item {
+  position: relative;
+
+  height: 100%;
+
+  min-width:
+    clamp(30px, 4vw, 48px);
+
+  flex:
+    1 1 0;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    var(--gallery-border);
+
+  border-radius:
+    clamp(10px, 1.5vw, 16px);
+
+  background:
+    var(--gallery-card);
+
+  cursor: pointer;
+
+  outline: none;
+
+  user-select: none;
+
+  transform:
+    translateZ(0);
+
+  transition:
+    flex 560ms
+      var(--gallery-ease),
+    min-width 560ms
+      var(--gallery-ease),
+    border-color 230ms ease,
+    box-shadow 280ms ease;
+
+  will-change:
+    flex;
+}
+
+
+.selected-memory-item.is-active,
+.selected-memory-item:focus-visible {
+  min-width:
+    clamp(
+      220px,
+      43vw,
+      430px
+    );
+
+  flex:
+    5 1 0;
+
+  border-color:
+    var(--gallery-gold-border);
+
+  box-shadow:
+    0 20px 52px
+      rgba(0, 0, 0, 0.42),
+    0 0 22px
+      rgba(215, 179, 119, 0.08);
+}
+
+
+@media (hover: hover)
+and (pointer: fine) {
+
+  .selected-memory-item:hover {
+    min-width:
+      clamp(
+        220px,
+        43vw,
+        430px
+      );
+
+    flex:
+      5 1 0;
+  }
+
+  .selected-memory-item {
+    --sm-cursor-angle: 0deg;
+    --sm-edge-proximity: 0;
+    --sm-glow-opacity: 0;
+  }
+
+  /* Directional White Edge Light Ring */
+  .selected-memory-item::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: conic-gradient(
+      from var(--sm-cursor-angle, 0deg) at 50% 50%,
+      rgba(255, 255, 255, 0.95) 0deg,
+      rgba(255, 255, 255, 0.60) 25deg,
+      rgba(255, 255, 255, 0.20) 55deg,
+      transparent 90deg,
+      transparent 270deg,
+      rgba(255, 255, 255, 0.20) 305deg,
+      rgba(255, 255, 255, 0.60) 335deg,
+      rgba(255, 255, 255, 0.95) 360deg
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 15;
+    opacity: calc(var(--sm-glow-opacity, 0) * var(--sm-edge-proximity, 0));
+    transition: opacity 450ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Soft Ambient White Corner Bloom */
+  .selected-memory-item::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 22px rgba(255, 255, 255, calc(0.22 * var(--sm-edge-proximity, 0))),
+                0 0 18px rgba(255, 255, 255, calc(0.16 * var(--sm-edge-proximity, 0)));
+    pointer-events: none;
+    z-index: 14;
+    opacity: var(--sm-glow-opacity, 0);
+    transition: opacity 450ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .selected-memory-item::before,
+  .selected-memory-item::after {
+    display: none !important;
+  }
+}
+
+
+/* ==========================================================================
+   22. SELECTED MEMORY MEDIA
+   ========================================================================== */
+
+.selected-memory-media {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  background: #050505;
+}
+
+
+.selected-memory-media img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  object-position: center;
+
+  user-select: none;
+
+  -webkit-user-drag: none;
+
+  backface-visibility:
+    hidden;
+
+  -webkit-backface-visibility:
+    hidden;
+
+  transform:
+    translate3d(0, 0, 0)
+    scale(1);
+
+  transition:
+    transform 680ms
+      var(--gallery-ease);
+}
+
+
+.selected-memory-item.is-active
+.selected-memory-media img,
+.selected-memory-item:hover
+.selected-memory-media img {
+  transform:
+    translate3d(0, 0, 0)
+    scale(1.035);
+}
+
+
+/* ==========================================================================
+   23. SELECTED MEMORY OVERLAY
+   ========================================================================== */
+
+.selected-memory-overlay {
+  position: absolute;
+
+  inset: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: flex-end;
+
+  padding:
+    clamp(13px, 2vw, 26px);
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.92) 0%,
+      rgba(0, 0, 0, 0.44) 50%,
+      transparent 78%
+    );
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition:
+    opacity 320ms ease;
+}
+
+
+.selected-memory-item.is-active
+.selected-memory-overlay,
+.selected-memory-item:focus-visible
+.selected-memory-overlay,
+.selected-memory-item:hover
+.selected-memory-overlay {
+  opacity: 1;
+}
+
+
+.selected-memory-info {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-start;
+
+  gap: 5px;
+
+  transform:
+    translateY(9px);
+
+  transition:
+    transform 360ms
+      var(--gallery-ease);
+}
+
+
+.selected-memory-item.is-active
+.selected-memory-info,
+.selected-memory-item:focus-visible
+.selected-memory-info,
+.selected-memory-item:hover
+.selected-memory-info {
+  transform:
+    translateY(0);
+}
+
+
+.selected-memory-badge {
+  padding:
+    4px 9px;
+
+  border:
+    1px solid
+    rgba(215, 179, 119, 0.4);
+
+  border-radius: 999px;
+
+  background:
+    rgba(9, 9, 9, 0.68);
+
+  color:
+    var(--gallery-gold);
+
+  font-size:
+    clamp(8px, 1vw, 10px);
+
+  font-weight: 750;
+
+  letter-spacing: 0.09em;
+
+  text-transform: uppercase;
+
+  backdrop-filter:
+    blur(8px);
+
+  -webkit-backdrop-filter:
+    blur(8px);
+}
+
+
+.selected-memory-title {
+  max-width: 100%;
+
+  margin: 0;
+
+  overflow: hidden;
+
+  color: #fff;
+
+  font-family:
+    var(
+      --font-heading,
+      "Cinzel",
+      serif
+    );
+
+  font-size:
+    clamp(
+      14px,
+      2vw,
+      23px
+    );
+
+  line-height: 1.25;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* ==========================================================================
+   24. DATABASE / MEDIA ERROR VISUAL
+   ========================================================================== */
+
+.gallery-image-error {
+  opacity: 0.38;
+
+  filter:
+    grayscale(1)
+    contrast(0.8);
+}
+
+
+/* ==========================================================================
+   25. LARGE DESKTOP
+   ========================================================================== */
+
+@media (min-width: 1600px) {
+
+  .gallery-grid {
+    grid-template-columns:
+      repeat(
+        7,
+        minmax(0, 1fr)
+      );
+  }
+}
+
+
+/* ==========================================================================
+   26. STANDARD DESKTOP
+   ========================================================================== */
+
+@media
+(min-width: 1280px)
+and
+(max-width: 1599px) {
+
+  .gallery-grid {
+    grid-template-columns:
+      repeat(
+        6,
+        minmax(0, 1fr)
+      );
+  }
+}
+
+
+/* ==========================================================================
+   27. LAPTOP
+   ========================================================================== */
+
+@media
+(min-width: 1024px)
+and
+(max-width: 1279px) {
+
+  .gallery-grid {
+    grid-template-columns:
+      repeat(
+        5,
+        minmax(0, 1fr)
+      );
+
+    gap:
+      var(--gallery-gap-lg);
+  }
+}
+
+
+/* ==========================================================================
+   28. TABLET
+   ========================================================================== */
+
+@media
+(min-width: 768px)
+and
+(max-width: 1023px) {
+
+  .atlas-section > .container,
+  .gallery-section > .container,
+  .selected-memories-section > .container {
+    width:
+      min(
+        calc(100% - 28px),
+        var(--gallery-max-width)
+      );
+  }
+
+
+  .gallery-grid {
+    grid-template-columns:
+      repeat(
+        4,
+        minmax(0, 1fr)
+      );
+
+    gap:
+      var(--gallery-gap-md);
+  }
+
+
+  .gallery-item.pattern-landscape-feature {
+    grid-column:
+      span 2;
+  }
+
+
+  .gallery-item-caption {
+    -webkit-line-clamp: 1;
+  }
+}
+
+
+/* ==========================================================================
+   29. MOBILE
+   ========================================================================== */
+
+@media (max-width: 767px) {
+
+  .page-hero.gallery-hero {
+    padding:
+      26px
+      15px
+      20px;
+  }
+
+
+  .page-hero.gallery-hero
+  .section-tag {
+    margin-bottom: 11px;
+
+    padding:
+      6px 13px;
+
+    font-size: 9px;
+  }
+
+
+  .page-hero.gallery-hero
+  .hero-title {
+    margin-bottom: 8px;
+
+    font-size:
+      clamp(
+        24px,
+        7vw,
+        31px
+      );
+  }
+
+
+  .page-hero.gallery-hero
+  .hero-description {
+    max-width: 94%;
+
+    font-size: 0.84rem;
+
+    line-height: 1.5;
+  }
+
+
+  .atlas-section > .container,
+  .gallery-section > .container,
+  .selected-memories-section > .container {
+    width:
+      calc(100% - 22px);
+  }
+
+
+  /* ------------------------------------------------------------
+     Mobile Memory Atlas
+     ------------------------------------------------------------ */
+
+  .atlas-section {
+    padding:
+      33px 0;
+  }
+
+
+  .atlas-portals-grid {
+    grid-template-columns:
+      1fr;
+
+    gap: 15px;
+  }
+
+
+  .atlas-portal-link {
+    padding: 14px;
+  }
+
+
+  .portal-photo-stack {
+    margin-bottom: 14px;
+  }
+
+
+  /* ------------------------------------------------------------
+     Mobile Filter Rail
+     ------------------------------------------------------------ */
+
+  .filter-bar {
+    justify-content:
+      flex-start;
+
+    flex-wrap: nowrap;
+
+    gap: 7px;
+
+    margin:
+      17px 0
+      24px;
+
+    padding:
+      1px 2px
+      7px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scrollbar-width: none;
+
+    scroll-snap-type:
+      x proximity;
+
+    overscroll-behavior-x:
+      contain;
+
+    -webkit-overflow-scrolling:
+      touch;
+  }
+
+
+  .filter-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+
+  .filter-btn {
+    flex: 0 0 auto;
+
+    min-height: 36px;
+
+    padding:
+      0 13px;
+
+    font-size: 0.72rem;
+
+    scroll-snap-align:
+      start;
+  }
+
+
+  /* ------------------------------------------------------------
+     Mobile Main Gallery
+     ------------------------------------------------------------ */
+
+  .gallery-section {
+    padding:
+      16px 0
+      50px;
+  }
+
+
+  .gallery-grid,
+  .gallery-grid--sparse,
+  .gallery-grid[data-count="1"],
+  .gallery-grid[data-count="2"],
+  .gallery-grid[data-count="3"],
+  .gallery-grid[data-count="4"] {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+
+    gap:
+      var(--gallery-gap-sm);
+
+    margin-inline: 0;
+  }
+
+
+  .gallery-item,
+  .gallery-grid--sparse
+  .gallery-item,
+  .gallery-grid[data-count="1"]
+  .gallery-item,
+  .gallery-grid[data-count="2"]
+  .gallery-item,
+  .gallery-grid[data-count="3"]
+  .gallery-item,
+  .gallery-grid[data-count="4"]
+  .gallery-item {
+    width: auto;
+
+    max-width: none;
+
+    min-width: 0;
+
+    grid-column: auto;
+
+    border-radius:
+      var(
+        --gallery-card-radius-mobile
+      );
+  }
+
+
+  .gallery-item.pattern-landscape-feature {
+    grid-column:
+      span 2;
+  }
+
+
+  /* Standard cards use portrait-ish browsing ratio */
+
+  .gallery-image-button {
+    aspect-ratio:
+      4 / 5;
+  }
+
+
+  .gallery-item.pattern-landscape-feature
+  .gallery-image-button {
+    aspect-ratio:
+      16 / 10;
+  }
+
+
+  .gallery-item-content {
+    min-height: 90px;
+
+    padding:
+      9px 9px
+      10px;
+  }
+
+
+  .gallery-item-category {
+    font-size: 9px;
+  }
+
+
+  .gallery-item-title {
+    margin-bottom: 3px;
+
+    font-size: 0.78rem;
+
+    -webkit-line-clamp: 2;
+  }
+
+
+  /* Full caption remains available inside viewer */
+
+  .gallery-item-caption {
+    display: none;
+  }
+
+
+  .gallery-item-date {
+    font-size: 10px;
+  }
+
+
+  /* No hover badge on touch screen */
+
+  .gallery-image-button::after {
+    display: none;
+  }
+
+
+  .gallery-image-button::before {
+    display: none;
+  }
+
+
+  /* ------------------------------------------------------------
+     Selected Memories Mobile
+     ------------------------------------------------------------ */
+
+  .selected-memories-section {
+    padding:
+      41px 0
+      60px;
+  }
+
+
+  .selected-memories-track {
+    height:
+      clamp(
+        300px,
+        82vw,
+        430px
+      );
+
+    gap: 5px;
+  }
+
+
+  .selected-memory-item {
+    min-width: clamp(34px, 9vw, 48px);
+
+    flex:
+      0.8 1 0;
+
+    transition:
+      flex 560ms var(--gallery-ease),
+      min-width 560ms var(--gallery-ease),
+      border-color 230ms ease,
+      box-shadow 280ms ease;
+  }
+
+
+  .selected-memory-item.is-active,
+  .selected-memory-item:focus-visible {
+    min-width:
+      min(
+        78vw,
+        340px
+      );
+
+    flex:
+      5 1 0;
+
+    border-color:
+      var(--gallery-gold-border);
+
+    box-shadow:
+      0 18px 46px rgba(0, 0, 0, 0.45),
+      0 0 20px rgba(215, 179, 119, 0.10);
+  }
+
+
+  .selected-memory-overlay {
+    padding: 14px;
+  }
+}
+
+
+/* ==========================================================================
+   30. VERY SMALL MOBILE
+   ========================================================================== */
+
+@media (max-width: 340px) {
+
+  .atlas-section > .container,
+  .gallery-section > .container,
+  .selected-memories-section > .container {
+    width:
+      calc(100% - 16px);
+  }
+
+
+  .gallery-grid,
+  .gallery-grid--sparse,
+  .gallery-grid[data-count="1"],
+  .gallery-grid[data-count="2"],
+  .gallery-grid[data-count="3"],
+  .gallery-grid[data-count="4"] {
+    gap: 7px;
+  }
+
+
+  .gallery-item-content {
+    padding:
+      8px 7px
+      9px;
+  }
+
+
+  .gallery-item-title {
+    font-size:
+      0.73rem;
+  }
+
+
+  .gallery-item-category {
+    font-size:
+      8px;
+  }
+
+
+  .gallery-item-date {
+    font-size:
+      9px;
+  }
+}
+
+
+/* ==========================================================================
+   31. LIGHT THEME
+   ========================================================================== */
+
+html[data-theme="light"]
+.page-hero.gallery-hero,
+html[data-theme="light"]
+.atlas-section,
+html[data-theme="light"]
+.gallery-section,
+html[data-theme="light"]
+.selected-memories-section {
+  --gallery-bg:
+    #f5f1e8;
+
+  --gallery-card:
+    #faf7f0;
+
+  --gallery-card-raised:
+    #ffffff;
+
+  --gallery-text:
+    #1c1915;
+
+  --gallery-muted:
+    #726c63;
+
+  --gallery-dim:
+    #8b8378;
+
+  --gallery-border:
+    rgba(
+      102,
+      81,
+      49,
+      0.14
+    );
+
+  --gallery-shadow:
+    0 11px 28px
+    rgba(
+      63,
+      49,
+      30,
+      0.075
+    );
+
+  --gallery-shadow-hover:
+    0 19px 42px
+    rgba(
+      63,
+      49,
+      30,
+      0.13
+    ),
+    0 0 0 1px
+    rgba(
+      174,
+      128,
+      55,
+      0.09
+    );
+}
+
+
+html[data-theme="light"]
+.atlas-portal-card,
+html[data-theme="light"]
+.gallery-item {
+  box-shadow:
+    var(--gallery-shadow);
+}
+
+
+html[data-theme="light"]
+.atlas-portal-card:hover,
+html[data-theme="light"]
+.gallery-item:hover {
+  box-shadow:
+    var(--gallery-shadow-hover);
+}
+
+
+html[data-theme="light"]
+.filter-btn {
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.56
+    );
+}
+
+
+html[data-theme="light"]
+.filter-btn.active {
+  border-color:
+    rgba(
+      142,
+      105,
+      45,
+      0.52
+    );
+
+  background:
+    rgba(
+      215,
+      179,
+      119,
+      0.21
+    );
+
+  color:
+    #755323;
+
+  box-shadow: none;
+}
+
+
+html[data-theme="light"]
+#gallery-load-more {
+  border-color:
+    rgba(
+      142,
+      105,
+      45,
+      0.4
+    );
+
+  background:
+    rgba(
+      215,
+      179,
+      119,
+      0.06
+    );
+
+  color:
+    #755323;
+}
+
+
+html[data-theme="light"]
+#gallery-load-more:hover {
+  background:
+    #d7b377;
+
+  color:
+    #1c1915;
+}
+
+
+/* ==========================================================================
+   32. ACCESSIBILITY / FOCUS
+   ========================================================================== */
+
+.atlas-portal-link:focus-visible,
+.gallery-image-button:focus-visible,
+.filter-btn:focus-visible,
+#gallery-load-more:focus-visible,
+.selected-memory-item:focus-visible {
+  outline:
+    2px solid
+    var(--gallery-gold);
+
+  outline-offset: 3px;
+}
+
+
+/* ==========================================================================
+   33. TOUCH DEVICES
+   ========================================================================== */
+
+@media (hover: none) {
+
+  .gallery-item:hover {
+    transform: none;
+
+    border-color:
+      var(--gallery-border);
+
+    box-shadow:
+      var(--gallery-shadow);
+  }
+
+
+  .gallery-item:hover
+  .gallery-image-button img {
+    transform:
+      scale(1);
+  }
+
+
+  .gallery-item:active {
+    transform:
+      scale(0.985);
+  }
+
+
+  .atlas-portal-card:hover {
+    transform: none;
+  }
+
+
+  .atlas-portal-card:active {
+    transform:
+      scale(0.99);
+  }
+}
+
+
+/* ==========================================================================
+   34. REDUCED MOTION
+   ========================================================================== */
+
+@media
+(prefers-reduced-motion: reduce) {
+
+  .atlas-portal-card,
+  .portal-photo-layer,
+  .portal-arrow,
+  .gallery-item,
+  .gallery-image-button img,
+  .gallery-image-button::before,
+  .gallery-image-button::after,
+  .filter-btn,
+  #gallery-load-more,
+  .selected-memory-item,
+  .selected-memory-media img,
+  .selected-memory-overlay,
+  .selected-memory-info {
+    transition-duration:
+      0.01ms !important;
+
+    animation-duration:
+      0.01ms !important;
+
+    animation-iteration-count:
+      1 !important;
+  }
+
+
+  .gallery-item--just-revealed {
+    animation: none;
+  }
+}
+
+
+/* ==========================================================================
+   35. FINAL PERFORMANCE GUARDS
+   ========================================================================== */
+
+.gallery-item,
+.gallery-image-button img,
+.portal-photo-layer,
+.selected-memory-item,
+.selected-memory-media img {
+  backface-visibility:
+    hidden;
+
+  -webkit-backface-visibility:
+    hidden;
+}
+
+
+.gallery-image-button img,
+.selected-memory-media img {
+  image-rendering: auto;
+}

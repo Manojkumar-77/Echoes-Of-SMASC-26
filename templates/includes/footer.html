@@ -1,0 +1,118 @@
+{% load static %}
+<!-- =====================================================
+     COLLEGE MEMORIES '26 — REACT BITS PRO FOOTER 8 INTEGRATION
+     Minimal Centered Social-First Footer with Curated Link Columns
+     ===================================================== -->
+<footer class="site-footer archive-closing-footer rb-footer-8" id="site-footer">
+  <div class="archive-footer-container rb-footer-container">
+
+    <!-- 1. Centered Header & SMASC Brand Section -->
+    <div class="rb-footer-brand-section">
+      <!-- Archive Conclusion Eyebrow & Main Statement -->
+      <div class="footer-closing-hero rb-footer-hero">
+        <span class="footer-closing-eyebrow">THE ARCHIVE CONCLUSION</span>
+        <h2 class="footer-closing-heading">
+          <span>THREE YEARS.</span>
+          <span>COUNTLESS MEMORIES.</span>
+          <span class="gold-accent">ONE STORY.</span>
+        </h2>
+      </div>
+
+      <!-- Outlined Cinematic SMASC Wordmark with Soft White Glow -->
+      <div class="footer-smasc-wrap rb-footer-smasc" aria-hidden="true">
+        <div class="footer-smasc-word">SMASC</div>
+      </div>
+
+      <!-- Centered Social Icon Row (Footer 8 Social-First Foundation) -->
+      <div class="rb-footer-socials" aria-label="Social and contact links">
+        <a href="https://www.instagram.com/_.mjs_.07/" target="_blank" rel="noopener noreferrer" class="rb-social-btn" aria-label="Instagram @_.mjs_.07" title="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+          </svg>
+          <span class="rb-social-label">Instagram</span>
+        </a>
+
+        <a href="mailto:manojkumarsdeveloper07@gmail.com" class="rb-social-btn" aria-label="Email Lead Developer" title="Email Developer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          <span class="rb-social-label">Email</span>
+        </a>
+
+        <a href="{% url 'contact' %}" class="rb-social-btn" aria-label="Contact and Corrections" title="Contact & Corrections">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span class="rb-social-label">Contact</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 2. Minimal Curated Link Columns (Footer 8 Architecture) -->
+    <div class="rb-footer-nav-grid" aria-label="Footer Navigation">
+      <div class="rb-nav-col">
+        <h4 class="rb-nav-heading">MEMORIES</h4>
+        <ul class="rb-nav-list">
+          <li><a href="{% url 'timeline' %}" class="rb-nav-link">Timeline</a></li>
+          <li><a href="{% url 'gallery' %}" class="rb-nav-link">Gallery</a></li>
+          <li><a href="{% url 'scrapbook' %}" class="rb-nav-link">Scrapbook</a></li>
+        </ul>
+      </div>
+
+      <div class="rb-nav-col">
+        <h4 class="rb-nav-heading">ARCHIVE</h4>
+        <ul class="rb-nav-list">
+          <li><a href="{% url 'yearbook' %}" class="rb-nav-link">Yearbook</a></li>
+          <li><a href="{% url 'videos' %}" class="rb-nav-link">Videos</a></li>
+        </ul>
+      </div>
+
+      <div class="rb-nav-col">
+        <h4 class="rb-nav-heading">PROJECT</h4>
+        <ul class="rb-nav-list">
+          <li><a href="{% url 'about' %}" class="rb-nav-link">About Archive</a></li>
+          <li><a href="{% url 'contact' %}" class="rb-nav-link">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 3. Engraved Timeline Spine (2023 ── 2024 ── 2025 ── 2026) -->
+    <div class="footer-memory-spine rb-footer-spine" id="footer-memory-spine" aria-label="College Journey Timeline 2023 to 2026">
+      <a href="{% url 'timeline' %}" class="spine-station" data-year-index="0" aria-label="Year 2023 - Semester 1 & 2">
+        <span class="spine-year">2023</span>
+      </a>
+
+      <a href="{% url 'timeline' %}" class="spine-station" data-year-index="1" aria-label="Year 2024 - Semester 3 & 4">
+        <span class="spine-year">2024</span>
+      </a>
+
+      <a href="{% url 'timeline' %}" class="spine-station" data-year-index="2" aria-label="Year 2025 - Semester 5 & Culturals">
+        <span class="spine-year">2025</span>
+      </a>
+
+      <a href="{% url 'timeline' %}" class="spine-station is-current" data-year-index="3" aria-label="Year 2026 - Final Semester & Farewell">
+        <span class="spine-year">2026</span>
+      </a>
+    </div>
+
+    <!-- 4. Subtle Thin Architectural Divider -->
+    <div class="footer-closing-divider rb-footer-divider" aria-hidden="true"></div>
+
+    <!-- 5. Closing Return Action & Copyright Row -->
+    <div class="rb-footer-bottom">
+      <div class="rb-footer-copy footer-copyright-line">
+        <span>&copy; 2026 BCA Class of 2026 &bull; Echoes Of SMASC</span>
+        <span class="footer-creator-credit">Preserved &amp; Crafted by Manoj Kumar S</span>
+      </div>
+
+      <a href="#main-content" class="footer-back-to-begin rb-back-to-begin" id="back-to-beginning" aria-label="Back to the beginning of page">
+        <span>BACK TO THE BEGINNING</span>
+        <span class="footer-back-arrow" aria-hidden="true">&uarr;</span>
+      </a>
+    </div>
+
+  </div>
+</footer>

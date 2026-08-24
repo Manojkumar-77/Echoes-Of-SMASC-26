@@ -1,0 +1,309 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Echoes Of SMASC '26 | Timeline</title>
+
+  <meta name="description" content="Echoes Of SMASC '26 — Chronological memory archive of the BCA Class of 2026. Explore college events, trips, celebrations and milestones.">
+  <meta property="og:site_name" content="Echoes Of SMASC '26">
+  <meta property="og:title" content="Echoes Of SMASC '26 | Timeline">
+  <meta property="og:description" content="From strangers on the first day to a family by the final day.">
+  <meta property="og:image" content="{% static 'branding/05_WEB_BANNERS/og_1200x630.png' %}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Echoes Of SMASC '26 | Timeline">
+  <meta name="twitter:description" content="From strangers on the first day to a family by the final day.">
+  <meta name="twitter:image" content="{% static 'branding/05_WEB_BANNERS/twitter_x_1500x500.png' %}">
+
+  {% include "includes/favicons.html" %}
+
+  <meta name="theme-color" content="#050507">
+
+  <link rel="stylesheet" href="{% static 'css/global.css' %}?v=3.5">
+  <link rel="stylesheet" href="{% static 'css/vertical-viewer.css' %}?v=3.5">
+  <link rel="stylesheet" href="{% static 'css/timeline.css' %}?v=3.5">
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}?v=3.5">
+</head>
+
+<body>
+
+  <!-- Skip link -->
+  <a href="#main-content" class="skip-link">
+    Skip to main content
+  </a>
+
+  <!-- Reusable Shared Header & Navigation -->
+  {% include "includes/header.html" %}
+
+  <main id="main-content">
+
+    <!-- Hero -->
+    <section class="page-hero">
+      <div class="container">
+        <span class="section-tag">CHRONOLOGICAL ARCHIVE</span>
+        <h1 class="hero-title">Our College Timeline</h1>
+        <p class="hero-description">
+          From strangers on the first day to a family by the final day. Relive the milestones that shaped our three years.
+        </p>
+      </div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section class="timeline-section">
+      <div class="container">
+
+        <!-- Category Filter Bar -->
+        {% if categories %}
+          <div class="timeline-filter-bar" id="timeline-filter-bar">
+            <button
+              class="timeline-filter-btn active"
+              type="button"
+              data-filter="all"
+            >
+              All Events
+            </button>
+
+            {% for category in categories %}
+              <button
+                class="timeline-filter-btn"
+                type="button"
+                data-filter="{{ category.slug }}"
+              >
+                {{ category.name }}
+              </button>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <!-- Timeline Track & Central Spine -->
+        <div class="timeline-wrapper" id="timeline-wrapper">
+
+          <!-- Central Spine Base Line & Illuminated Progress Overlay -->
+          <div class="timeline-spine" aria-hidden="true">
+            <div class="timeline-spine-progress" id="timeline-spine-progress"></div>
+          </div>
+
+          {% for group in timeline_groups %}
+            <article
+              class="timeline-story-row reveal {% if forloop.counter0|divisibleby:2 %}is-odd{% else %}is-even{% endif %}"
+              data-category="{% if group.category %}{{ group.category.slug }}{% else %}uncategorized{% endif %}"
+            >
+              <!-- Slot A: Left Side (Images on Odd, Content on Even in Desktop) -->
+              <div class="timeline-slot timeline-slot-a">
+                {% if forloop.counter0|divisibleby:2 %}
+                  <!-- 4-Image 2x2 Grid -->
+                  <div class="timeline-photo-grid count-{{ group.image_events|length }}">
+                    {% for event in group.image_events %}
+                      <div
+                        class="timeline-photo-cell timeline-event-media"
+                        data-src="{{ event.image.url }}"
+                        data-title="{{ event.title|escape }}"
+                        data-category="{% if event.category %}{{ event.category.name|escape }}{% else %}Memory{% endif %}"
+                        data-date="{{ event.event_date|date:'d F Y' }}"
+                        data-description="{{ event.description|escape }}"
+                      >
+                        <img
+                          src="{{ event.image.url }}"
+                          alt="{{ event.title }}"
+                          class="timeline-photo-img timeline-event-img"
+                          loading="lazy"
+                        >
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  <!-- Editorial Content Block -->
+                    <div class="timeline-meta-row">
+                      {% if group.primary_event.is_featured %}
+                        <span class="timeline-featured-pill">★ Featured Milestone</span>
+                      {% endif %}
+                      {% if group.category %}
+                        <span class="timeline-category-tag">
+                          {{ group.category.name }}
+                        </span>
+                      {% endif %}
+                      <time class="timeline-event-date" datetime="{{ group.primary_event.event_date|date:'Y-m-d' }}">
+                        📅 {{ group.primary_event.event_date|date:"d M Y" }}
+                      </time>
+                    </div>
+
+                    <h2 class="timeline-event-title">
+                      {{ group.primary_event.title }}
+                    </h2>
+
+                    <p class="timeline-event-desc">
+                      {{ group.primary_event.description }}
+                    </p>
+                  </div>
+                {% endif %}
+              </div>
+
+              <!-- Center Column: Node on Spine -->
+              <div class="timeline-center-col">
+                <div class="timeline-node" aria-hidden="true"></div>
+              </div>
+
+              <!-- Slot B: Right Side (Content on Odd, Images on Even in Desktop) -->
+              <div class="timeline-slot timeline-slot-b">
+                {% if forloop.counter0|divisibleby:2 %}
+                  <!-- Editorial Content Block -->
+                  <div class="timeline-content-block">
+                    <div class="timeline-meta-row">
+                      {% if group.primary_event.is_featured %}
+                        <span class="timeline-featured-pill">★ Featured Milestone</span>
+                      {% endif %}
+                      {% if group.category %}
+                        <span class="timeline-category-tag">
+                          {{ group.category.name }}
+                        </span>
+                      {% endif %}
+                      <time class="timeline-event-date" datetime="{{ group.primary_event.event_date|date:'Y-m-d' }}">
+                        📅 {{ group.primary_event.event_date|date:"d M Y" }}
+                      </time>
+                    </div>
+
+                    <h2 class="timeline-event-title">
+                      {{ group.primary_event.title }}
+                    </h2>
+
+                    <p class="timeline-event-desc">
+                      {{ group.primary_event.description }}
+                    </p>
+                  </div>
+                {% else %}
+                  <!-- 4-Image 2x2 Grid -->
+                  <div class="timeline-photo-grid count-{{ group.image_events|length }}">
+                    {% for event in group.image_events %}
+                      <div
+                        class="timeline-photo-cell timeline-event-media"
+                        data-src="{{ event.image.url }}"
+                        data-title="{{ event.title|escape }}"
+                        data-category="{% if event.category %}{{ event.category.name|escape }}{% else %}Memory{% endif %}"
+                        data-date="{{ event.event_date|date:'d F Y' }}"
+                        data-description="{{ event.description|escape }}"
+                      >
+                        <img
+                          src="{{ event.image.url }}"
+                          alt="{{ event.title }}"
+                          class="timeline-photo-img timeline-event-img"
+                          loading="lazy"
+                        >
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+
+            </article>
+          {% empty %}
+            <div class="timeline-empty-state">
+              <div class="timeline-empty-icon">⏳</div>
+              <h2 class="timeline-empty-title">No Timeline Events Added Yet</h2>
+              <p class="timeline-empty-desc">
+                Events added through the Django Admin will automatically render along this timeline archive.
+              </p>
+            </div>
+          {% endfor %}
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Vertical Thumbnail Autostart Timeline Event Viewer Modal -->
+  <div
+    class="vertical-viewer-overlay"
+    id="timeline-lightbox"
+    role="dialog"
+    aria-modal="true"
+    aria-hidden="true"
+    aria-label="Timeline Event Viewer"
+  >
+    <div class="vertical-viewer-shell">
+      <button
+        class="vertical-viewer-close cm-popup-close ui-control ui-control--close"
+        id="timeline-lightbox-close"
+        type="button"
+        aria-label="Close Event Viewer"
+      >
+        <svg class="lightbox-close-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path d="M18 6L6 18M6 6l12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="vertical-viewer-main">
+        <div
+          class="vertical-viewer-stage"
+          id="timeline-viewer-stage"
+          role="region"
+          aria-roledescription="carousel"
+          aria-label="Timeline Event Autoplay Stage"
+        >
+          <div class="vertical-viewer-blur-clip" aria-hidden="true">
+            <div class="vertical-viewer-blur" id="timeline-lightbox-blur"></div>
+          </div>
+          <img
+            src=""
+            alt=""
+            class="vertical-viewer-img"
+            id="timeline-lightbox-img"
+          >
+        </div>
+
+        <div
+          class="vertical-viewer-thumbs"
+          id="timeline-viewer-thumbs"
+          role="tablist"
+          aria-label="Event Thumbnails"
+        ></div>
+      </div>
+
+      <div class="vertical-viewer-footer">
+        <div class="vertical-viewer-metadata">
+          <span class="vertical-viewer-category" id="timeline-lightbox-category">Category</span>
+          <h3 class="vertical-viewer-title" id="timeline-lightbox-title">Event Title</h3>
+          <div class="vertical-viewer-date" id="timeline-lightbox-date">Event Date</div>
+          <p class="vertical-viewer-description" id="timeline-lightbox-description">Description</p>
+        </div>
+
+        <div class="vertical-viewer-controls">
+          <button
+            class="vertical-viewer-btn"
+            id="timeline-lightbox-prev"
+            type="button"
+            aria-label="Previous Event"
+          >
+            <span class="vertical-viewer-arrow" aria-hidden="true">‹</span>
+            <span>Previous</span>
+          </button>
+
+          <span class="vertical-viewer-counter" id="timeline-lightbox-counter">01 / 01</span>
+
+          <button
+            class="vertical-viewer-btn"
+            id="timeline-lightbox-next"
+            type="button"
+            aria-label="Next Event"
+          >
+            <span>Next</span>
+            <span class="vertical-viewer-arrow" aria-hidden="true">›</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reusable Shared Footer Component -->
+  {% include "includes/footer.html" %}
+
+  <!-- Scripts -->
+  <script src="{% static 'js/main.js' %}"></script>
+  <script src="{% static 'js/vertical-viewer.js' %}"></script>
+  <script src="{% static 'js/timeline.js' %}"></script>
+
+</body>
+</html>

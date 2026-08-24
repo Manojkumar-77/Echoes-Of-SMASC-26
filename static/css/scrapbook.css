@@ -1,0 +1,3128 @@
+/* ==========================================================================
+   COLLEGE MEMORIES '26
+   SCRAPBOOK — COMPLETE REPLACEMENT
+   ========================================================================== */
+
+
+/* ==========================================================================
+   PAGE
+   ========================================================================== */
+
+.scrapbook-page {
+  overflow-x: hidden;
+}
+
+.scrapbook-page main {
+  overflow: clip;
+}
+
+.text-center {
+  text-align: center;
+}
+
+
+/* ==========================================================================
+   HERO
+   ========================================================================== */
+
+.scrapbook-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.scrapbook-hero::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+
+  width: min(780px, 72vw);
+  height: 1px;
+
+  transform: translateX(-50%);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(215, 179, 119, 0.48),
+      transparent
+    );
+}
+
+
+/* ==========================================================================
+   SCRAPBOOK FRAME SECTION
+   ========================================================================== */
+
+.scrapbook-frame-section {
+  position: relative;
+
+  padding:
+    clamp(62px, 7vw, 104px)
+    0
+    clamp(80px, 9vw, 132px);
+
+  background:
+    radial-gradient(
+      circle at 50% 28%,
+      rgba(215, 179, 119, 0.05),
+      transparent 42%
+    ),
+    var(--bg-primary);
+
+  overflow: hidden;
+}
+
+.scrapbook-frame-section .container {
+  position: relative;
+  z-index: 2;
+}
+
+.scratch-wall-hint {
+  margin: 14px auto 0;
+
+  color:
+    var(--accent-gold, #D7B377);
+
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+
+/* ==========================================================================
+/* ==========================================================================
+   THE LARGE LIGHT FRAME
+   ========================================================================== */
+
+.scrapbook-display-frame {
+  position: relative;
+
+  width: min(1180px, 100%);
+  min-height: 620px;
+
+  margin:
+    clamp(32px, 5vw, 60px)
+    auto
+    0;
+
+  overflow: hidden;
+  isolation: isolate;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 30%,
+      #f8f5ee 0%,
+      #ede7dc 65%,
+      #e4ded2 100%
+    );
+
+  border:
+    1px solid
+    rgba(68, 58, 46, 0.18);
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.38),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+
+  transition:
+    min-height 400ms cubic-bezier(0.16, 1, 0.3, 1),
+    width 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Dynamic frame dimensions based on item count */
+.scrapbook-display-frame[data-count="1"] {
+  width: min(480px, 92vw);
+  min-height: 380px;
+}
+
+.scrapbook-display-frame[data-count="2"] {
+  width: min(700px, 94vw);
+  min-height: 420px;
+}
+
+.scrapbook-display-frame[data-count="3"] {
+  width: min(840px, 94vw);
+  min-height: 460px;
+}
+
+.scrapbook-display-frame[data-count="4"] {
+  width: min(920px, 96vw);
+  min-height: 500px;
+}
+
+.scrapbook-display-frame[data-count="5"],
+.scrapbook-display-frame[data-count="6"] {
+  width: min(1040px, 96vw);
+  min-height: 550px;
+}
+
+.scrapbook-display-frame::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  z-index: 0;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 50% 45%,
+      rgba(255, 255, 255, 0.45),
+      transparent 60%
+    );
+}
+
+.scrapbook-frame-texture {
+  position: absolute;
+  inset: 0;
+
+  z-index: 1;
+
+  pointer-events: none;
+
+  opacity: 0.14;
+
+  background-image:
+    linear-gradient(
+      rgba(73, 65, 56, 0.12) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(73, 65, 56, 0.12) 1px,
+      transparent 1px
+    );
+
+  background-size: 6px 6px;
+}
+
+.scrapbook-frame-inner-line {
+  position: absolute;
+
+  inset: 16px;
+
+  z-index: 2;
+
+  pointer-events: none;
+
+  border:
+    1px dashed
+    rgba(70, 60, 48, 0.12);
+
+  border-radius: 6px;
+}
+
+
+/* ==========================================================================
+   COLLAGE CANVAS
+   ========================================================================== */
+
+.memory-polaroid-wall {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  z-index: 5;
+
+  width: min(880px, calc(100% - 48px));
+
+  height: 520px;
+
+  transform: translate(-50%, -50%);
+
+  isolation: isolate;
+
+  transition: height 400ms ease;
+}
+
+.scrapbook-display-frame[data-count="1"] .memory-polaroid-wall {
+  width: min(320px, 85vw);
+  height: 280px;
+}
+
+.scrapbook-display-frame[data-count="2"] .memory-polaroid-wall {
+  width: min(560px, 88vw);
+  height: 320px;
+}
+
+.scrapbook-display-frame[data-count="3"] .memory-polaroid-wall {
+  width: min(720px, 90vw);
+  height: 360px;
+}
+
+.scrapbook-display-frame[data-count="4"] .memory-polaroid-wall {
+  width: min(800px, 92vw);
+  height: 420px;
+}
+
+.scrapbook-display-frame[data-count="5"],
+.scrapbook-display-frame[data-count="6"] {
+  width: min(900px, 94vw);
+  height: 460px;
+}
+
+
+/* ==========================================================================
+   SCRAPBOOK DECK CAROUSEL & TRANSITION ENGINE
+   ========================================================================== */
+
+.memory-polaroid {
+  transition: opacity 450ms cubic-bezier(0.16, 1, 0.3, 1), transform 450ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 450ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.memory-polaroid.is-deck-hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translate(-50%, -50%) scale(0.88) rotate(-6deg) !important;
+  visibility: hidden;
+}
+
+.memory-polaroid.is-deck-visible {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+/* Champagne Gold Subtle Deck Navigation (MOBILE ONLY: < 768px) */
+.scrapbook-deck-nav {
+  display: none !important;
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(25, 23, 20, 0.72);
+  border: 1px solid rgba(215, 179, 119, 0.28);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  user-select: none;
+}
+
+.scrapbook-deck-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(215, 179, 119, 0.14);
+  color: var(--accent-gold, #D7B377);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
+}
+
+.scrapbook-deck-btn:hover:not(:disabled) {
+  background: rgba(215, 179, 119, 0.3);
+  color: #FFF;
+}
+
+.scrapbook-deck-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.scrapbook-deck-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.scrapbook-deck-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: rgba(215, 179, 119, 0.35);
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.25s ease;
+}
+
+.scrapbook-deck-dot.is-active {
+  background: var(--accent-gold, #D7B377);
+  transform: scale(1.35);
+  box-shadow: 0 0 8px rgba(215, 179, 119, 0.6);
+}
+
+.scrapbook-deck-counter {
+  font-family: var(--font-body, monospace);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent-gold, #D7B377);
+}
+
+/* ==========================================================================
+   POLAROID
+   ========================================================================== */
+
+.memory-polaroid {
+  --polaroid-rotation:
+    var(--admin-rotation, 0deg);
+
+  position: absolute;
+
+  width: 220px;
+
+  padding:
+    10px
+    10px
+    20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f8f4ec,
+      #ece5d8
+    );
+
+  border:
+    1px solid
+    rgba(67, 57, 45, 0.16);
+
+  border-radius: 3px;
+
+  color: #171512;
+
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.28),
+    0 2px 6px rgba(0, 0, 0, 0.12);
+
+  transform:
+    rotate(var(--polaroid-rotation))
+    translateZ(0);
+
+  transform-origin: center;
+
+  will-change: transform;
+
+  backface-visibility: hidden;
+
+  transition:
+    transform 450ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 450ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.memory-polaroid::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 5px;
+
+  pointer-events: none;
+
+  border:
+    1px solid
+    rgba(57, 48, 37, 0.05);
+}
+
+
+/* ==========================================================================
+   HOVER
+   ========================================================================== */
+
+@media (hover: hover) and (pointer: fine) {
+
+  .memory-polaroid:hover {
+    z-index: 100 !important;
+
+    transform:
+      rotate(0deg)
+      translateY(-10px)
+      scale(1.05);
+
+    box-shadow:
+      0 30px 65px rgba(0, 0, 0, 0.38),
+      0 0 20px rgba(215, 179, 119, 0.18);
+  }
+
+}
+
+
+/* ==========================================================================
+   COLLAGE POSITIONS BY ITEM COUNT
+   ========================================================================== */
+
+/* --- 1 ITEM --- */
+.scrapbook-display-frame[data-count="1"] .memory-polaroid-pos-1 {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-2.5deg);
+  z-index: 5;
+}
+
+/* --- 2 ITEMS --- */
+.scrapbook-display-frame[data-count="2"] .memory-polaroid-pos-1 {
+  left: 30%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-4.5deg);
+  z-index: 3;
+}
+.scrapbook-display-frame[data-count="2"] .memory-polaroid-pos-2 {
+  left: 70%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(3.5deg);
+  z-index: 4;
+}
+
+/* --- 3 ITEMS --- */
+.scrapbook-display-frame[data-count="3"] .memory-polaroid-pos-1 {
+  left: 22%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-5.5deg);
+  z-index: 3;
+}
+.scrapbook-display-frame[data-count="3"] .memory-polaroid-pos-2 {
+  left: 50%;
+  top: 46%;
+  transform: translate(-50%, -50%) rotate(2.5deg);
+  z-index: 5;
+}
+.scrapbook-display-frame[data-count="3"] .memory-polaroid-pos-3 {
+  left: 78%;
+  top: 52%;
+  transform: translate(-50%, -50%) rotate(-3.5deg);
+  z-index: 4;
+}
+
+/* --- 4 ITEMS --- */
+.scrapbook-display-frame[data-count="4"] .memory-polaroid-pos-1 {
+  left: 22%;
+  top: 38%;
+  transform: translate(-50%, -50%) rotate(-6deg);
+  z-index: 3;
+}
+.scrapbook-display-frame[data-count="4"] .memory-polaroid-pos-2 {
+  left: 50%;
+  top: 30%;
+  transform: translate(-50%, -50%) rotate(3deg);
+  z-index: 5;
+}
+.scrapbook-display-frame[data-count="4"] .memory-polaroid-pos-3 {
+  left: 78%;
+  top: 38%;
+  transform: translate(-50%, -50%) rotate(5deg);
+  z-index: 4;
+}
+.scrapbook-display-frame[data-count="4"] .memory-polaroid-pos-4 {
+  left: 50%;
+  top: 68%;
+  transform: translate(-50%, -50%) rotate(-2.5deg);
+  z-index: 6;
+}
+
+/* --- 5 ITEMS --- */
+.scrapbook-display-frame[data-count="5"] .memory-polaroid-pos-1 {
+  left: 18%;
+  top: 36%;
+  transform: translate(-50%, -50%) rotate(-6deg);
+  z-index: 3;
+}
+.scrapbook-display-frame[data-count="5"] .memory-polaroid-pos-2 {
+  left: 50%;
+  top: 28%;
+  transform: translate(-50%, -50%) rotate(2deg);
+  z-index: 5;
+}
+.scrapbook-display-frame[data-count="5"] .memory-polaroid-pos-3 {
+  left: 82%;
+  top: 36%;
+  transform: translate(-50%, -50%) rotate(5deg);
+  z-index: 4;
+}
+.scrapbook-display-frame[data-count="5"] .memory-polaroid-pos-4 {
+  left: 34%;
+  top: 68%;
+  transform: translate(-50%, -50%) rotate(3.5deg);
+  z-index: 6;
+}
+.scrapbook-display-frame[data-count="5"] .memory-polaroid-pos-5 {
+  left: 66%;
+  top: 68%;
+  transform: translate(-50%, -50%) rotate(-4deg);
+  z-index: 7;
+}
+
+/* --- DEFAULT / 6-9 ITEMS --- */
+.memory-polaroid-pos-1 {
+  left: 8%;
+  top: 188px;
+  z-index: 3;
+  --polaroid-rotation: -6deg;
+}
+
+.memory-polaroid-pos-2 {
+  left: 148px;
+  top: 24px;
+  z-index: 7;
+  --polaroid-rotation: -4deg;
+}
+
+.memory-polaroid-pos-3 {
+  left: 332px;
+  top: 130px;
+  z-index: 13;
+  --polaroid-rotation: 2deg;
+}
+
+.memory-polaroid-pos-4 {
+  left: 510px;
+  top: 22px;
+  z-index: 8;
+  --polaroid-rotation: 4.5deg;
+}
+
+.memory-polaroid-pos-5 {
+  right: 18px;
+  top: 170px;
+  z-index: 4;
+  --polaroid-rotation: 7deg;
+}
+
+.memory-polaroid-pos-6 {
+  left: 172px;
+  top: 310px;
+  z-index: 9;
+  --polaroid-rotation: 3.5deg;
+}
+
+.memory-polaroid-pos-7 {
+  left: 348px;
+  top: 260px;
+  z-index: 17;
+  --polaroid-rotation: -2deg;
+}
+
+.memory-polaroid-pos-8 {
+  right: 140px;
+  top: 310px;
+  z-index: 10;
+  --polaroid-rotation: 4.5deg;
+}
+
+.memory-polaroid-pos-9 {
+  left: 12px;
+  top: 360px;
+  z-index: 2;
+  --polaroid-rotation: -4.5deg;
+}
+
+
+/* ==========================================================================
+   PHOTO
+   ========================================================================== */
+
+.memory-polaroid-photo {
+  position: relative;
+
+  width: 100%;
+
+  aspect-ratio: 4 / 3;
+
+  overflow: hidden;
+
+  background: #151515;
+
+  border:
+    1px solid
+    rgba(0, 0, 0, 0.14);
+
+  box-shadow:
+    inset
+    0
+    0
+    0
+    1px
+    rgba(255, 255, 255, 0.08);
+}
+
+.memory-polaroid-photo img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+
+  transform: scale(1.015);
+
+  user-select: none;
+  -webkit-user-drag: none;
+
+  transition:
+    transform
+    800ms
+    cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.memory-polaroid:hover
+.memory-polaroid-photo img {
+  transform:
+    scale(1.045);
+}
+
+
+/* ==========================================================================
+   SCRATCH CANVAS
+   ========================================================================== */
+
+.memory-scratch-canvas {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 5;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  cursor: grab;
+
+  touch-action: none;
+
+  user-select: none;
+
+  -webkit-user-select: none;
+
+  transition:
+    opacity
+    500ms
+    ease;
+}
+
+.memory-scratch-canvas:active {
+  cursor: grabbing;
+}
+
+.memory-polaroid.is-revealed
+.memory-scratch-canvas {
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+
+/* ==========================================================================
+   SCRATCH LABEL
+   ========================================================================== */
+
+.memory-scratch-message {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 6;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 5px;
+
+  pointer-events: none;
+
+  color: #D7B377;
+
+  text-align: center;
+
+  transition:
+    opacity 350ms ease,
+    transform 350ms ease;
+}
+
+.memory-scratch-message::before {
+  content: "";
+  position: absolute;
+  inset: 16% 8%;
+  z-index: -1;
+  background: rgba(14, 14, 16, 0.88);
+  border: 1px solid rgba(215, 179, 119, 0.45);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
+  border-radius: 2px;
+}
+
+.memory-sealed-text {
+  font-size: 0.56rem;
+
+  letter-spacing: 0.14em;
+
+  opacity: 0.72;
+}
+
+.memory-scratch-message strong {
+  font-size: 0.7rem;
+
+  letter-spacing: 0.055em;
+}
+
+.memory-scratch-icon {
+  margin-top: 2px;
+
+  font-size: 0.88rem;
+}
+
+.memory-polaroid.is-scratching
+.memory-scratch-message {
+  opacity: 0.28;
+
+  transform:
+    scale(0.96);
+}
+
+.memory-polaroid.is-revealed
+.memory-scratch-message {
+  opacity: 0;
+
+  transform:
+    scale(0.92);
+}
+
+
+/* ==========================================================================
+   VIEW TRIGGER
+   ========================================================================== */
+
+.scrapbook-photo-trigger {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 4;
+
+  width: 100%;
+  height: 100%;
+
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  cursor: zoom-in;
+}
+
+.memory-polaroid:not(.is-revealed)
+.memory-view-trigger {
+  pointer-events: none;
+}
+
+
+/* ==========================================================================
+   POLAROID TEXT
+   ========================================================================== */
+
+.memory-polaroid-caption {
+  position: relative;
+
+  padding:
+    11px
+    5px
+    0;
+
+  text-align: center;
+}
+
+.memory-polaroid-category {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: #977039;
+
+  font-size: 0.56rem;
+
+  font-weight: 800;
+
+  letter-spacing: 0.13em;
+
+  text-transform: uppercase;
+}
+
+.memory-polaroid-title {
+  margin: 0;
+
+  color: #38322B;
+
+  font-family:
+    var(--font-handwriting),
+    "Segoe Print",
+    cursive;
+
+  font-size:
+    clamp(1rem, 1.6vw, 1.28rem);
+
+  font-weight: 600;
+
+  line-height: 1.17;
+}
+
+.memory-polaroid-note {
+  margin:
+    4px
+    0
+    0;
+
+  color: #7B7267;
+
+  font-family:
+    var(--font-handwriting),
+    "Segoe Print",
+    cursive;
+
+  font-size: 0.69rem;
+
+  line-height: 1.28;
+}
+
+
+/* ==========================================================================
+   REVEALED BADGE
+   ========================================================================== */
+
+.memory-revealed-badge {
+  position: absolute;
+
+  top: 20px;
+  right: 20px;
+
+  z-index: 8;
+
+  padding:
+    5px
+    8px;
+
+  border:
+    1px solid
+    rgba(215, 179, 119, 0.52);
+
+  border-radius: 999px;
+
+  background:
+    rgba(12, 12, 12, 0.76);
+
+  color: #D7B377;
+
+  font-size: 0.52rem;
+
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
+
+  opacity: 0;
+
+  transform:
+    translateY(-5px)
+    scale(0.94);
+
+  transition:
+    opacity 300ms ease,
+    transform 300ms ease;
+}
+
+.memory-polaroid.is-revealed
+.memory-revealed-badge {
+  opacity: 1;
+
+  transform:
+    translateY(0)
+    scale(1);
+}
+
+
+/* ==========================================================================
+   TAPE
+   ========================================================================== */
+
+.memory-tape {
+  position: absolute;
+
+  top: -11px;
+  left: 50%;
+
+  z-index: 20;
+
+  width: 65px;
+  height: 20px;
+
+  transform:
+    translateX(-50%)
+    rotate(-2deg);
+
+  opacity: 0.78;
+
+  border:
+    1px dashed
+    rgba(64, 54, 42, 0.2);
+
+  box-shadow:
+    0
+    2px
+    7px
+    rgba(0, 0, 0, 0.14);
+
+  backdrop-filter: blur(3px);
+
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.memory-tape--gold {
+  background:
+    rgba(205, 177, 119, 0.74);
+}
+
+.memory-tape--paper {
+  background:
+    rgba(231, 224, 210, 0.84);
+}
+
+.memory-tape--rose {
+  background:
+    rgba(182, 111, 107, 0.58);
+}
+
+.memory-tape--blue {
+  background:
+    rgba(104, 141, 162, 0.55);
+}
+
+
+/* ==========================================================================
+   FRAME CREDIT
+   ========================================================================== */
+
+.scrapbook-frame-credit {
+  position: absolute;
+
+  right: 24px;
+  bottom: 18px;
+
+  z-index: 4;
+
+  pointer-events: none;
+
+  text-align: right;
+
+  color:
+    rgba(67, 60, 51, 0.5);
+}
+
+.scrapbook-frame-credit span {
+  display: block;
+
+  font-family:
+    var(--font-handwriting),
+    "Segoe Print",
+    cursive;
+
+  font-size: 0.64rem;
+}
+
+.scrapbook-frame-credit small {
+  display: block;
+
+  margin-top: 2px;
+
+  font-size: 0.44rem;
+
+  letter-spacing: 0.11em;
+
+  text-transform: uppercase;
+}
+
+
+/* ==========================================================================
+   RESET BUTTON
+   ========================================================================== */
+
+/* ==========================================================================
+   ACTIONS & INTERACTIVE SLOGAN
+   ========================================================================== */
+
+.scratch-wall-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+
+  margin-top: 28px;
+}
+
+.scrapbook-slogan {
+  position: relative;
+
+  margin: 0;
+  padding: 6px 20px;
+
+  color: #B5B0A6;
+
+  font-family: var(--font-heading), serif;
+  font-size: clamp(0.95rem, 1.8vw, 1.18rem);
+  font-style: italic;
+  letter-spacing: 0.04em;
+
+  text-align: center;
+  user-select: none;
+  cursor: default;
+
+  transition: transform 300ms ease;
+}
+
+.scrapbook-slogan .slogan-text {
+  position: relative;
+  z-index: 2;
+
+  display: inline-block;
+
+  transition:
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 300ms ease;
+}
+
+.scrapbook-slogan .slogan-glow-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+
+  width: 70px;
+  height: 24px;
+
+  border-radius: 50%;
+
+  background: radial-gradient(circle, rgba(215, 179, 119, 0.38), transparent 70%);
+
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+
+  opacity: 0;
+
+  transition:
+    opacity 300ms ease,
+    transform 150ms ease-out;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .scrapbook-slogan:hover .slogan-glow-dot {
+    opacity: 1;
+  }
+
+  .scrapbook-slogan:hover .slogan-text {
+    color: #F4F0E6;
+  }
+}
+
+.scratch-reset-btn {
+  min-height: 42px;
+
+  padding: 0 20px;
+
+  border: 1px solid var(--border-gold, rgba(215, 179, 119, 0.35));
+  border-radius: 999px;
+
+  background: transparent;
+  color: var(--accent-gold, #D7B377);
+
+  cursor: pointer;
+
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  transition:
+    background 250ms ease,
+    color 250ms ease,
+    transform 250ms ease,
+    box-shadow 250ms ease;
+}
+
+.scratch-reset-btn:hover {
+  background: var(--accent-gold, #D7B377);
+  color: #111;
+
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(215, 179, 119, 0.25);
+}
+
+
+/* ==========================================================================
+   EMPTY STATE
+   ========================================================================== */
+
+.scrapbook-empty-state {
+  max-width: 600px;
+
+  margin:
+    54px
+    auto
+    0;
+
+  padding:
+    52px
+    30px;
+
+  text-align: center;
+
+  border:
+    1px dashed
+    rgba(215, 179, 119, 0.32);
+
+  border-radius: 16px;
+}
+
+.scrapbook-empty-state > span {
+  display: block;
+
+  margin-bottom: 12px;
+
+  color:
+    var(--accent-gold);
+
+  font-size: 1.5rem;
+}
+
+.scrapbook-empty-state h3 {
+  margin-bottom: 8px;
+
+  color:
+    var(--text-primary);
+
+  font-family:
+    var(--font-heading),
+    serif;
+}
+
+.scrapbook-empty-state p {
+  max-width: 420px;
+
+  margin: auto;
+
+  color:
+    var(--text-secondary);
+
+  line-height: 1.6;
+}
+
+
+/* ==========================================================================
+   MOVING FILM ARCHIVE
+   ========================================================================== */
+
+.moving-film-section {
+  position: relative;
+
+  padding:
+    clamp(70px, 8vw, 110px)
+    0;
+
+  overflow: hidden;
+
+  background:
+    var(--bg-primary);
+
+  border-top:
+    1px solid
+    var(--border-color);
+}
+
+.film-stage {
+  display: flex;
+
+  flex-direction: column;
+
+  gap:
+    clamp(24px, 4vw, 40px);
+
+  margin-top:
+    clamp(36px, 5vw, 58px);
+}
+
+.film-strip-row {
+  width: 100%;
+
+  overflow: hidden;
+
+  padding:
+    8px
+    0;
+
+  touch-action: pan-y;
+}
+
+.film-row--left {
+  transform:
+    rotate(-0.75deg);
+}
+
+.film-row--right {
+  transform:
+    rotate(0.75deg);
+}
+
+.film-strip-track {
+  display: flex;
+
+  gap:
+    clamp(12px, 1.7vw, 22px);
+
+  width: max-content;
+
+  will-change: transform;
+}
+
+.film-row--left
+.film-strip-track {
+  animation:
+    scrapbookFilmLeft
+    26s
+    linear
+    infinite;
+}
+
+.film-row--right
+.film-strip-track {
+  animation:
+    scrapbookFilmRight
+    26s
+    linear
+    infinite;
+}
+
+.film-row--static .film-strip-track {
+  animation: none !important;
+}
+
+@keyframes scrapbookFilmLeft {
+
+  from {
+    transform:
+      translate3d(0, 0, 0);
+  }
+
+  to {
+    transform:
+      translate3d(-50%, 0, 0);
+  }
+
+}
+
+@keyframes scrapbookFilmRight {
+
+  from {
+    transform:
+      translate3d(-50%, 0, 0);
+  }
+
+  to {
+    transform:
+      translate3d(0, 0, 0);
+  }
+
+}
+
+@media (hover: hover) and (pointer: fine) {
+
+  .film-strip-row:hover
+  .film-strip-track {
+    animation-play-state: paused;
+  }
+
+}
+
+.film-frame {
+  position: relative;
+
+  flex:
+    0
+    0
+    clamp(210px, 28vw, 320px);
+
+  padding:
+    9px
+    11px;
+
+  background:
+    #111112;
+
+  border:
+    1px solid
+    #2A292C;
+
+  border-radius: 6px;
+
+  box-shadow:
+    0
+    10px
+    26px
+    rgba(0, 0, 0, 0.4);
+}
+
+.film-sprocket-track {
+  height: 14px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  background-image:
+    radial-gradient(
+      circle,
+      #020202 39%,
+      transparent 43%
+    );
+
+  background-size:
+    17px
+    13px;
+
+  background-repeat:
+    repeat-x;
+}
+
+.film-frame-media {
+  position: relative;
+
+  width: 100%;
+
+  aspect-ratio: 4 / 3;
+
+  overflow: hidden;
+
+  background: #050505;
+}
+
+.film-frame-media img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  transition:
+    transform
+    700ms
+    cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.film-frame:hover
+.film-frame-media img {
+  transform:
+    scale(1.045);
+}
+
+.film-frame-information {
+  padding:
+    8px
+    2px
+    4px;
+}
+
+.film-frame-information span {
+  display: block;
+
+  color:
+    var(--accent-gold);
+
+  font-size: 0.57rem;
+
+  font-weight: 800;
+
+  letter-spacing: 0.1em;
+
+  text-transform: uppercase;
+}
+
+.film-frame-information strong {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #E8E4DB;
+
+  font-family:
+    var(--font-heading),
+    serif;
+
+  font-size: 0.83rem;
+}
+
+.film-frame-number {
+  color:
+    var(--accent-gold);
+
+  font-family: monospace;
+
+  font-size: 0.6rem;
+}
+
+
+/* ==========================================================================
+   MEMORY MOSAIC
+   ========================================================================== */
+
+.torn-mosaic-section {
+  padding:
+    clamp(70px, 8vw, 110px)
+    0;
+
+  background:
+    var(--bg-primary);
+
+  border-top:
+    1px solid
+    var(--border-color);
+}
+
+.mosaic-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  grid-auto-flow: dense;
+
+  gap:
+    clamp(10px, 1.5vw, 18px);
+
+  margin-top:
+    clamp(36px, 5vw, 56px);
+}
+
+.mosaic-card {
+  position: relative;
+
+  overflow: hidden;
+
+  min-height: 210px;
+
+  border:
+    1px solid
+    var(--border-color);
+
+  border-radius: 7px;
+
+  background:
+    var(--bg-card);
+
+  box-shadow:
+    0
+    12px
+    28px
+    rgba(0, 0, 0, 0.25);
+}
+
+.mosaic-span-2 {
+  grid-column: span 2;
+
+  aspect-ratio: 16 / 9;
+}
+
+.mosaic-span-v2 {
+  grid-row: span 2;
+
+  aspect-ratio: 3 / 4;
+}
+
+.mosaic-span-1 {
+  aspect-ratio: 4 / 3;
+}
+
+.mosaic-media {
+  position: absolute;
+
+  inset: 0;
+}
+
+.mosaic-media img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  transition:
+    transform
+    800ms
+    cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mosaic-card:hover
+.mosaic-media img {
+  transform:
+    scale(1.05);
+}
+
+.mosaic-overlay {
+  position: absolute;
+
+  inset: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: flex-end;
+
+  padding: 16px;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.9),
+      rgba(0, 0, 0, 0.08) 64%,
+      transparent
+    );
+}
+
+.mosaic-badge {
+  color:
+    var(--accent-gold);
+
+  font-size: 0.62rem;
+
+  font-weight: 800;
+
+  letter-spacing: 0.1em;
+
+  text-transform: uppercase;
+}
+
+.mosaic-title {
+  margin:
+    4px
+    0
+    0;
+
+  color: #FFFFFF;
+
+  font-family:
+    var(--font-heading),
+    serif;
+
+  font-size:
+    clamp(0.92rem, 1.5vw, 1.1rem);
+}
+
+
+/* ==========================================================================
+   FINAL MEMORY
+   ========================================================================== */
+
+.last-page-section {
+  padding:
+    clamp(70px, 8vw, 110px)
+    0
+    clamp(90px, 10vw, 140px);
+
+  background:
+    var(--bg-primary);
+
+  border-top:
+    1px solid
+    var(--border-color);
+}
+
+.last-page-envelope-wrapper {
+  width:
+    min(680px, 100%);
+
+  margin:
+    clamp(36px, 5vw, 58px)
+    auto
+    0;
+}
+
+.last-page-envelope {
+  position: relative;
+
+  padding:
+    clamp(30px, 4vw, 48px);
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    var(--border-gold);
+
+  border-radius: 14px;
+
+  background:
+    var(--bg-card);
+
+  text-align: center;
+
+  box-shadow:
+    0
+    25px
+    70px
+    rgba(0, 0, 0, 0.28);
+}
+
+.envelope-front {
+  display: grid;
+
+  grid-template-rows: 1fr;
+
+  opacity: 1;
+
+  transition:
+    grid-template-rows
+    600ms
+    cubic-bezier(0.16, 1, 0.3, 1),
+
+    opacity
+    380ms
+    ease;
+}
+
+.envelope-front-inner {
+  min-height: 0;
+
+  overflow: hidden;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 16px;
+}
+
+.envelope-stamp {
+  padding:
+    5px
+    10px;
+
+  border:
+    1px dashed
+    var(--border-gold);
+
+  border-radius: 4px;
+
+  color:
+    var(--accent-gold);
+
+  font-size: 0.65rem;
+
+  font-weight: 800;
+
+  letter-spacing: 0.14em;
+}
+
+.envelope-seal {
+  color:
+    var(--accent-gold);
+
+  font-size: 2rem;
+}
+
+.envelope-quote {
+  max-width: 500px;
+
+  margin: 0;
+
+  color:
+    var(--text-primary);
+
+  font-family:
+    var(--font-heading),
+    serif;
+
+  font-size:
+    clamp(1.05rem, 2.3vw, 1.4rem);
+
+  line-height: 1.5;
+}
+
+.envelope-open-btn {
+  min-height: 44px;
+
+  margin-top: 5px;
+
+  padding:
+    0
+    22px;
+
+  border:
+    1px solid
+    var(--border-gold);
+
+  border-radius: 999px;
+
+  background: transparent;
+
+  color:
+    var(--accent-gold);
+
+  cursor: pointer;
+
+  font-size: 0.72rem;
+
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+
+  transition:
+    background 250ms ease,
+    color 250ms ease,
+    transform 250ms ease;
+}
+
+.envelope-open-btn:hover {
+  background:
+    var(--accent-gold);
+
+  color: #111;
+
+  transform:
+    translateY(-2px);
+}
+
+.envelope-letter {
+  display: grid;
+
+  grid-template-rows: 0fr;
+
+  visibility: hidden;
+
+  opacity: 0;
+
+  transition:
+    grid-template-rows
+    650ms
+    cubic-bezier(0.16, 1, 0.3, 1),
+
+    opacity
+    450ms
+    ease;
+}
+
+.envelope-letter-inner {
+  min-height: 0;
+
+  overflow: hidden;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 22px;
+}
+
+.last-page-envelope.is-open
+.envelope-front {
+  grid-template-rows: 0fr;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+.last-page-envelope.is-open
+.envelope-letter {
+  grid-template-rows: 1fr;
+
+  visibility: visible;
+
+  opacity: 1;
+}
+
+.final-photo-frame {
+  position: relative;
+
+  width:
+    min(580px, 100%);
+
+  aspect-ratio: 16 / 9;
+
+  overflow: hidden;
+
+  border-radius: 7px;
+
+  background: #080808;
+
+  box-shadow:
+    0
+    18px
+    45px
+    rgba(0, 0, 0, 0.35);
+}
+
+.final-photo-frame img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.final-letter-content {
+  max-width: 520px;
+
+  text-align: center;
+}
+
+.final-badge {
+  color:
+    var(--accent-gold);
+
+  font-size: 0.65rem;
+
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+
+  text-transform: uppercase;
+}
+
+.final-title {
+  margin:
+    6px
+    0
+    8px;
+
+  color:
+    var(--text-primary);
+
+  font-family:
+    var(--font-heading),
+    serif;
+
+  font-size:
+    clamp(1.25rem, 3vw, 1.8rem);
+}
+
+.final-caption {
+  margin: 0;
+
+  color:
+    var(--text-secondary);
+
+  line-height: 1.65;
+}
+
+
+/* ==========================================================================
+   PREMIUM SCRAPBOOK MEMORY LIGHTBOX
+   ========================================================================== */
+
+.scrapbook-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 3500;
+
+  display: grid;
+  place-items: center;
+
+  padding: clamp(12px, 3vw, 36px);
+
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+
+  transition:
+    opacity 350ms cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 350ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scrapbook-lightbox[hidden] {
+  display: none;
+}
+
+.scrapbook-lightbox.is-open {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.scrapbook-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(6, 6, 8, 0.88);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.scrapbook-lightbox-dialog {
+  position: relative;
+  z-index: 10;
+
+  display: grid;
+  grid-template-columns: minmax(0, 52%) minmax(0, 48%);
+
+  width: min(980px, 94vw);
+  max-height: min(720px, 90dvh);
+
+  overflow: hidden;
+
+  border: 1px solid rgba(215, 179, 119, 0.28);
+  border-radius: 18px;
+
+  background: #0f0e0d;
+
+  box-shadow:
+    0 36px 110px rgba(0, 0, 0, 0.72),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+
+  transform: translateY(16px) scale(0.95);
+
+  transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scrapbook-lightbox.is-open .scrapbook-lightbox-dialog {
+  transform: translateY(0) scale(1);
+}
+
+/* Left Side: Physical Polaroid Stack Area */
+.scrapbook-lightbox-polaroid-area {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: clamp(20px, 3vw, 32px);
+
+  background: linear-gradient(145deg, #161514, #0b0a0a);
+  border-right: 1px solid rgba(215, 179, 119, 0.15);
+
+  overflow: hidden;
+
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+}
+
+.scrapbook-viewer-stack {
+  position: relative;
+
+  width: 100%;
+  max-width: 440px;
+  height: clamp(320px, 50vh, 480px);
+
+  transform-style: preserve-3d;
+}
+
+.scrapbook-stack-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  padding:
+    clamp(14px, 2.2vw, 20px)
+    clamp(14px, 2.2vw, 20px)
+    clamp(20px, 3vw, 28px);
+
+  background: linear-gradient(145deg, #f7f4ec, #ece5d8);
+  border-radius: 4px;
+
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+
+  transform-origin: center center;
+
+  transition:
+    transform 480ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 480ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  will-change: transform, opacity;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.scrapbook-stack-card.is-active {
+  z-index: 10;
+  opacity: 1;
+
+  transform: perspective(1000px) translate3d(0, 0, 0) scale(1) rotate(0deg);
+}
+
+.scrapbook-stack-card.is-prev,
+.scrapbook-stack-card.is-next {
+  z-index: 3;
+  opacity: 0.55;
+
+  transform: perspective(1000px) translate3d(0, 14px, -90px) scale(0.94) rotate(var(--stack-rotation, -4deg));
+  pointer-events: none;
+}
+
+.scrapbook-stack-card.is-hidden {
+  z-index: 1;
+  opacity: 0;
+
+  transform: perspective(1000px) translate3d(0, 24px, -150px) scale(0.88) rotate(var(--stack-rotation, 0deg));
+  pointer-events: none;
+}
+
+/* Lift Keyframes for Active Polaroid Entrance */
+@keyframes activeCardLiftDesktop {
+  0% {
+    opacity: 0.55;
+    transform: perspective(1000px) translate3d(0, 16px, -90px) scale(0.94) rotate(var(--stack-rotation, -4deg));
+  }
+  52% {
+    opacity: 1;
+    transform: perspective(1000px) translate3d(0, -48px, 0) scale(1.01) rotate(0deg);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1000px) translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes activeCardLiftMobile {
+  0% {
+    opacity: 0.55;
+    transform: perspective(1000px) translate3d(0, 10px, -60px) scale(0.94) rotate(var(--stack-rotation, -4deg));
+  }
+  52% {
+    opacity: 1;
+    transform: perspective(1000px) translate3d(0, -22px, 0) scale(1.005) rotate(0deg);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1000px) translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+}
+
+.scrapbook-stack-card.is-entering {
+  animation: activeCardLiftDesktop 480ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (max-width: 767px) {
+  .scrapbook-stack-card.is-entering {
+    animation: activeCardLiftMobile 480ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+.lightbox-polaroid-tape {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  z-index: 5;
+
+  width: 72px;
+  height: 22px;
+
+  transform: translateX(-50%) rotate(-1.5deg);
+
+  background: rgba(205, 177, 119, 0.76);
+  border: 1px dashed rgba(64, 54, 42, 0.22);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.lightbox-polaroid-photo {
+  position: relative;
+  flex: 1;
+
+  width: 100%;
+  min-height: 240px;
+  max-height: 52dvh;
+
+  overflow: hidden;
+
+  background: #080808;
+
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  border-radius: 2px;
+
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.scrapbook-lightbox-image {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+  object-position: center;
+
+  background: #080808;
+}
+
+.lightbox-polaroid-footer {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.lightbox-polaroid-stamp {
+  color: #8C7B6B;
+
+  font-family: var(--font-handwriting), "Segoe Print", cursive;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Right Side: Memory Note Panel */
+.scrapbook-lightbox-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: clamp(24px, 3.5vw, 44px);
+
+  overflow-y: auto;
+}
+
+.lightbox-meta-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 12px;
+}
+
+.lightbox-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.scrapbook-lightbox-category {
+  color: var(--accent-gold, #D7B377);
+
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.scrapbook-lightbox-date {
+  color: #8E887E;
+
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.lightbox-counter {
+  color: #D7B377;
+
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  opacity: 0.85;
+
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease;
+}
+
+.lightbox-counter.is-animating {
+  opacity: 0.3;
+  transform: translateY(2px);
+}
+
+.lightbox-title-area {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  margin-bottom: 14px;
+}
+
+.lightbox-thumb-preview {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+
+  border-radius: 6px;
+  overflow: hidden;
+
+  border: 1px solid rgba(215, 179, 119, 0.4);
+  background: #080808;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  transition:
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 260ms ease;
+}
+
+.lightbox-thumb-preview img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.lightbox-thumb-preview.is-animating {
+  opacity: 0;
+  transform: scale(0.88) rotate(-4deg);
+}
+
+.scrapbook-lightbox-title {
+  margin: 0;
+
+  color: #F4F0E6;
+
+  font-family: var(--font-heading), serif;
+  font-size: clamp(1.35rem, 2.5vw, 2.1rem);
+  font-weight: 600;
+  line-height: 1.22;
+}
+
+.lightbox-divider {
+  width: 50px;
+  height: 1px;
+
+  margin-bottom: 16px;
+
+  background: linear-gradient(90deg, rgba(215, 179, 119, 0.4), transparent);
+}
+
+/* Caption Word-by-Word Reveal */
+.scrapbook-lightbox-caption-wrapper {
+  min-height: 48px;
+}
+
+.scrapbook-lightbox-caption {
+  margin: 0;
+
+  color: #B5B0A6;
+
+  font-size: 0.92rem;
+  line-height: 1.68;
+}
+
+.memory-caption-word {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(7px);
+  transform: translateY(5px);
+
+  animation: captionWordReveal 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--word-index, 0) * 20ms);
+}
+
+@keyframes captionWordReveal {
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+/* Right Content Entrance / Exit Transition */
+.scrapbook-lightbox-content.is-exiting .scrapbook-lightbox-category,
+.scrapbook-lightbox-content.is-exiting .scrapbook-lightbox-date,
+.scrapbook-lightbox-content.is-exiting .scrapbook-lightbox-title {
+  opacity: 0;
+  transform: translateY(-12px);
+  filter: blur(4px);
+
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease,
+    filter 160ms ease;
+}
+
+.scrapbook-lightbox-category,
+.scrapbook-lightbox-date,
+.scrapbook-lightbox-title {
+  transition:
+    opacity 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Controls: Precision Close Button */
+.scrapbook-lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 30;
+
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+  margin: 0;
+  border: 1px solid rgba(215, 179, 119, 0.35);
+  border-radius: 50%;
+  box-sizing: border-box;
+
+  background: rgba(18, 17, 16, 0.88);
+  color: var(--accent-gold, #D7B377);
+
+  cursor: pointer;
+  line-height: 1;
+
+  transition:
+    transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 250ms ease,
+    border-color 250ms ease,
+    color 250ms ease,
+    box-shadow 250ms ease;
+}
+
+.scrapbook-lightbox-close .lightbox-close-icon {
+  width: 18px;
+  height: 18px;
+
+  display: block;
+  flex-shrink: 0;
+
+  transform-origin: center center;
+
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scrapbook-lightbox-close:hover {
+  transform: scale(1.05);
+
+  background-color: rgba(215, 179, 119, 0.12);
+  border-color: rgba(215, 179, 119, 0.65);
+  color: var(--accent-gold, #D7B377);
+
+  box-shadow: 0 0 0 4px rgba(215, 179, 119, 0.08);
+}
+
+.scrapbook-lightbox-close:hover .lightbox-close-icon {
+  transform: rotate(90deg);
+}
+
+.scrapbook-lightbox-close:active {
+  transform: scale(0.92);
+}
+
+.scrapbook-lightbox-close:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(215, 179, 119, 0.35);
+}
+
+/* Navigation Arrow Buttons */
+.scrapbook-lightbox-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 20;
+
+  width: 44px;
+  height: 44px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+  border: 1px solid rgba(215, 179, 119, 0.35);
+  border-radius: 50%;
+
+  background: rgba(18, 17, 16, 0.88);
+  color: var(--accent-gold, #D7B377);
+
+  cursor: pointer;
+  font-size: 1.6rem;
+  line-height: 1;
+
+  transform: translateY(-50%);
+
+  transition:
+    background 220ms ease,
+    color 220ms ease,
+    transform 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.scrapbook-lightbox-nav.nav-prev {
+  left: 14px;
+}
+
+.scrapbook-lightbox-nav.nav-next {
+  right: 14px;
+}
+
+.scrapbook-lightbox-nav:hover {
+  background: var(--accent-gold, #D7B377);
+  color: #111;
+  box-shadow: 0 4px 18px rgba(215, 179, 119, 0.3);
+}
+
+.scrapbook-lightbox-nav .nav-arrow-icon {
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scrapbook-lightbox-nav.nav-prev:hover .nav-arrow-icon {
+  transform: rotate(-12deg);
+}
+
+.scrapbook-lightbox-nav.nav-next:hover .nav-arrow-icon {
+  transform: rotate(12deg);
+}
+
+/* Mobile responsive popup adjustments */
+@media (max-width: 767px) {
+  .scrapbook-lightbox-dialog {
+    grid-template-columns: 1fr;
+    max-height: 88dvh;
+    overflow-y: auto;
+  }
+
+  .scrapbook-lightbox-polaroid-area {
+    border-right: none;
+    border-bottom: 1px solid rgba(215, 179, 119, 0.15);
+    padding: 16px;
+  }
+
+  .scrapbook-viewer-stack {
+    height: 280px;
+  }
+
+  .scrapbook-lightbox-close {
+    width: 44px;
+    height: 44px;
+    top: 12px;
+    right: 12px;
+  }
+
+  .scrapbook-lightbox-nav {
+    width: 38px;
+    height: 38px;
+  }
+
+  .scrapbook-lightbox-nav.nav-prev {
+    left: 8px;
+  }
+
+  .scrapbook-lightbox-nav.nav-next {
+    right: 8px;
+  }
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  .scrapbook-lightbox-close:hover .lightbox-close-icon {
+    transform: none !important;
+  }
+
+  .scrapbook-stack-card,
+  .scrapbook-stack-card.is-entering,
+  .memory-caption-word {
+    animation: none !important;
+    transition: opacity 150ms ease !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+
+/* ==========================================================================
+   TABLET
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+
+  .scrapbook-display-frame {
+    min-height: 650px;
+  }
+
+  .memory-polaroid-wall {
+    width: 820px;
+
+    transform:
+      translate(-50%, -50%)
+      scale(0.88);
+  }
+
+  .mosaic-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+}
+
+
+/* ==========================================================================
+   MOBILE
+   ========================================================================== */
+
+/* ==========================================================================
+   MOBILE & TABLET PROPORTIONAL STAGE SCALING (MASTER DESIGN PRESERVED)
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+
+  .scrapbook-display-frame {
+    height: clamp(280px, 48vw, 540px);
+    min-height: 0;
+    padding: 36px 12px 42px;
+  }
+
+  .memory-polaroid-wall {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    width: 880px !important;
+    height: 520px !important;
+    display: block !important;
+    transform-origin: center center;
+    transform: translate(-50%, -50%) scale(clamp(0.36, calc(min(100vw, 1024px) / 1024), 1)) !important;
+  }
+
+  .memory-polaroid {
+    position: absolute !important;
+    width: 220px !important;
+  }
+
+  .scrapbook-frame-wordmark {
+    display: none;
+  }
+
+  @media (max-width: 767.98px) {
+    .scrapbook-deck-nav {
+      display: flex !important;
+    }
+  }
+
+  .scrapbook-frame-credit {
+    right: 14px;
+    bottom: 10px;
+  }
+
+  .mosaic-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mosaic-span-2,
+  .mosaic-span-v2,
+  .mosaic-span-1 {
+    grid-column: span 1;
+    grid-row: span 1;
+    aspect-ratio: 4 / 3;
+  }
+
+  .scrapbook-lightbox-dialog {
+    grid-template-columns: 1fr;
+    width: min(94vw, 540px);
+    max-height: 90dvh;
+    overflow-y: auto;
+  }
+
+  .scrapbook-lightbox-polaroid {
+    padding: 14px 14px 22px;
+    border-right: none;
+    border-bottom: 1px solid rgba(68, 58, 46, 0.15);
+  }
+
+  .lightbox-polaroid-photo {
+    min-height: 200px;
+    max-height: 40dvh;
+  }
+
+  .scrapbook-lightbox-content {
+    padding: 20px 18px 24px;
+  }
+
+  .scrapbook-lightbox-nav.nav-prev {
+    left: 6px;
+  }
+
+  .scrapbook-lightbox-nav.nav-next {
+    right: 6px;
+  }
+
+}
+
+
+  .memory-revealed-badge {
+    top: 13px;
+    right: 13px;
+
+    padding:
+      4px
+      6px;
+
+    font-size: 0.46rem;
+  }
+
+
+  .film-frame {
+    flex-basis:
+      clamp(185px, 65vw, 260px);
+  }
+
+
+  .mosaic-grid {
+    gap: 8px;
+  }
+
+}
+
+
+/* ==========================================================================
+   REDUCED MOTION
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .memory-polaroid,
+  .memory-polaroid-photo img,
+  .scrapbook-lightbox-dialog {
+    transition-duration: 0.01ms !important;
+  }
+
+
+  .film-strip-track {
+    animation: none !important;
+  }
+
+
+  .film-strip-row {
+    overflow-x: auto;
+  }
+
+}
+
+
+/* --------------------------------------------------------------------------
+   TABLET + MOBILE
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767.98px) {
+
+  .scrapbook-frame-section {
+    padding-top: 48px;
+  }
+
+  /* --------------------------------------------------------
+     Single pinned memory = ONE HERO POLAROID
+     Never allow it to sit inside a 2-column grid.
+     -------------------------------------------------------- */
+
+  .scrapbook-display-frame[data-count="1"] {
+    position: relative;
+
+    width: min(560px, 96%);
+    min-height: 0 !important;
+
+    margin:
+      clamp(26px, 6vw, 38px)
+      auto
+      0;
+
+    padding:
+      clamp(30px, 6vw, 42px)
+      clamp(18px, 5vw, 30px)
+      clamp(34px, 7vw, 48px);
+
+    overflow: hidden;
+
+    border-radius: 14px;
+  }
+
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-polaroid-wall {
+
+    position: relative !important;
+
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    inset: auto !important;
+
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+
+    transform: none !important;
+
+    display: flex !important;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    grid-template-columns: none !important;
+
+    gap: 0 !important;
+  }
+
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-polaroid,
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-polaroid-pos-1 {
+
+    position: relative !important;
+
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    inset: auto !important;
+
+    /*
+     * IMPORTANT:
+     * Bigger card than old mobile version.
+     * Scales naturally instead of becoming tiny.
+     */
+    width: clamp(
+      270px,
+      72vw,
+      350px
+    ) !important;
+
+    max-width: 100%;
+
+    margin: 0 auto !important;
+
+    padding:
+      12px
+      12px
+      24px !important;
+
+    z-index: 5 !important;
+
+    transform:
+      rotate(-1.25deg)
+      translateZ(0) !important;
+
+    transform-origin: center;
+
+    box-shadow:
+      0 24px 50px rgba(0, 0, 0, 0.30),
+      0 4px 12px rgba(0, 0, 0, 0.14) !important;
+  }
+
+
+  /* --------------------------------------------------------
+     Photo / Scratch Area
+     -------------------------------------------------------- */
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-polaroid-photo {
+
+    position: relative;
+
+    width: 100%;
+
+    aspect-ratio: 4 / 3;
+
+    overflow: hidden;
+  }
+
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-polaroid-photo img {
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center;
+  }
+
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-scratch-canvas {
+
+    position: absolute;
+
+    inset: 0;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    touch-action: none;
+  }
+
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-scratch-message {
+
+    inset: 0;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+  }
+
+
+  /* --------------------------------------------------------
+     Tape
+     -------------------------------------------------------- */
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-tape {
+
+    width: 56px;
+    height: 18px;
+
+    top: -9px;
+  }
+
+
+  /* --------------------------------------------------------
+     Polaroid Caption
+     -------------------------------------------------------- */
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-polaroid-caption {
+
+    padding:
+      13px
+      6px
+      0;
+  }
+
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-polaroid-category {
+
+    font-size: 0.62rem;
+
+    letter-spacing: 0.13em;
+  }
+
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-polaroid-title {
+
+    margin-top: 3px;
+
+    font-size: clamp(
+      0.95rem,
+      3vw,
+      1.08rem
+    );
+
+    line-height: 1.18;
+  }
+
+
+  /* --------------------------------------------------------
+     Scratch Label
+     -------------------------------------------------------- */
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-sealed-text {
+
+    font-size: 0.6rem;
+
+    letter-spacing: 0.13em;
+  }
+
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-scratch-message strong {
+
+    font-size: clamp(
+      0.78rem,
+      2.8vw,
+      0.9rem
+    );
+
+    letter-spacing: 0.08em;
+  }
+
+
+  /* --------------------------------------------------------
+     Revealed Badge
+     -------------------------------------------------------- */
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-revealed-badge {
+
+    top: 14px;
+    right: 14px;
+
+    font-size: 0.5rem;
+  }
+
+
+  /* --------------------------------------------------------
+     Bottom decoration
+     -------------------------------------------------------- */
+
+  .scrapbook-display-frame[data-count="1"]
+  .scrapbook-frame-credit {
+
+    right: 14px;
+    bottom: 12px;
+
+    opacity: 0.66;
+  }
+
+
+  .scratch-wall-actions {
+
+    margin-top: 24px;
+
+    gap: 14px;
+  }
+
+}
+
+
+/* ==========================================================================
+   MOBILE
+   ========================================================================== */
+
+@media (max-width: 480px) {
+
+  .scrapbook-frame-section .container {
+
+    padding-inline: 14px;
+  }
+
+
+  .scrapbook-display-frame[data-count="1"] {
+
+    width: 100%;
+
+    padding:
+      28px
+      14px
+      32px;
+
+    border-radius: 12px;
+  }
+
+
+  .scrapbook-display-frame[data-count="1"]
+  .scrapbook-frame-inner-line {
+
+    inset: 10px;
+  }
+
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-polaroid,
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-polaroid-pos-1 {
+
+    width: min(
+      82vw,
+      320px
+    ) !important;
+
+    padding:
+      10px
+      10px
+      21px !important;
+
+    transform:
+      rotate(-0.8deg)
+      translateZ(0) !important;
+  }
+
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-polaroid-note {
+
+    display: none;
+  }
+
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-scratch-message strong {
+
+    font-size: clamp(
+      0.74rem,
+      3.7vw,
+      0.86rem
+    );
+  }
+
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-sealed-text {
+
+    font-size: 0.57rem;
+  }
+
+
+  .scrapbook-slogan {
+
+    padding-inline: 8px;
+
+    font-size: clamp(
+      0.84rem,
+      4vw,
+      1rem
+    );
+  }
+
+}
+
+
+/* ==========================================================================
+   SMALL MOBILE
+   ========================================================================== */
+
+@media (max-width: 360px) {
+
+  .scrapbook-display-frame[data-count="1"] {
+
+    padding-inline: 12px;
+  }
+
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-polaroid,
+
+  .scrapbook-display-frame[data-count="1"]
+  .memory-polaroid-pos-1 {
+
+    width: min(
+      84vw,
+      292px
+    ) !important;
+  }
+
+}

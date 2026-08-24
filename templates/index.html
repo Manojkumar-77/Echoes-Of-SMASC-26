@@ -1,0 +1,349 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Echoes Of SMASC '26 | Home</title>
+
+  <meta name="description" content="Echoes Of SMASC '26 — A premium digital collection of college memories, moments, stories, photographs and experiences.">
+  <meta property="og:site_name" content="Echoes Of SMASC '26">
+  <meta property="og:title" content="Echoes Of SMASC '26 | Home">
+  <meta property="og:description" content="CAPTURE • RELIVE • FOREVER — Three Years. Countless Memories. One Story.">
+  <meta property="og:image" content="{% static 'branding/05_WEB_BANNERS/og_1200x630.png' %}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Echoes Of SMASC '26 | Home">
+  <meta name="twitter:description" content="CAPTURE • RELIVE • FOREVER — Three Years. Countless Memories. One Story.">
+  <meta name="twitter:image" content="{% static 'branding/05_WEB_BANNERS/twitter_x_1500x500.png' %}">
+  
+  {% include "includes/favicons.html" %}
+
+  <meta name="theme-color" content="#050507">
+
+  <link rel="stylesheet" href="{% static 'css/global.css' %}?v=5.4">
+  <link rel="stylesheet" href="{% static 'css/home.css' %}?v=5.3">
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}?v=5.3">
+</head>
+
+<body>
+
+  <!-- Skip link -->
+  <a href="#main-content" class="skip-link">
+    Skip to main content
+  </a>
+
+  <!-- Reusable Shared Header & Navigation -->
+  {% include "includes/header.html" %}
+
+  <main id="main-content">
+
+    <!-- 1. Hero Slideshow -->
+    <section class="home-hero" id="home-hero">
+      <div class="home-hero-slider" id="home-hero-slider">
+        {% for slide in hero_slides %}
+          {% if slide.image %}
+            <article
+              class="home-hero-slide {% if forloop.first %}is-active{% endif %}"
+              data-home-slide
+            >
+              <img
+                src="{{ slide.image.url }}"
+                alt=""
+                aria-hidden="true"
+                class="home-hero-blur"
+              >
+              <img
+                src="{{ slide.image.url }}"
+                alt="{{ slide.title|default:'College Memories' }}"
+                class="home-hero-image"
+                {% if forloop.first %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %}
+              >
+            </article>
+          {% endif %}
+        {% empty %}
+          <article class="home-hero-slide is-active" data-home-slide>
+            <img
+              src="{% static 'branding/05_WEB_BANNERS/hero_1920x1080.png' %}"
+              alt="BCA Class of 2026"
+              class="home-hero-image"
+              loading="eager"
+              fetchpriority="high"
+            >
+          </article>
+        {% endfor %}
+      </div>
+
+      <div class="home-hero-overlay"></div>
+
+      <div class="home-hero-content">
+        <span class="hero-label">
+          BCA • CLASS OF 2026
+        </span>
+
+        <h1 class="home-hero-title">
+          Our College Journey
+        </h1>
+
+        <p class="home-hero-description">
+          Three unforgettable years of friendship, laughter, journeys,
+          celebrations and moments that became part of our story.
+        </p>
+
+        <div class="home-hero-actions">
+          <a href="{% url 'timeline' %}" class="btn btn-primary">
+            Explore Our Journey
+          </a>
+          <a href="{% url 'gallery' %}" class="btn btn-secondary">
+            View Gallery
+          </a>
+        </div>
+
+        <!-- Interactive Scroll To Begin Anchor Link -->
+        <a href="#home-intro-section" class="home-scroll-indicator" id="home-scroll-link" aria-label="Scroll to Begin">
+          <span>Scroll to Begin</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M12 5v14M19 12l-7 7-7-7"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Hero Dots Indicator -->
+      <div class="home-hero-dots" id="home-hero-dots">
+        {% for slide in hero_slides %}
+          <button
+            type="button"
+            class="home-hero-dot {% if forloop.first %}is-active{% endif %}"
+            data-home-slide-dot
+            aria-label="Go to slide {{ forloop.counter }}"
+          ></button>
+        {% empty %}
+          <button type="button" class="home-hero-dot is-active" data-home-slide-dot></button>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- 2. Interactive Archive Shortcuts -->
+    <section class="home-intro-section" id="home-intro-section">
+      <div class="container container-wide">
+
+        <div class="section-header archive-section-header text-center reveal">
+          <span class="section-eyebrow archive-section-tag">PRESERVED FOREVER</span>
+          <h2 class="section-title archive-section-title">EXPLORE OUR ARCHIVE</h2>
+          <p class="section-description archive-section-subtitle">
+            Every photograph, story, classmate profile and video captured in one digital vault.
+          </p>
+        </div>
+
+        <div class="home-shortcuts-grid archive-grid">
+
+          <!-- Photo Gallery -->
+          <article class="home-shortcut-card archive-card reveal">
+            <div class="home-shortcut-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="3" y="3" width="18" height="18" rx="4"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+            </div>
+            <h3 class="home-shortcut-title">Photo Gallery</h3>
+            <p class="home-shortcut-description">Classrooms, labs, culturals, birthdays, farewells and candid moments.</p>
+            <div class="home-shortcut-count">
+              <strong>{{ photo_count }}</strong>
+              <span>Photos</span>
+            </div>
+            <a href="{% url 'gallery' %}" class="home-shortcut-link">
+              Explore Gallery <span aria-hidden="true">→</span>
+            </a>
+          </article>
+
+          <!-- Timeline -->
+          <article class="home-shortcut-card archive-card reveal">
+            <div class="home-shortcut-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <h3 class="home-shortcut-title">Chronological Timeline</h3>
+            <p class="home-shortcut-description">A milestone-by-milestone journey from Semester 1 to farewell.</p>
+            <div class="home-shortcut-count">
+              <strong>{{ timeline_count }}</strong>
+              <span>Milestones</span>
+            </div>
+            <a href="{% url 'timeline' %}" class="home-shortcut-link">
+              View Timeline <span aria-hidden="true">→</span>
+            </a>
+          </article>
+
+          <!-- Scrapbook -->
+          <article class="home-shortcut-card archive-card reveal">
+            <div class="home-shortcut-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+            </div>
+            <h3 class="home-shortcut-title">Digital Scrapbook</h3>
+            <p class="home-shortcut-description">Scratch-reveal cards, polaroids, quotes and pieces of our story.</p>
+            <div class="home-shortcut-count">
+              <strong>4</strong>
+              <span>Collections</span>
+            </div>
+            <a href="{% url 'scrapbook' %}" class="home-shortcut-link">
+              Open Scrapbook <span aria-hidden="true">→</span>
+            </a>
+          </article>
+
+          <!-- Yearbook -->
+          <article class="home-shortcut-card archive-card reveal">
+            <div class="home-shortcut-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M5 21a7 7 0 0114 0"/>
+              </svg>
+            </div>
+            <h3 class="home-shortcut-title">Classmate Yearbook</h3>
+            <p class="home-shortcut-description">Names, nicknames, personalities and stories behind the classmates.</p>
+            <div class="home-shortcut-count">
+              <strong>{{ student_count }}</strong>
+              <span>Profiles</span>
+            </div>
+            <a href="{% url 'yearbook' %}" class="home-shortcut-link">
+              View Yearbook <span aria-hidden="true">→</span>
+            </a>
+          </article>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. Database Statistics -->
+    <section class="stats-section">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-item reveal">
+            <div class="stat-number">3</div>
+            <div class="stat-label">Years Together</div>
+          </div>
+          <div class="stat-item reveal">
+            <div class="stat-number">{{ photo_count }}</div>
+            <div class="stat-label">Memories Saved</div>
+          </div>
+          <div class="stat-item reveal">
+            <div class="stat-number">{{ timeline_count }}</div>
+            <div class="stat-label">Journeys & Events</div>
+          </div>
+          <div class="stat-item reveal">
+            <div class="stat-number">{{ video_count }}</div>
+            <div class="stat-label">Video Memories</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Featured Memories Coverflow Carousel -->
+    <section class="home-featured-section" id="featured-memories-section" role="region" aria-label="Featured memories carousel">
+      <div class="container">
+
+        <div class="section-header home-featured-header text-center reveal">
+          <span class="section-eyebrow home-featured-tag">FEATURED HIGHLIGHTS</span>
+          <h2 class="section-title home-featured-title">BEST MOMENTS</h2>
+          <p class="section-description home-featured-subtitle">A curated glimpse into the photographs that define our story.</p>
+        </div>
+
+        <div class="home-3d-carousel-stage" id="home-3d-stage" tabindex="0" aria-label="Best Moments Coverflow Carousel">
+          <button type="button" class="home-3d-nav home-3d-prev ui-control ui-control--prev" id="home-3d-prev" aria-label="Previous featured memory">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+
+          <div class="home-3d-track" id="home-3d-track">
+            {% for memory in featured_memories %}
+              <article
+                class="home-3d-card"
+                data-3d-slide
+                data-index="{{ forloop.counter0 }}"
+              >
+                <div class="home-3d-media">
+                  {% if memory.image_url %}
+                    <img src="{{ memory.image_url }}" alt="{{ memory.title }}" class="home-3d-image" loading="lazy" decoding="async">
+                  {% else %}
+                    <img src="{% static 'branding/02_LOGO_VARIANTS/ES26_ROUNDED_512.png' %}" alt="{{ memory.title }}" class="home-3d-image" loading="lazy" decoding="async">
+                  {% endif %}
+
+                  {% if memory.category %}
+                    <span class="home-3d-badge">{{ memory.category }}</span>
+                  {% endif %}
+                </div>
+
+                <div class="home-3d-body">
+                  <h3 class="home-3d-title">{{ memory.title }}</h3>
+                  {% if memory.caption %}
+                    <p class="home-3d-caption">{{ memory.caption|truncatechars:75 }}</p>
+                  {% endif %}
+                  {% if memory.date_display %}
+                    <span class="home-3d-date">{{ memory.date_display }}</span>
+                  {% endif %}
+                </div>
+              </article>
+            {% empty %}
+              <div class="home-3d-empty">
+                <h3>No featured memories yet</h3>
+                <p>Add featured memories from Django Admin to display them here.</p>
+              </div>
+            {% endfor %}
+          </div>
+
+          <button type="button" class="home-3d-nav home-3d-next ui-control ui-control--next" id="home-3d-next" aria-label="Next featured memory">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+
+        <!-- Pagination: Fractional Counter Pill & Mobile Controls -->
+        <div class="home-3d-pagination" id="home-3d-pagination">
+          <button type="button" class="home-3d-mobile-btn home-3d-mobile-prev ui-control ui-control--prev" id="home-3d-mobile-prev" aria-label="Previous featured memory">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="home-3d-counter" id="home-3d-counter">01 / 01</div>
+          <button type="button" class="home-3d-mobile-btn home-3d-mobile-next ui-control ui-control--next" id="home-3d-mobile-next" aria-label="Next featured memory">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. Emotional Quote Section -->
+    <section class="home-quote-section">
+      <div class="container">
+        <div class="home-quote-card reveal">
+          <div class="home-quote-mark">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+            </svg>
+          </div>
+
+          <blockquote class="home-quote-text">
+            “We didn’t realize we were making memories, we just knew we were having fun.”
+          </blockquote>
+
+          <div class="home-quote-author">
+            — BCA CLASS OF 2026
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Reusable Shared Footer Component -->
+  {% include "includes/footer.html" %}
+
+  <!-- Scripts -->
+  <script src="{% static 'js/main.js' %}?v=3.5"></script>
+  <script src="{% static 'js/home.js' %}?v=3.5"></script>
+
+</body>
+</html>

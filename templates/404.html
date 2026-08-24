@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Echoes Of SMASC '26 | Page Not Found</title>
+  {% include "includes/favicons.html" %}
+  <link rel="stylesheet" href="{% static 'css/global.css' %}">
+  <style>
+    .error-page {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .error-code {
+      font-family: var(--font-heading);
+      font-size: clamp(4rem, 10vw, 8rem);
+      font-weight: 900;
+      color: var(--accent-gold);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .error-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .error-msg {
+      color: var(--text-secondary);
+      max-width: 480px;
+      margin-bottom: 28px;
+    }
+  </style>
+</head>
+<body>
+  {% include "includes/header.html" %}
+  <main id="main-content" class="error-page">
+    <div class="error-code">404</div>
+    <h1 class="error-title">Memory Fragment Not Found</h1>
+    <p class="error-msg">The page or memory fragment you requested could not be located in our digital archive.</p>
+    <a href="{% url 'home' %}" class="btn-primary">Return to Homepage</a>
+  </main>
+  {% include "includes/footer.html" %}
+</body>
+</html>

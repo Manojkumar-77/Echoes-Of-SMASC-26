@@ -1,0 +1,122 @@
+/* Universal Live Image Preview Styles for Django Unfold Admin */
+
+.admin-upload-live-preview {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  clear: both;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  width: 100% !important;
+  max-width: 480px;
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+.admin-preview-card {
+  display: flex;
+  flex-direction: column;
+  background: #141414;
+  border: 1px solid rgba(215, 179, 119, 0.4);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  transition: border-color 0.2s ease;
+}
+
+.admin-preview-card:hover {
+  border-color: rgba(215, 179, 119, 0.7);
+}
+
+.admin-preview-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.75rem;
+}
+
+.admin-preview-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.admin-preview-badge.is-new {
+  background: rgba(215, 179, 119, 0.18);
+  color: #D7B377;
+  border: 1px solid rgba(215, 179, 119, 0.45);
+}
+
+.admin-preview-badge.is-saved {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.admin-preview-filename {
+  font-weight: 600;
+  color: #E2E8F0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.admin-preview-filesize {
+  color: #94A3B8;
+  font-size: 0.70rem;
+  white-space: nowrap;
+}
+
+.admin-preview-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background: #0A0A0A;
+  min-height: 120px;
+  max-height: 280px;
+  overflow: hidden;
+}
+
+.admin-preview-img {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: 260px !important;
+  object-fit: contain !important;
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+}
+
+.admin-preview-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.70rem;
+  color: #94A3B8;
+}
+
+@media (max-width: 640px) {
+  .admin-upload-live-preview {
+    max-width: 100% !important;
+  }
+
+  .admin-preview-img {
+    max-height: 200px !important;
+  }
+}

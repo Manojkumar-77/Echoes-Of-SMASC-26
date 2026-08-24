@@ -1,0 +1,206 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Echoes Of SMASC '26 | Yearbook</title>
+
+  <meta name="description" content="Echoes Of SMASC '26 — The Class Orbit: 3D Cylindrical Yearbook Carousel & Interactive Classmate Archive for the BCA Class of 2026.">
+  <meta property="og:site_name" content="Echoes Of SMASC '26">
+  <meta property="og:title" content="Echoes Of SMASC '26 | Yearbook">
+  <meta property="og:description" content="The personalities, nicknames and friendships that made our classroom home.">
+  <meta property="og:image" content="{% static 'branding/05_WEB_BANNERS/og_1200x630.png' %}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Echoes Of SMASC '26 | Yearbook">
+  <meta name="twitter:description" content="The personalities, nicknames and friendships that made our classroom home.">
+  <meta name="twitter:image" content="{% static 'branding/05_WEB_BANNERS/twitter_x_1500x500.png' %}">
+
+  {% include "includes/favicons.html" %}
+
+  <meta name="theme-color" content="#050507">
+
+  <link rel="stylesheet" href="{% static 'css/global.css' %}?v=3.5">
+  <link rel="stylesheet" href="{% static 'css/yearbook.css' %}?v=3.5">
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}?v=3.5">
+</head>
+
+<body>
+
+  <!-- Skip link -->
+  <a href="#main-content" class="skip-link">
+    Skip to main content
+  </a>
+
+  <!-- Reusable Shared Header & Navigation -->
+  {% include "includes/header.html" %}
+
+  <main id="main-content">
+
+    <!-- Hero Header -->
+    <section class="page-hero yb-hero">
+      <div class="container">
+        <span class="section-tag">CLASS ARCHIVE '26</span>
+        <h1 class="hero-title">The Class Orbit</h1>
+        <p class="hero-description">
+          {{ total_student_count }} CLASSMATES • ONE UNFORGETTABLE ARCHIVE. Drag or use controls to orbit through classmates.
+        </p>
+      </div>
+    </section>
+
+    <!-- Yearbook Interactive Section -->
+    <section class="yb-section">
+      <div class="container">
+
+        <!-- Search Toolbar with Autocomplete Dropdown -->
+        <div class="yb-controls-toolbar">
+          <div class="yb-search-wrap">
+            <svg class="yb-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input
+              type="text"
+              id="student-search"
+              class="yb-search-input"
+              placeholder="Search classmate by name or nickname..."
+              aria-label="Search classmates"
+              autocomplete="off"
+            >
+            <!-- Compact Search Dropdown -->
+            <div class="yb-search-dropdown" id="yb-search-dropdown" hidden aria-hidden="true" role="listbox" aria-label="Search suggestions"></div>
+          </div>
+        </div>
+
+        <!-- 3D CAROUSEL STAGE CONTAINER & DEDICATED NAV BUTTONS -->
+        <div class="yearbook-stage-container" id="yearbook-carousel">
+          <!-- Left Navigation Button -->
+          <button
+            type="button"
+            class="yb-nav-btn yb-nav-prev"
+            id="yb-nav-prev"
+            aria-label="Previous classmate"
+          >
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+
+          <!-- 3D Carousel Stage -->
+          <div class="yearbook-3d-stage" id="yearbook-3d-stage" role="region" aria-label="3D Class Orbit Carousel">
+            <div class="yearbook-cylinder" id="yearbook-cylinder">
+              <!-- Rendered 3D visual slots generated dynamically by Virtual Slot Engine -->
+            </div>
+          </div>
+
+          <!-- Right Navigation Button -->
+          <button
+            type="button"
+            class="yb-nav-btn yb-nav-next"
+            id="yb-nav-next"
+            aria-label="Next classmate"
+          >
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- UIVERSE MORPHING PROFILE CARD MODAL DIALOG -->
+  <div
+    class="yb-morph-modal"
+    id="yb-morph-modal"
+    hidden
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="yb-modal-name"
+  >
+    <div class="yb-morph-backdrop" id="yb-morph-backdrop"></div>
+
+    <div class="yb-morph-card" id="yb-morph-card">
+      <!-- Top Right Close Button -->
+      <button class="yb-morph-close cm-popup-close" id="yb-morph-close" type="button" aria-label="Close profile">
+        <svg class="lightbox-close-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path d="M18 6L6 18M6 6l12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <!-- Morphing Portrait Image (Uiverse Transition: Rectangle -> 96px Avatar Badge) -->
+      <div class="yb-morph-profile-pic" id="yb-morph-profile-pic">
+        <div class="yb-profile-viewport" id="yb-profile-viewport">
+          <div class="yb-profile-slide is-active" id="yb-profile-slide-active">
+            <div class="yb-profile-slide-img-wrap">
+              <img src="" alt="" id="yb-modal-img" class="yb-modal-image yb-profile-slide-img">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rising Bottom Information Panel -->
+      <div class="yb-morph-bottom" id="yb-morph-bottom">
+        <div class="yb-morph-content">
+          <span class="yb-modal-role" id="yb-modal-role"></span>
+          <h2 class="yb-modal-name" id="yb-modal-name"></h2>
+          <div class="yb-modal-nickname" id="yb-modal-nickname"></div>
+
+          <blockquote class="yb-modal-quote" id="yb-modal-quote"></blockquote>
+
+          <div class="yb-modal-bio-wrap" id="yb-modal-bio-wrap">
+            <span class="yb-modal-bio-label">ABOUT CLASSMATE</span>
+            <p class="yb-modal-bio" id="yb-modal-bio"></p>
+          </div>
+
+          <div class="yb-modal-socials" id="yb-modal-socials"></div>
+
+          <!-- Bottom Footer Navigation Bar -->
+          <div class="yb-modal-footer">
+            <button class="yb-modal-nav yb-modal-prev" id="yb-modal-prev" type="button" aria-label="Previous classmate">
+              ‹ Previous
+            </button>
+            <span class="yb-modal-counter" id="yb-modal-counter">01 / {{ total_student_count }}</span>
+            <button class="yb-modal-nav yb-modal-next" id="yb-modal-next" type="button" aria-label="Next classmate">
+              Next ›
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Serialized Safe Django Student Payload -->
+  <script id="yearbook-student-data" type="application/json">
+    [
+      {% for s in structured_students %}
+        {
+          "id": "{{ s.object.id }}",
+          "name": "{{ s.object.name|escapejs }}",
+          "nickname": "{{ s.object.nickname|default:''|escapejs }}",
+          "role": "{{ s.object.role|default:''|escapejs }}",
+          "quote": "{{ s.object.quote|default:''|escapejs }}",
+          "bio": "{{ s.object.bio|default:''|escapejs }}",
+          "image": "{% if s.object.image %}{{ s.object.image.url }}{% else %}{% static 'branding/02_LOGO_VARIANTS/ES26_ROUNDED_512.png' %}{% endif %}",
+          "insta": "{{ s.object.instagram_url|default:''|escapejs }}",
+          "linkedin": "{{ s.object.linkedin_url|default:''|escapejs }}",
+          "first_letter": "{{ s.first_letter }}",
+          "index_num": "{{ s.index_num }}"
+        }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    ]
+  </script>
+
+  <!-- Reusable Shared Footer Component -->
+  {% include "includes/footer.html" %}
+
+  <!-- Scripts -->
+  <script src="{% static 'js/main.js' %}"></script>
+  <script src="{% static 'js/yearbook.js' %}"></script>
+
+</body>
+</html>

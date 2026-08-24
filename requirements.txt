@@ -1,0 +1,12 @@
+asgiref==3.12.1
+Django==4.2.25
+django-storages[s3]==1.14.2
+django-unfold==0.104.1
+gunicorn==26.0.0
+packaging==26.3
+pillow==11.3.0
+psycopg2-binary==2.9.9
+python-dotenv==1.2.2
+sqlparse==0.5.5
+tzdata==2026.3
+whitenoise==6.12.0

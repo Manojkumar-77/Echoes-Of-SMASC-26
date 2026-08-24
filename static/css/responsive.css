@@ -1,0 +1,110 @@
+/* ==========================================================================
+   COLLEGE MEMORIES '26 - SHARED RESPONSIVE UTILITIES
+   Handles cross-page breakpoint behavior that spans multiple components.
+   Page-specific responsive rules live in each page's own CSS file.
+   ========================================================================== */
+
+/* ------------------------------------------------------------------
+   HEADER HEIGHT TOKEN — reduces header on narrow screens
+   ------------------------------------------------------------------ */
+@media (max-width: 768px) {
+  :root {
+    --header-height: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --header-height: 64px;
+  }
+}
+
+/* ------------------------------------------------------------------
+   CONTAINER — tighten horizontal padding on very small screens
+   ------------------------------------------------------------------ */
+@media (max-width: 380px) {
+  .container {
+    padding: 0 14px;
+  }
+}
+
+/* ------------------------------------------------------------------
+   SECTION SPACING — reduce vertical padding on mobile
+   ------------------------------------------------------------------ */
+@media (max-width: 768px) {
+  .section {
+    padding: clamp(36px, 6vw, 60px) 0;
+  }
+  .section-header {
+    margin-bottom: clamp(28px, 5vw, 50px);
+  }
+}
+
+/* ------------------------------------------------------------------
+   BUTTONS — full-width on narrow mobile, comfortable touch targets
+   ------------------------------------------------------------------ */
+@media (max-width: 350px) {
+  .hero-actions,
+  .home-hero-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+}
+
+/* ------------------------------------------------------------------
+   FILTER BARS — horizontal scroll on mobile (shared class .filter-bar)
+   ------------------------------------------------------------------ */
+@media (max-width: 600px) {
+  .filter-bar {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 12px;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .filter-bar::-webkit-scrollbar {
+    display: none;
+  }
+  .filter-btn {
+    flex: 0 0 auto;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    min-height: 44px;
+  }
+}
+
+/* ------------------------------------------------------------------
+   HERO TEXT — scale down on small mobile
+   ------------------------------------------------------------------ */
+@media (max-width: 480px) {
+  .hero-title,
+  .home-hero-title {
+    font-size: clamp(1.9rem, 7vw, 2.6rem);
+  }
+  .hero-description,
+  .home-hero-description {
+    font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+  }
+}
+
+/* ------------------------------------------------------------------
+   STATS GRID — 2x2 responsive layout
+   ------------------------------------------------------------------ */
+@media (max-width: 900px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 32px 16px !important;
+  }
+}
+
+/* ------------------------------------------------------------------
+   LOGO — scale on very small screens
+   ------------------------------------------------------------------ */
+@media (max-width: 360px) {
+  .logo {
+    font-size: 0.85rem;
+  }
+}

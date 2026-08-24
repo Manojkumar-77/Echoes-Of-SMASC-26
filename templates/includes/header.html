@@ -1,0 +1,165 @@
+{% load static %}
+<!-- Instant Theme Initialization (Prevents FOUT before paint) -->
+<script>
+  (function() {
+    try {
+      const saved = localStorage.getItem('college-memories-theme');
+      if (saved === 'light' || saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', saved);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<!-- Common Header Component -->
+<header class="site-header">
+  <div class="container header-container">
+
+    <!-- Brand Logo -->
+    <a href="{% url 'home' %}" class="site-brand" aria-label="Echoes Of SMASC '26 Home">
+      <picture>
+        <source media="(max-width: 767px)" srcset="{% static 'branding/03_RESPONSIVE_ICONS/ES26_64x64.png' %}">
+        <source media="(max-width: 1199px)" srcset="{% static 'branding/03_RESPONSIVE_ICONS/ES26_96x96.png' %}">
+        <img src="{% static 'branding/03_RESPONSIVE_ICONS/ES26_128x128.png' %}" alt="Echoes Of SMASC '26 Logo" class="site-brand-logo" width="34" height="34" loading="eager">
+      </picture>
+      <span class="site-brand-text">ECHOES OF SMASC <span>'26</span></span>
+    </a>
+
+    <!-- Desktop Navigation (UNCHANGED >= 901px) -->
+    <nav class="desktop-nav" aria-label="Desktop Main Navigation">
+      <ul class="nav-list">
+        <li><a href="{% url 'home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a></li>
+        <li><a href="{% url 'timeline' %}" class="nav-link {% if request.resolver_match.url_name == 'timeline' %}active{% endif %}">Timeline</a></li>
+        <li><a href="{% url 'gallery' %}" class="nav-link {% if request.resolver_match.url_name == 'gallery' %}active{% endif %}">Gallery</a></li>
+        <li><a href="{% url 'scrapbook' %}" class="nav-link {% if request.resolver_match.url_name == 'scrapbook' %}active{% endif %}">Scrapbook</a></li>
+        <li><a href="{% url 'yearbook' %}" class="nav-link {% if request.resolver_match.url_name == 'yearbook' %}active{% endif %}">Yearbook</a></li>
+        <li><a href="{% url 'videos' %}" class="nav-link {% if request.resolver_match.url_name == 'videos' %}active{% endif %}">Videos</a></li>
+        <li><a href="{% url 'about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a></li>
+        <li><a href="{% url 'contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a></li>
+      </ul>
+    </nav>
+
+    <!-- Header Actions: Uiverse Sun/Moon Theme Switch & Uiverse Hamburger -> X Morph -->
+    <div class="header-actions">
+
+      <!-- Uiverse Sun/Moon Theme Switch -->
+      <label class="theme-switch" for="theme-switch-checkbox" aria-label="Toggle dark/light mode">
+        <span class="theme-switch-sun" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </span>
+        <span class="theme-switch-moon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </span>
+        <input type="checkbox" class="theme-switch-input" id="theme-switch-checkbox">
+        <span class="theme-switch-slider"></span>
+      </label>
+
+      <!-- Uiverse Single-SVG Animated Hamburger -> X Morph -->
+      <label class="mobile-menu-hamburger" for="mobile-menu-hamburger-input">
+        <input class="mobile-menu-hamburger-input" type="checkbox" id="mobile-menu-hamburger-input" aria-label="Open navigation" aria-expanded="false" aria-controls="mob-full-menu">
+        <svg class="mobile-menu-hamburger-svg" viewBox="0 0 32 32">
+          <path class="mobile-menu-hamburger-line mobile-menu-hamburger-line-top-bottom" d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"></path>
+          <path class="mobile-menu-hamburger-line" d="M7 16 27 16"></path>
+        </svg>
+      </label>
+
+    </div>
+
+  </div>
+</header>
+
+<!-- Translucent Backdrop below half-height menu -->
+<div class="mob-nav-backdrop" id="mob-nav-backdrop" aria-hidden="true"></div>
+
+<!-- =====================================================
+     EDITORIAL MEMORY INDEX MOBILE NAVIGATION DRAWER
+     ===================================================== -->
+<div
+  class="mob-full-menu"
+  id="mob-full-menu"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Memory Index Navigation"
+  aria-hidden="true"
+>
+  <div class="mob-full-inner">
+
+    <!-- Index Header -->
+    <div class="mob-index-header">
+      <span class="mob-index-tag">MEMORY INDEX</span>
+      <span class="mob-index-badge">BCA '26</span>
+    </div>
+
+    <!-- Divider Line -->
+    <div class="mob-menu-divider-top" aria-hidden="true"></div>
+
+    <!-- Editorial Memory Navigation List -->
+    <nav class="mob-menu-nav" aria-label="Mobile Navigation">
+      <ul class="mob-index-list">
+        <li class="mob-index-item">
+          <a href="{% url 'home' %}" class="mob-index-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+            <span class="mob-index-title">Home</span>
+          </a>
+        </li>
+        <li class="mob-index-item">
+          <a href="{% url 'timeline' %}" class="mob-index-link {% if request.resolver_match.url_name == 'timeline' %}active{% endif %}">
+            <span class="mob-index-title">Timeline</span>
+          </a>
+        </li>
+        <li class="mob-index-item">
+          <a href="{% url 'gallery' %}" class="mob-index-link {% if request.resolver_match.url_name == 'gallery' %}active{% endif %}">
+            <span class="mob-index-title">Gallery</span>
+          </a>
+        </li>
+        <li class="mob-index-item">
+          <a href="{% url 'scrapbook' %}" class="mob-index-link {% if request.resolver_match.url_name == 'scrapbook' %}active{% endif %}">
+            <span class="mob-index-title">Scrapbook</span>
+          </a>
+        </li>
+        <li class="mob-index-item">
+          <a href="{% url 'yearbook' %}" class="mob-index-link {% if request.resolver_match.url_name == 'yearbook' %}active{% endif %}">
+            <span class="mob-index-title">Yearbook</span>
+          </a>
+        </li>
+        <li class="mob-index-item">
+          <a href="{% url 'videos' %}" class="mob-index-link {% if request.resolver_match.url_name == 'videos' %}active{% endif %}">
+            <span class="mob-index-title">Videos</span>
+          </a>
+        </li>
+        <li class="mob-index-item">
+          <a href="{% url 'about' %}" class="mob-index-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">
+            <span class="mob-index-title">About</span>
+          </a>
+        </li>
+        <li class="mob-index-item">
+          <a href="{% url 'contact' %}" class="mob-index-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">
+            <span class="mob-index-title">Contact</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Bottom Editorial Sign-off -->
+    <div class="mob-menu-bottom">
+      <div class="mob-menu-divider-bottom" aria-hidden="true"></div>
+      <p class="mob-menu-meta">BCA Class of 2026 &bull; Digital Archive</p>
+    </div>
+
+  </div>
+</div>

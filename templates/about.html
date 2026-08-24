@@ -1,0 +1,281 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Echoes Of SMASC '26 | About Archive</title>
+
+  <meta name="description" content="Echoes Of SMASC '26 — Learn about the purpose and creator behind the BCA Class of 2026 digital archive created by Manoj Kumar S.">
+  <meta property="og:site_name" content="Echoes Of SMASC '26">
+  <meta property="og:title" content="Echoes Of SMASC '26 | About Archive">
+  <meta property="og:description" content="CAPTURE • RELIVE • FOREVER — More than a gallery. A collection of friendships, laughter, lessons and memories.">
+  <meta property="og:image" content="{% static 'branding/05_WEB_BANNERS/og_1200x630.png' %}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Echoes Of SMASC '26 | About Archive">
+  <meta name="twitter:description" content="CAPTURE • RELIVE • FOREVER — More than a gallery. A collection of friendships, laughter, lessons and memories.">
+  <meta name="twitter:image" content="{% static 'branding/05_WEB_BANNERS/twitter_x_1500x500.png' %}">
+
+  {% include "includes/favicons.html" %}
+
+  <meta name="theme-color" content="#050507">
+
+  <link rel="stylesheet" href="{% static 'css/global.css' %}?v=3.5">
+  <link rel="stylesheet" href="{% static 'css/about.css' %}?v=3.5">
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}?v=3.5">
+</head>
+
+<body>
+
+  <!-- Skip link -->
+  <a href="#main-content" class="skip-link">
+    Skip to main content
+  </a>
+
+  <!-- Reusable Shared Header & Navigation -->
+  {% include "includes/header.html" %}
+
+  <main id="main-content" class="about-page">
+
+    <!-- 1. ABOUT HERO SECTION (Strictly scoped hero container for DriftWall & Hero Header) -->
+    <section class="about-hero">
+
+      {% if drift_columns and valid_photo_urls %}
+      <!-- Background Drift Wall Viewport (Clips the slanted desktop canvas) -->
+      <div class="about-drift-viewport" aria-hidden="true">
+
+        <!-- Scaler Wrapper (Responsive cover scaling via --drift-scale) -->
+        <div class="about-drift-scaler">
+
+          <!-- Tilt Wrapper (React Bits Cross-Slanted / Skewed Diagonal Geometry) -->
+          <div class="about-drift-tilt">
+
+            <!-- 5-Column Grid Canvas (ALWAYS 5 COLUMNS ON EVERY DEVICE) -->
+            <div class="about-drift-grid">
+              {% for col in drift_columns %}
+                {% if col %}
+                  <div class="about-drift-col {% if forloop.counter|divisibleby:2 %}dir-down{% else %}dir-up{% endif %}">
+                    <div class="about-drift-track">
+                      {% for photo_url in col %}
+                        <div class="about-drift-tile">
+                          <img src="{{ photo_url }}" alt="" loading="eager" decoding="async">
+                        </div>
+                      {% endfor %}
+                      <!-- Seamless Infinite Loop Dupes -->
+                      {% for photo_url in col %}
+                        <div class="about-drift-tile">
+                          <img src="{{ photo_url }}" alt="" loading="eager" decoding="async">
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Readability Overlay -->
+        <div class="about-drift-overlay"></div>
+
+      </div>
+      {% endif %}
+
+      <!-- Hero Content Overlay (STAYS 100% STRAIGHT & HORIZONTAL) -->
+      <div class="container about-hero-container">
+        <div class="about-hero-header text-center">
+          <span class="section-tag">
+            OUR PURPOSE & ARCHIVE
+          </span>
+
+          <h1 class="hero-title">
+            About Our Digital Archive
+          </h1>
+
+          <p class="hero-description">
+            Preserving the people, journeys, celebrations and everyday
+            moments that defined our college life.
+          </p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 2. ARCHIVE STORY SECTION (Solid dark background, starting clean AFTER hero ends) -->
+    <section class="about-story-section">
+      <div class="container">
+
+        <div class="about-grid">
+
+          <div class="about-text reveal">
+
+            <span class="section-tag">
+              {{ about.story_badge|default:"THE ARCHIVE STORY" }}
+            </span>
+
+            <h2>
+              {{ about.story_title|default:"Three Years. Countless Memories. One Story." }}
+            </h2>
+
+            {% if about.story_paragraph_1 %}
+              <p>{{ about.story_paragraph_1 }}</p>
+            {% endif %}
+
+            {% if about.story_paragraph_2 %}
+              <p>{{ about.story_paragraph_2 }}</p>
+            {% endif %}
+
+            {% if about.story_paragraph_3 %}
+              <p>{{ about.story_paragraph_3 }}</p>
+            {% endif %}
+
+          </div>
+
+          <div class="about-frame reveal">
+            {% if about.story_image %}
+              <img
+                src="{{ about.story_image.url }}"
+                alt="{{ about.story_image_alt|default:'BCA Class of 2026 final group photo' }}"
+                loading="lazy"
+                decoding="async"
+              >
+            {% else %}
+              <img
+                src="{% static 'branding/05_WEB_BANNERS/og_1200x630.png' %}"
+                alt="{{ about.story_image_alt|default:'BCA Class of 2026 final group photo' }}"
+                loading="lazy"
+                decoding="async"
+              >
+            {% endif %}
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. MAIN ABOUT CONTENT SECTION (Information Cards, Creator, Gratitude) -->
+    <section class="about-section">
+      <div class="container">
+
+        <!-- Information Highlights (Section 2: Three Information Cards) -->
+        <div class="info-highlights">
+
+          <div class="info-card reveal">
+            <div class="info-card-icon" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+              </svg>
+            </div>
+
+            <h3>{{ about.class_info_title|default:"Class Information" }}</h3>
+
+            <p>
+              {{ about.class_info_text|default:"Bachelor of Computer Applications (BCA)<br>Class of 2026<br>Three years of friendship and memories"|linebreaksbr }}
+            </p>
+          </div>
+
+          <div class="info-card reveal">
+            <div class="info-card-icon" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="3" y="3" width="18" height="18" rx="4"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+            </div>
+
+            <h3>{{ about.archive_title|default:"The Archive" }}</h3>
+
+            <p>
+              {{ about.archive_text|default:"A photography gallery, video collection, timeline, digital scrapbook and student yearbook."|linebreaksbr }}
+            </p>
+          </div>
+
+          <div class="info-card reveal">
+            <div class="info-card-icon" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+            </div>
+
+            <h3>{{ about.accessibility_title|default:"Accessible Anywhere" }}</h3>
+
+            <p>
+              {{ about.accessibility_text|default:"Designed to remain fast, responsive and accessible across mobile phones, tablets, laptops and desktops."|linebreaksbr }}
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Developer Information (Section 3: Creator / Developer) -->
+        <div class="dev-section reveal">
+
+          <div class="dev-avatar-wrap">
+            {% if about.creator_image %}
+              <img
+                src="{{ about.creator_image.url }}"
+                alt="{{ about.creator_image_alt|default:about.creator_name }}"
+                loading="lazy"
+                decoding="async"
+              >
+            {% else %}
+              <img
+                src="{% static 'branding/02_LOGO_VARIANTS/ES26_ROUNDED_512.png' %}"
+                alt="{{ about.creator_image_alt|default:about.creator_name }}"
+                loading="lazy"
+                decoding="async"
+              >
+            {% endif %}
+          </div>
+
+          <div class="dev-info">
+
+            <h3>{{ about.creator_name|default:"Manoj Kumar S" }}</h3>
+
+            <div class="dev-role">
+              {{ about.creator_role|default:"Lead Developer & Creator" }}
+            </div>
+
+            <p class="dev-bio">
+              {{ about.creator_description|default:"Designed and developed for the BCA Class of 2026 to preserve our college memories in a clean, responsive and lasting digital archive." }}
+            </p>
+
+            <div class="dev-tag">
+              {{ about.created_for_text|default:"Created for: BCA Class of 2026" }}
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Acknowledgement Section (Section 4: Special Thanks) -->
+        <div class="section-header ack-section reveal">
+          <span class="section-eyebrow section-tag">
+            {{ about.thanks_badge|default:"GRATITUDE & ACKNOWLEDGEMENT" }}
+          </span>
+
+          <h2 class="section-title">{{ about.thanks_title|default:"Special Thanks" }}</h2>
+
+          <p class="section-description">
+            {{ about.thanks_text|default:"We extend our heartfelt gratitude to our HOD, faculty members, class coordinators, mentors and every classmate who contributed photographs, videos, captions and memories to this archive." }}
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Reusable Shared Footer Component -->
+  {% include "includes/footer.html" %}
+
+  <!-- Scripts -->
+  <script src="{% static 'js/main.js' %}"></script>
+
+</body>
+</html>

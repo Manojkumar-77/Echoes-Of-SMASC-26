@@ -1,0 +1,69 @@
+# ==============================================================================
+# P-GALLERY — DOCKER BUILD CONTEXT EXCLUSIONS
+# ==============================================================================
+
+# Version Control & CI
+.git/
+.gitignore
+.gitattributes
+.github/
+
+# Virtual Environments
+venv/
+env/
+.venv/
+ENV/
+
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+
+# Test, Coverage & Linting Artifacts
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Log Files
+*.log
+logs/
+
+# Local Secrets & Environment Configurations
+.env
+.env.*
+!.env.example
+
+# Local SQLite Databases & Backups
+db.sqlite3
+db.sqlite3-journal
+db_backup_phase1.sqlite3
+*.sqlite3
+*.db
+backups/
+backup/
+dumps/
+
+# Generated Staticfiles (Generated inside container or on deployment via collectstatic)
+staticfiles/
+
+# Media Archive (CRITICAL: Media is mounted via persistent volume or object storage, NOT baked into Docker image)
+media/
+
+# Node / Frontend Artifacts
+node_modules/
+
+# Archives & Temporary OS Files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+

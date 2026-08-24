@@ -1,0 +1,977 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Echoes Of SMASC '26 | Scrapbook</title>
+
+  <meta name="description" content="Echoes Of SMASC '26 — An interactive digital scrapbook of scratch-reveal Polaroids, film negatives, memory fragments and unforgettable moments from the BCA Class of 2026.">
+  <meta property="og:site_name" content="Echoes Of SMASC '26">
+  <meta property="og:title" content="Echoes Of SMASC '26 | Scrapbook">
+  <meta property="og:description" content="Scratch, reveal and rediscover the little moments that made college unforgettable.">
+  <meta property="og:image" content="{% static 'branding/05_WEB_BANNERS/og_1200x630.png' %}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Echoes Of SMASC '26 | Scrapbook">
+  <meta name="twitter:description" content="Scratch, reveal and rediscover the little moments that made college unforgettable.">
+  <meta name="twitter:image" content="{% static 'branding/05_WEB_BANNERS/twitter_x_1500x500.png' %}">
+
+  {% include "includes/favicons.html" %}
+
+  <meta name="theme-color" content="#050507">
+
+  <link
+    rel="stylesheet"
+    href="{% static 'css/global.css' %}?v=3.6"
+  >
+
+  <link
+    rel="stylesheet"
+    href="{% static 'css/scrapbook.css' %}?v=3.6"
+  >
+
+  <link
+    rel="stylesheet"
+    href="{% static 'css/responsive.css' %}?v=3.5"
+  >
+</head>
+
+
+<body class="scrapbook-page">
+
+  <a
+    href="#main-content"
+    class="skip-link"
+  >
+    Skip to main content
+  </a>
+
+
+  {% include "includes/header.html" %}
+
+
+  <main id="main-content">
+
+
+    <!-- =========================================================
+         PAGE HERO
+         ========================================================= -->
+
+    <section class="page-hero scrapbook-hero">
+
+      <div class="container">
+
+        <span class="section-tag">
+          POLAROIDS & MEMOS
+        </span>
+
+        <h1 class="hero-title">
+          Our Digital Scrapbook
+        </h1>
+
+        <p class="hero-description">
+          Scratch across a memory to reveal the photographs
+          we kept from our journey.
+        </p>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =========================================================
+         SCRATCH POLAROID FRAME
+         ========================================================= -->
+
+    <section
+      class="scrapbook-frame-section"
+      aria-labelledby="scrapbook-frame-title"
+    >
+
+      <div class="container">
+
+
+        <div class="section-header text-center">
+
+          <span class="section-tag">
+            PINNED MEMORIES
+          </span>
+
+          <h2
+            class="section-title"
+            id="scrapbook-frame-title"
+          >
+            Pieces We Kept
+          </h2>
+
+          <p class="section-subtitle">
+            Small photographs, ordinary moments
+            and the memories that stayed.
+          </p>
+
+          <p class="scratch-wall-hint">
+            Scratch across each Polaroid to reveal the memory.
+          </p>
+
+        </div>
+
+
+
+        {% if pinned_items %}
+
+          <!-- =====================================================
+               LARGE LIGHT SCRAPBOOK FRAME
+               ===================================================== -->
+
+          <div
+            class="scrapbook-display-frame"
+            data-count="{{ pinned_items|length }}"
+          >
+
+
+            <!-- subtle paper/grid texture -->
+            <div
+              class="scrapbook-frame-texture"
+              aria-hidden="true"
+            ></div>
+
+
+            <!-- inner border -->
+            <div
+              class="scrapbook-frame-inner-line"
+              aria-hidden="true"
+            ></div>
+
+
+
+            <!-- ===================================================
+                 POLAROID COLLAGE
+                 =================================================== -->
+
+            <div
+              class="memory-polaroid-wall"
+              id="memory-polaroid-wall"
+            >
+
+
+              {% for item in pinned_items %}
+
+                <article
+                  class="memory-polaroid memory-polaroid-pos-{{ forloop.counter }}"
+                  style="--admin-rotation: {{ item.rotation|default:0 }}deg;"
+                  data-polaroid-index="{{ forloop.counter0 }}"
+                >
+
+
+                  <!-- Decorative Tape -->
+                  <div
+                    class="
+                      memory-tape
+                      {% cycle
+                        'memory-tape--gold'
+                        'memory-tape--paper'
+                        'memory-tape--rose'
+                        'memory-tape--blue'
+                      %}
+                    "
+                    aria-hidden="true"
+                  ></div>
+
+
+
+                  <!-- Photo -->
+                  <div class="memory-polaroid-photo">
+
+                    {% if item.image_url %}
+
+                      <img
+                        src="{{ item.image_url }}"
+                        alt="{{ item.title }}"
+                        loading="lazy"
+                        decoding="async"
+                        draggable="false"
+                      >
+
+                    {% else %}
+
+                      <img
+                        src="{% static 'branding/02_LOGO_VARIANTS/ES26_ROUNDED_512.png' %}"
+                        alt="{{ item.title }}"
+                        loading="lazy"
+                        decoding="async"
+                        draggable="false"
+                      >
+
+                    {% endif %}
+
+
+
+                    <!-- Scratch Canvas -->
+                    <canvas
+                      class="memory-scratch-canvas"
+                      aria-label="Scratch to reveal {{ item.title }}"
+                    ></canvas>
+
+
+
+                    <!-- Scratch Text -->
+                    <div
+                      class="memory-scratch-message"
+                      aria-hidden="true"
+                    >
+
+                      <span class="memory-sealed-text">
+                        MEMORY SEALED
+                      </span>
+
+                      <strong>
+                        SCRATCH TO REVEAL
+                      </strong>
+
+                      <span class="memory-scratch-icon">
+                        ✦
+                      </span>
+
+                    </div>
+
+
+
+                    <!-- Viewer Trigger -->
+                    <button
+                      type="button"
+                      class="scrapbook-photo-trigger memory-view-trigger"
+                      data-image="{{ item.image_url }}"
+                      data-title="{{ item.title|escape }}"
+                      data-category="{{ item.category|escape }}"
+                      data-caption="{{ item.caption|default:''|escape }}"
+                      data-date="{{ item.date|default:''|escape }}"
+                      aria-label="View {{ item.title }}"
+                      tabindex="-1"
+                    ></button>
+
+                  </div>
+
+
+
+                  <!-- Polaroid Writing -->
+                  <div class="memory-polaroid-caption">
+
+                    <span class="memory-polaroid-category">
+                      {{ item.category }}
+                    </span>
+
+                    <h3 class="memory-polaroid-title">
+                      {{ item.title }}
+                    </h3>
+
+                    {% if item.caption %}
+
+                      <p class="memory-polaroid-note">
+                        {{ item.caption|truncatechars:48 }}
+                      </p>
+
+                    {% endif %}
+
+                  </div>
+
+
+                  <span
+                    class="memory-revealed-badge"
+                    aria-hidden="true"
+                  >
+                    REVEALED ✦
+                  </span>
+
+                </article>
+
+              {% endfor %}
+
+            <!-- Subtle Champagne Gold Deck Navigation & Position Indicator -->
+            <div class="scrapbook-deck-nav" id="scrapbook-deck-nav" aria-label="Memory Deck Navigation">
+              <button type="button" class="scrapbook-deck-btn prev" id="scrapbook-deck-prev" aria-label="Previous memories" title="Previous">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              <div class="scrapbook-deck-dots" id="scrapbook-deck-dots"></div>
+              <span class="scrapbook-deck-counter" id="scrapbook-deck-counter">01 / 01</span>
+              <button type="button" class="scrapbook-deck-btn next" id="scrapbook-deck-next" aria-label="Next memories" title="Next">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+            </div>
+
+            <!-- Small bottom-right detail -->
+            <div
+              class="scrapbook-frame-credit"
+              aria-hidden="true"
+            >
+
+              <span>
+                Beautiful Days
+              </span>
+
+              <small>
+                BCA '26
+              </small>
+
+            </div>
+
+          </div>
+
+
+
+          <div class="scratch-wall-actions">
+
+            <p class="scrapbook-slogan" id="scrapbook-slogan" data-text="Some moments fade. These stayed.">
+              <span class="slogan-text">Some moments fade. These stayed.</span>
+              <span class="slogan-glow-dot" aria-hidden="true"></span>
+            </p>
+
+            <button
+              type="button"
+              class="scratch-reset-btn"
+              id="scratch-reset-btn"
+            >
+              Reset Memories
+            </button>
+
+          </div>
+
+
+        {% else %}
+
+          <div class="scrapbook-empty-state">
+
+            <span>
+              ✦
+            </span>
+
+            <h3>
+              Your memory frame is waiting.
+            </h3>
+
+            <p>
+              Add approved photos to the Pinned Memories
+              section from Archive Administration.
+            </p>
+
+          </div>
+
+        {% endif %}
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =========================================================
+         MOVING FILM ARCHIVE
+         ========================================================= -->
+
+    {% if film_row1 or film_row2 %}
+
+      <section
+        class="moving-film-section"
+        aria-labelledby="film-title"
+      >
+
+        <div class="container">
+
+          <div class="section-header text-center">
+
+            <span class="section-tag">
+              NEGATIVES ARCHIVE
+            </span>
+
+            <h2
+              class="section-title"
+              id="film-title"
+            >
+              Frames Between the Moments
+            </h2>
+
+            <p class="section-subtitle">
+              The photographs between the photographs.
+            </p>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="film-stage">
+
+
+          {% if film_row1 %}
+
+            <div
+              class="film-strip-row film-row--right"
+              aria-label="Memory film strip"
+            >
+
+              <div class="film-strip-track">
+
+                {% for item in film_row1 %}
+
+                  <article class="film-frame">
+
+
+                    <div
+                      class="film-sprocket-track top"
+                      aria-hidden="true"
+                    ></div>
+
+
+                    <div class="film-frame-media">
+
+                      <img
+                        src="{{ item.image_url }}"
+                        alt="{{ item.title }}"
+                        loading="lazy"
+                        draggable="false"
+                      >
+
+                      <button
+                        type="button"
+                        class="film-photo-trigger scrapbook-photo-trigger"
+                        data-image="{{ item.image_url }}"
+                        data-title="{{ item.title|escape }}"
+                        data-category="{{ item.category|escape }}"
+                        data-caption="{{ item.caption|default:''|escape }}"
+                        data-date="{{ item.date|default:''|escape }}"
+                        aria-label="View {{ item.title }}"
+                      ></button>
+
+                    </div>
+
+
+                    <div class="film-frame-information">
+
+                      <span>
+                        {{ item.category }}
+                      </span>
+
+                      <strong>
+                        {{ item.title }}
+                      </strong>
+
+                    </div>
+
+
+                    <div
+                      class="film-sprocket-track bottom"
+                      aria-hidden="true"
+                    >
+
+                      <span class="film-frame-number">
+                        {{ item.display_num }} A
+                      </span>
+
+                    </div>
+
+                  </article>
+
+                {% endfor %}
+
+              </div>
+
+            </div>
+
+          {% endif %}
+
+
+
+          {% if film_row2 %}
+
+            <div
+              class="film-strip-row film-row--left"
+              aria-label="Memory film strip"
+            >
+
+              <div class="film-strip-track">
+
+                {% for item in film_row2 %}
+
+                  <article class="film-frame">
+
+
+                    <div
+                      class="film-sprocket-track top"
+                      aria-hidden="true"
+                    ></div>
+
+
+                    <div class="film-frame-media">
+
+                      <img
+                        src="{{ item.image_url }}"
+                        alt="{{ item.title }}"
+                        loading="lazy"
+                        draggable="false"
+                      >
+
+                      <button
+                        type="button"
+                        class="film-photo-trigger scrapbook-photo-trigger"
+                        data-image="{{ item.image_url }}"
+                        data-title="{{ item.title|escape }}"
+                        data-category="{{ item.category|escape }}"
+                        data-caption="{{ item.caption|default:''|escape }}"
+                        data-date="{{ item.date|default:''|escape }}"
+                        aria-label="View {{ item.title }}"
+                      ></button>
+
+                    </div>
+
+
+                    <div class="film-frame-information">
+
+                      <span>
+                        {{ item.category }}
+                      </span>
+
+                      <strong>
+                        {{ item.title }}
+                      </strong>
+
+                    </div>
+
+
+                    <div
+                      class="film-sprocket-track bottom"
+                      aria-hidden="true"
+                    >
+
+                      <span class="film-frame-number">
+                        {{ item.display_num }} B
+                      </span>
+
+                    </div>
+
+                  </article>
+
+                {% endfor %}
+
+              </div>
+
+            </div>
+
+          {% endif %}
+
+        </div>
+
+      </section>
+
+    {% endif %}
+
+
+
+    <!-- =========================================================
+         MEMORY MOSAIC
+         ========================================================= -->
+
+    {% if mosaic_items %}
+
+      <section
+        class="torn-mosaic-section"
+        aria-labelledby="mosaic-title"
+      >
+
+        <div class="container">
+
+
+          <div class="section-header text-center">
+
+            <span class="section-tag">
+              MEMORY FRAGMENTS
+            </span>
+
+            <h2
+              class="section-title"
+              id="mosaic-title"
+            >
+              A Wall Made of Moments
+            </h2>
+
+            <p class="section-subtitle">
+              Different days. Different frames. One story.
+            </p>
+
+          </div>
+
+
+
+          <div class="mosaic-grid">
+
+            {% for item in mosaic_items %}
+
+              <article
+                class="
+                  mosaic-card
+                  {% cycle
+                    'mosaic-span-2'
+                    'mosaic-span-1'
+                    'mosaic-span-v2'
+                    'mosaic-span-1'
+                  %}
+                "
+              >
+
+                <div class="mosaic-media">
+
+                  <img
+                    src="{{ item.image_url }}"
+                    alt="{{ item.title }}"
+                    loading="lazy"
+                    draggable="false"
+                  >
+
+                  <button
+                    type="button"
+                    class="mosaic-photo-trigger scrapbook-photo-trigger"
+                    data-image="{{ item.image_url }}"
+                    data-title="{{ item.title|escape }}"
+                    data-category="{{ item.category|escape }}"
+                    data-caption="{{ item.caption|default:''|escape }}"
+                    data-date="{{ item.date|default:''|escape }}"
+                    aria-label="View {{ item.title }}"
+                  ></button>
+
+                </div>
+
+
+                <div class="mosaic-overlay">
+
+                  <span class="mosaic-badge">
+                    {{ item.category }}
+                  </span>
+
+                  <h3 class="mosaic-title">
+                    {{ item.title }}
+                  </h3>
+
+                </div>
+
+              </article>
+
+            {% endfor %}
+
+          </div>
+
+        </div>
+
+      </section>
+
+    {% endif %}
+
+
+
+    <!-- =========================================================
+         FINAL MEMORY
+         ========================================================= -->
+
+    {% if final_item %}
+
+      <section
+        class="last-page-section"
+        aria-labelledby="last-page-title"
+      >
+
+        <div class="container">
+
+
+          <div class="section-header text-center">
+
+            <span class="section-tag">
+              THE LAST PAGE
+            </span>
+
+            <h2
+              class="section-title"
+              id="last-page-title"
+            >
+              Until We Meet Again
+            </h2>
+
+          </div>
+
+
+
+          <div class="last-page-envelope-wrapper">
+
+            <div
+              class="last-page-envelope"
+              id="last-page-envelope"
+            >
+
+
+              <!-- Closed Envelope -->
+              <div
+                class="envelope-front"
+                id="envelope-front"
+              >
+
+                <div class="envelope-front-inner">
+
+                  <div class="envelope-stamp">
+                    CM ’26
+                  </div>
+
+                  <div
+                    class="envelope-seal"
+                    aria-hidden="true"
+                  >
+                    ✦
+                  </div>
+
+                  <p class="envelope-quote">
+                    “Some memories were photographed.
+                    The rest stayed with us.”
+                  </p>
+
+                  <button
+                    type="button"
+                    class="envelope-open-btn"
+                    id="envelope-open-btn"
+                    aria-expanded="false"
+                  >
+                    Open the final memory
+                  </button>
+
+                </div>
+
+              </div>
+
+
+
+              <!-- Revealed Letter -->
+              <div
+                class="envelope-letter"
+                id="envelope-letter"
+              >
+
+                <div class="envelope-letter-inner">
+
+
+                  <div class="final-photo-frame">
+
+                    <img
+                      src="{{ final_item.image_url }}"
+                      alt="{{ final_item.title }}"
+                      loading="lazy"
+                      draggable="false"
+                    >
+
+                    <button
+                      type="button"
+                      class="final-photo-trigger scrapbook-photo-trigger"
+                      data-image="{{ final_item.image_url }}"
+                      data-title="{{ final_item.title|escape }}"
+                      data-category="{{ final_item.category|escape }}"
+                      data-caption="{{ final_item.caption|default:''|escape }}"
+                      data-date="{{ final_item.date|default:''|escape }}"
+                      aria-label="View {{ final_item.title }}"
+                    ></button>
+
+                  </div>
+
+
+
+                  <div class="final-letter-content">
+
+                    <span class="final-badge">
+                      {{ final_item.category }}
+                    </span>
+
+                    <h3 class="final-title">
+                      {{ final_item.title }}
+                    </h3>
+
+                    <p class="final-caption">
+
+                      {% if final_item.caption %}
+
+                        {{ final_item.caption }}
+
+                      {% else %}
+
+                        Here’s to the memories we made,
+                        the friendships that last,
+                        and everything still ahead.
+
+                      {% endif %}
+
+                    </p>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    {% endif %}
+
+
+  </main>
+
+
+
+  <!-- =========================================================
+       PREMIUM SCRAPBOOK MEMORY LIGHTBOX WITH ANIMATED STACK
+       ========================================================= -->
+
+  <div
+    class="scrapbook-lightbox"
+    id="scrapbook-lightbox"
+    hidden
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="scrapbook-lightbox-title"
+  >
+
+    <div
+      class="scrapbook-lightbox-backdrop"
+      data-lightbox-close
+    ></div>
+
+
+    <div class="scrapbook-lightbox-dialog">
+
+
+      <button
+        type="button"
+        class="scrapbook-lightbox-close cm-popup-close"
+        id="scrapbook-lightbox-close"
+        aria-label="Close memory page"
+      >
+        <svg
+          class="lightbox-close-icon"
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          aria-hidden="true"
+        >
+          <path
+            d="M18 6L6 18M6 6l12 12"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+
+
+      <!-- Previous / Next controls -->
+      <button
+        type="button"
+        class="scrapbook-lightbox-nav nav-prev"
+        id="scrapbook-lightbox-prev"
+        aria-label="Previous memory"
+      >
+        <svg class="nav-arrow-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
+      <button
+        type="button"
+        class="scrapbook-lightbox-nav nav-next"
+        id="scrapbook-lightbox-next"
+        aria-label="Next memory"
+      >
+        <svg class="nav-arrow-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+
+
+      <!-- Left side: Physical Polaroid Stack Area -->
+      <div class="scrapbook-lightbox-polaroid-area">
+        <div class="scrapbook-viewer-stack" id="scrapbook-viewer-stack">
+          <!-- Stack layers (previous, active, next) rendered dynamically -->
+        </div>
+      </div>
+
+
+      <!-- Right side: Editorial Note Panel -->
+      <div class="scrapbook-lightbox-content" id="scrapbook-lightbox-content">
+
+        <div class="lightbox-meta-header">
+          <div class="lightbox-meta">
+            <span
+              class="scrapbook-lightbox-category"
+              id="scrapbook-lightbox-category"
+            ></span>
+
+            <span
+              class="scrapbook-lightbox-date"
+              id="scrapbook-lightbox-date"
+            ></span>
+          </div>
+
+          <div class="lightbox-counter" id="scrapbook-lightbox-counter">
+            01 / 08
+          </div>
+        </div>
+
+
+        <div class="lightbox-title-area">
+          <div class="lightbox-thumb-preview" id="scrapbook-lightbox-thumb">
+            <img src="" alt="" id="scrapbook-lightbox-thumb-img">
+          </div>
+
+          <h2
+            class="scrapbook-lightbox-title"
+            id="scrapbook-lightbox-title"
+          ></h2>
+        </div>
+
+
+        <div
+          class="lightbox-divider"
+          aria-hidden="true"
+        ></div>
+
+
+        <div class="scrapbook-lightbox-caption-wrapper">
+          <p
+            class="scrapbook-lightbox-caption"
+            id="scrapbook-lightbox-caption"
+          ></p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  {% include "includes/footer.html" %}
+
+
+  <script src="{% static 'js/main.js' %}"></script>
+  <script src="{% static 'js/scrapbook.js' %}"></script>
+
+</body>
+</html>

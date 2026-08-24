@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: echoes-of-smasc-26
+    runtime: python
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+    startCommand: "python manage.py migrate && gunicorn config.wsgi:application -c gunicorn.conf.py"
+    healthCheckPath: /health/
+    envVars:
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pgallery-db
+          property: connectionString
+      - key: PYTHON_VERSION
+        value: 3.13.1
+    disk:
+      name: media-disk
+      mountPath: /opt/render/project/src/media
+      sizeGB: 10
+
+databases:
+  - name: pgallery-db
+    databaseName: pgallery
+    user: pgallery_user
+    plan: free

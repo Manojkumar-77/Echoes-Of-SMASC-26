@@ -1,0 +1,1027 @@
+/* ==========================================================================
+   COLLEGE MEMORIES '26
+   PREMIUM CINEMATIC GALLERY VIEWER — FULL REPLACEMENT
+   ========================================================================== */
+
+.vertical-viewer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2500;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: clamp(10px, 2vw, 28px);
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(32, 27, 20, 0.2) 0%,
+      rgba(0, 0, 0, 0.94) 55%,
+      rgba(0, 0, 0, 0.98) 100%
+    );
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    opacity 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 280ms cubic-bezier(0.22, 1, 0.36, 1);
+
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.vertical-viewer-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+
+/* ==========================================================================
+   VIEWER SHELL
+   ========================================================================== */
+
+.vertical-viewer-shell {
+  position: relative;
+
+  width: min(1240px, calc(100vw - 44px));
+  height: min(760px, calc(100dvh - 44px));
+
+  display: grid;
+
+  /*
+      LEFT  : Image / thumbnails
+      RIGHT : Metadata / controls
+  */
+  grid-template-columns: minmax(0, 1.72fr) minmax(310px, 0.78fr);
+  grid-template-rows: 1fr;
+
+  background: #0c0c0c;
+
+  border: 1px solid rgba(215, 179, 119, 0.30);
+  border-radius: 22px;
+
+  box-shadow:
+    0 40px 120px rgba(0, 0, 0, 0.75),
+    0 0 0 1px rgba(255, 255, 255, 0.018),
+    0 0 40px rgba(215, 179, 119, 0.055);
+
+  overflow: hidden;
+
+  transform: translateY(14px) scale(0.985);
+  opacity: 0;
+
+  transition:
+    transform 420ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 320ms ease;
+
+  box-sizing: border-box;
+}
+
+.vertical-viewer-overlay.active .vertical-viewer-shell {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+
+/* ==========================================================================
+   CLOSE BUTTON
+   ========================================================================== */
+
+/* CLOSE BUTTON: Handled by unified .cm-popup-close system in global.css */
+
+
+/* ==========================================================================
+   LEFT WORKSPACE
+   ========================================================================== */
+
+.vertical-viewer-main {
+  grid-column: 1;
+  grid-row: 1;
+
+  min-width: 0;
+  min-height: 0;
+
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr) 76px;
+  grid-template-rows: 1fr;
+
+  gap: 18px;
+
+  padding:
+    clamp(22px, 2.2vw, 34px)
+    18px
+    clamp(22px, 2.2vw, 34px)
+    clamp(22px, 2.3vw, 34px);
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.018),
+      transparent 55%
+    );
+
+  box-sizing: border-box;
+}
+
+
+/* ==========================================================================
+   IMAGE STAGE
+   ========================================================================== */
+
+.vertical-viewer-stage {
+  position: relative;
+
+  min-width: 0;
+  min-height: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  background: #080808;
+
+  border-radius: 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.055);
+
+  isolation: isolate;
+
+  box-shadow:
+    inset 0 0 60px rgba(0, 0, 0, 0.48),
+    0 20px 50px rgba(0, 0, 0, 0.22);
+
+  box-sizing: border-box;
+}
+
+
+/* ==========================================================================
+   BLURRED IMAGE BACKGROUND
+   ========================================================================== */
+
+.vertical-viewer-blur-clip {
+  position: absolute;
+  inset: 0;
+
+  overflow: hidden;
+
+  border-radius: inherit;
+
+  z-index: 0;
+
+  pointer-events: none;
+}
+
+.vertical-viewer-blur {
+  position: absolute;
+
+  inset: -8%;
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  filter:
+    blur(42px)
+    brightness(0.26)
+    saturate(0.72);
+
+  transform: scale(1.16);
+
+  opacity: 0.56;
+
+  pointer-events: none;
+
+  transition:
+    background-image 240ms ease,
+    opacity 240ms ease;
+}
+
+
+/* ==========================================================================
+   ACTIVE IMAGE
+   ========================================================================== */
+
+.vertical-viewer-img {
+  position: relative;
+
+  z-index: 2;
+
+  display: block;
+
+  width: auto;
+  height: auto;
+
+  max-width: calc(100% - 28px);
+  max-height: calc(100% - 28px);
+
+  object-fit: contain;
+  object-position: center;
+
+  border-radius: 10px;
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(255, 255, 255, 0.045);
+
+  transform: translateZ(0);
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+
+  will-change: opacity, transform;
+}
+
+
+/* LANDSCAPE */
+
+.vertical-viewer-stage.is-landscape .vertical-viewer-img {
+  width: min(100%, 900px);
+  height: auto;
+
+  max-width: calc(100% - 28px);
+  max-height: calc(100% - 28px);
+}
+
+
+/* SQUARE */
+
+.vertical-viewer-stage.is-square .vertical-viewer-img {
+  width: auto;
+  height: min(88%, 610px);
+
+  max-width: calc(100% - 28px);
+  max-height: calc(100% - 28px);
+}
+
+
+/* PORTRAIT */
+
+.vertical-viewer-stage.is-portrait .vertical-viewer-img {
+  width: auto;
+  height: min(92%, 660px);
+
+  max-width: calc(100% - 28px);
+  max-height: calc(100% - 28px);
+}
+
+
+/* TALL PORTRAIT */
+
+.vertical-viewer-stage.is-tall-portrait .vertical-viewer-img {
+  width: auto;
+  height: min(94%, 680px);
+
+  max-width: calc(100% - 28px);
+  max-height: calc(100% - 28px);
+}
+
+
+/* ==========================================================================
+   THUMBNAIL RAIL
+   ========================================================================== */
+
+.vertical-viewer-thumbs {
+  grid-column: 2;
+
+  width: 76px;
+  min-width: 76px;
+
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 4px 3px;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+
+  scrollbar-width: none;
+
+  box-sizing: border-box;
+}
+
+.vertical-viewer-thumbs::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* THUMB */
+
+.vertical-viewer-thumb {
+  position: relative;
+
+  width: 64px;
+  height: 76px;
+
+  flex: 0 0 76px;
+
+  padding: 0;
+
+  overflow: hidden;
+
+  border-radius: 10px;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  background: #111;
+
+  opacity: 0.46;
+
+  cursor: pointer;
+
+  transform: translateZ(0);
+
+  transition:
+    opacity 180ms ease,
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.vertical-viewer-thumb::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  border-radius: inherit;
+
+  border: 1px solid transparent;
+
+  pointer-events: none;
+}
+
+.vertical-viewer-thumb:hover {
+  opacity: 0.82;
+
+  transform: scale(1.04);
+
+  border-color: rgba(215, 179, 119, 0.42);
+}
+
+.vertical-viewer-thumb.active {
+  opacity: 1;
+
+  transform: scale(1.055);
+
+  border-color: #d7b377;
+
+  box-shadow:
+    0 0 0 1px rgba(215, 179, 119, 0.22),
+    0 8px 24px rgba(0, 0, 0, 0.42);
+}
+
+.vertical-viewer-thumb-img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+  object-position: center;
+
+  pointer-events: none;
+}
+
+
+/* ==========================================================================
+   RIGHT INFORMATION PANEL
+
+   HTML keeps this as .vertical-viewer-footer,
+   but desktop CSS transforms it into a right-side panel.
+   ========================================================================== */
+
+.vertical-viewer-footer {
+  grid-column: 2;
+  grid-row: 1;
+
+  min-width: 0;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: stretch;
+
+  gap: 26px;
+
+  padding:
+    clamp(78px, 8vh, 110px)
+    clamp(28px, 3vw, 46px)
+    clamp(30px, 4vh, 42px);
+
+  border-left: 1px solid rgba(255, 255, 255, 0.055);
+  border-top: 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.018),
+      rgba(255, 255, 255, 0.006)
+    );
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+}
+
+
+/* ==========================================================================
+   METADATA
+   ========================================================================== */
+
+.vertical-viewer-metadata {
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-start;
+
+  min-width: 0;
+
+  gap: 9px;
+}
+
+.vertical-viewer-category {
+  display: block;
+
+  margin-bottom: 2px;
+
+  color: #d7b377;
+
+  font-size: 0.72rem;
+  font-weight: 700;
+
+  line-height: 1;
+
+  letter-spacing: 0.18em;
+
+  text-transform: uppercase;
+}
+
+.vertical-viewer-title {
+  margin: 0;
+
+  width: 100%;
+
+  color: #f4efe7;
+
+  font-family: var(--font-heading, "Cinzel", serif);
+
+  font-size: clamp(1.55rem, 2.2vw, 2.2rem);
+  font-weight: 700;
+
+  line-height: 1.12;
+
+  letter-spacing: -0.015em;
+
+  white-space: normal;
+  overflow: visible;
+  text-overflow: initial;
+}
+
+.vertical-viewer-date {
+  margin-top: 3px;
+
+  color: rgba(215, 179, 119, 0.84);
+
+  font-size: 0.78rem;
+  font-weight: 600;
+
+  letter-spacing: 0.07em;
+}
+
+.vertical-viewer-description {
+  margin: 7px 0 0;
+
+  max-width: 30ch;
+
+  color: rgba(245, 241, 232, 0.64);
+
+  font-size: 0.94rem;
+  font-weight: 400;
+
+  line-height: 1.65;
+
+  display: block;
+
+  overflow: visible;
+
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: unset;
+}
+
+
+/* ==========================================================================
+   CONTROLS
+   ========================================================================== */
+
+.vertical-viewer-controls {
+  width: 100%;
+
+  margin-top: auto;
+
+  padding-top: 20px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.075);
+
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+.vertical-viewer-counter {
+  justify-self: center;
+
+  color: #d7b377;
+
+  font-size: 0.78rem;
+  font-weight: 700;
+
+  line-height: 1;
+
+  letter-spacing: 0.14em;
+
+  white-space: nowrap;
+}
+
+.vertical-viewer-btn {
+  min-width: 0;
+
+  height: 42px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 0 14px;
+
+  border-radius: 999px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  background: rgba(255, 255, 255, 0.022);
+
+  color: rgba(245, 241, 232, 0.86);
+
+  font-size: 0.76rem;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transform: translateZ(0);
+
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.vertical-viewer-btn:first-child {
+  justify-self: start;
+}
+
+.vertical-viewer-btn:last-child {
+  justify-self: end;
+}
+
+.vertical-viewer-btn:hover {
+  color: #0b0b0b;
+
+  background: #d7b377;
+
+  border-color: #d7b377;
+
+  transform: translateY(-1px);
+}
+
+.vertical-viewer-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.vertical-viewer-arrow {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+
+/* ==========================================================================
+   TABLET
+   ========================================================================== */
+
+@media (max-width: 1000px) {
+
+  .vertical-viewer-shell {
+    width: min(940px, calc(100vw - 28px));
+
+    grid-template-columns:
+      minmax(0, 1.55fr)
+      minmax(280px, 0.75fr);
+  }
+
+  .vertical-viewer-main {
+    grid-template-columns: minmax(0, 1fr) 66px;
+
+    gap: 12px;
+
+    padding: 24px 14px 24px 20px;
+  }
+
+  .vertical-viewer-thumbs {
+    width: 66px;
+    min-width: 66px;
+  }
+
+  .vertical-viewer-thumb {
+    width: 58px;
+    height: 68px;
+
+    flex-basis: 68px;
+  }
+
+  .vertical-viewer-footer {
+    padding:
+      80px
+      24px
+      26px;
+  }
+
+  .vertical-viewer-title {
+    font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+  }
+}
+
+
+/* ==========================================================================
+   MOBILE / SMALL TABLET
+   ========================================================================== */
+
+@media (max-width: 760px) {
+
+  .vertical-viewer-overlay {
+    align-items: stretch;
+    padding: 0;
+  }
+
+  .vertical-viewer-shell {
+    width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+
+    border-radius: 0;
+    border: none;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(215, 179, 119, 0.3) transparent;
+  }
+
+  .vertical-viewer-shell::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .vertical-viewer-shell::-webkit-scrollbar-thumb {
+    background: rgba(215, 179, 119, 0.3);
+    border-radius: 4px;
+  }
+
+
+  /* CLOSE BUTTON */
+
+  .vertical-viewer-close {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 100;
+    width: 40px;
+    height: 40px;
+  }
+
+
+  /* LEFT CONTENT (IMAGE + THUMBNAILS) */
+
+  .vertical-viewer-main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+
+    gap: 8px;
+    padding: 56px 12px 6px;
+
+    overflow: visible;
+    box-sizing: border-box;
+  }
+
+
+  /* IMAGE STAGE */
+
+  .vertical-viewer-stage {
+    width: 100%;
+    height: clamp(210px, 38vh, 340px);
+    min-height: 190px;
+    max-height: 42vh;
+
+    flex: 0 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #080808;
+    box-sizing: border-box;
+  }
+
+  .vertical-viewer-img,
+  .vertical-viewer-stage.is-landscape .vertical-viewer-img,
+  .vertical-viewer-stage.is-square .vertical-viewer-img,
+  .vertical-viewer-stage.is-portrait .vertical-viewer-img,
+  .vertical-viewer-stage.is-tall-portrait .vertical-viewer-img {
+    width: auto;
+    height: auto;
+
+    max-width: calc(100% - 12px);
+    max-height: calc(100% - 12px);
+
+    object-fit: contain;
+    border-radius: 8px;
+  }
+
+
+  /* MOBILE THUMBNAIL RIBBON */
+
+  .vertical-viewer-thumbs {
+    width: 100%;
+    min-width: 0;
+
+    height: 56px;
+    flex: 0 0 56px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    gap: 8px;
+    padding: 4px 2px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
+  }
+
+  .vertical-viewer-thumbs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .vertical-viewer-thumb {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+
+    border-radius: 8px;
+    scroll-snap-align: center;
+  }
+
+
+  /* RIGHT PANEL BECOMES BOTTOM CONTENT PANEL */
+
+  .vertical-viewer-footer {
+    width: 100%;
+    flex: 1 0 auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    padding: 14px 16px 32px;
+    gap: 14px;
+
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+    overflow: visible;
+    box-sizing: border-box;
+  }
+
+  .vertical-viewer-metadata {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .vertical-viewer-category {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--accent-gold, #d7b377);
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .vertical-viewer-title {
+    font-family: var(--font-heading, "Cinzel", serif);
+    font-size: clamp(1.25rem, 5.5vw, 1.55rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: #f4efe7;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    margin: 0;
+  }
+
+  .vertical-viewer-date {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: rgba(215, 179, 119, 0.88);
+    margin-top: 2px;
+  }
+
+  .vertical-viewer-description {
+    max-width: 100%;
+    margin: 6px 0 0;
+
+    font-size: 0.92rem;
+    font-weight: 400;
+    line-height: 1.65;
+    color: rgba(245, 241, 232, 0.88);
+
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+
+    display: block;
+    overflow: visible;
+
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: unset;
+  }
+
+
+  /* CONTROLS */
+
+  .vertical-viewer-controls {
+    width: 100%;
+    margin-top: 10px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+  }
+
+  .vertical-viewer-counter {
+    color: var(--accent-gold, #d7b377);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+    justify-self: center;
+  }
+
+  .vertical-viewer-btn {
+    height: 40px;
+    padding: 0 14px;
+    font-size: 0.74rem;
+    border-radius: 999px;
+  }
+}
+
+
+/* ==========================================================================
+   VERY SMALL MOBILE (<= 420px)
+   ========================================================================== */
+
+@media (max-width: 420px) {
+
+  .vertical-viewer-stage {
+    height: clamp(190px, 34vh, 260px);
+    min-height: 175px;
+  }
+
+  .vertical-viewer-main {
+    padding: 50px 10px 4px;
+    gap: 6px;
+  }
+
+  .vertical-viewer-thumbs {
+    height: 50px;
+    flex: 0 0 50px;
+    gap: 6px;
+  }
+
+  .vertical-viewer-thumb {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+  }
+
+  .vertical-viewer-footer {
+    padding: 12px 12px 28px;
+    gap: 12px;
+  }
+
+  .vertical-viewer-title {
+    font-size: 1.25rem;
+  }
+
+  .vertical-viewer-category {
+    font-size: 0.65rem;
+  }
+
+  .vertical-viewer-date {
+    font-size: 0.74rem;
+  }
+
+  .vertical-viewer-description {
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  .vertical-viewer-btn {
+    padding: 0 10px;
+    height: 38px;
+  }
+
+  .vertical-viewer-btn span:not(.vertical-viewer-arrow) {
+    font-size: 0.7rem;
+  }
+
+  .vertical-viewer-counter {
+    font-size: 0.72rem;
+  }
+}
+
+
+/* ==========================================================================
+   REDUCED MOTION ACCESSIBILITY
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .vertical-viewer-overlay,
+  .vertical-viewer-shell,
+  .vertical-viewer-close,
+  .vertical-viewer-thumb,
+  .vertical-viewer-btn,
+  .vertical-viewer-blur {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+
+  .vertical-viewer-shell {
+    transform: none;
+  }
+}

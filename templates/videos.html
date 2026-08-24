@@ -1,0 +1,482 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Echoes Of SMASC '26 | Videos</title>
+
+  <meta name="description" content="Echoes Of SMASC '26 — Relive the voices, laughter, journeys and celebrations behind the photographs with our cinematic video player.">
+  <meta property="og:site_name" content="Echoes Of SMASC '26">
+  <meta property="og:title" content="Echoes Of SMASC '26 | Videos">
+  <meta property="og:description" content="Relive the voices, laughter, journeys and celebrations behind the photographs.">
+  <meta property="og:image" content="{% static 'branding/05_WEB_BANNERS/og_1200x630.png' %}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Echoes Of SMASC '26 | Videos">
+  <meta name="twitter:description" content="Relive the voices, laughter, journeys and celebrations behind the photographs.">
+  <meta name="twitter:image" content="{% static 'branding/05_WEB_BANNERS/twitter_x_1500x500.png' %}">
+
+  {% include "includes/favicons.html" %}
+
+  <meta name="theme-color" content="#050507">
+
+  <link rel="stylesheet" href="{% static 'css/global.css' %}?v=4.7">
+  <link rel="stylesheet" href="{% static 'css/videos.css' %}?v=4.7">
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}?v=4.7">
+</head>
+
+<body class="page-videos">
+
+  <a href="#main-content" class="skip-link">
+    Skip to main content
+  </a>
+
+  <!-- Reusable Shared Header & Navigation -->
+  {% include "includes/header.html" %}
+
+  <main id="main-content">
+
+    <section class="page-hero">
+      <div class="container">
+        <span class="section-eyebrow section-tag">
+          CINEMATIC ARCHIVE
+        </span>
+
+        <h1 class="hero-title">
+          Video Memories
+        </h1>
+
+        <p class="section-description hero-description">
+          Relive the voices, laughter, journeys and celebrations behind the photographs.
+        </p>
+      </div>
+    </section>
+
+    <section class="vm-section">
+      <div class="vm-container">
+
+        <div class="section-header text-center">
+          <span class="section-eyebrow">CINEMATIC SELECTION</span>
+          <h2 class="section-title">Moments That Move</h2>
+          <p class="section-description">
+            Relive the voices, laughter, journeys and celebrations captured in our video archive.
+          </p>
+        </div>
+
+        <div class="vm-filters" role="tablist" aria-label="Video categories">
+          <button
+            type="button"
+            class="vm-filter vm-active"
+            data-vm-filter="all"
+            aria-pressed="true"
+          >
+            All
+          </button>
+
+          {% for category in video_categories %}
+            <button
+              type="button"
+              class="vm-filter"
+              data-vm-filter="{{ category.slug }}"
+              aria-pressed="false"
+            >
+              {{ category.name }}
+            </button>
+          {% endfor %}
+        </div>
+
+        <div
+          id="vm-grid"
+          data-page="{{ current_page }}"
+          data-has-more="{{ has_more|yesno:'true,false' }}"
+          data-next-page="{{ next_page|default:'' }}"
+          data-api-url="{% url 'videos_api' %}"
+        >
+          {% for video in videos %}
+            <article
+              class="vm-card"
+              data-vm-category="{% if video.category %}{{ video.category.slug }}{% else %}uncategorized{% endif %}"
+            >
+              <button
+                type="button"
+                class="vm-thumb-btn"
+                data-vm-open
+                data-vm-src="{% if video.video_file %}{{ video.video_file.url }}{% endif %}"
+                data-vm-title="{{ video.title|escape }}"
+                data-vm-category="{% if video.category %}{{ video.category.name|escape }}{% else %}Memory{% endif %}"
+                data-vm-date="{{ video.created_at|date:'d M Y' }}"
+                data-vm-desc="{{ video.description|default:''|escape }}"
+                data-vm-poster="{% if video.thumbnail %}{{ video.thumbnail.url }}{% endif %}"
+                data-vm-index="{{ forloop.counter0 }}"
+              >
+                {% if video.thumbnail %}
+                  <img
+                    class="vm-thumb"
+                    src="{{ video.thumbnail.url }}"
+                    alt="{{ video.title }}"
+                    loading="lazy"
+                  >
+                {% else %}
+                  <div class="vm-placeholder">
+                    <span class="vm-placeholder-icon">▶</span>
+                    <span class="vm-placeholder-text">Video Memory</span>
+                  </div>
+                {% endif %}
+
+                <div class="vm-overlay"></div>
+
+                <span class="vm-play" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M8 6.5v11l9-5.5-9-5.5Z" fill="currentColor" />
+                  </svg>
+                </span>
+
+                {% if video.is_featured %}
+                  <span class="vm-featured">★ Featured</span>
+                {% endif %}
+
+                {% if video.duration %}
+                  <span class="vm-duration">{{ video.duration }}</span>
+                {% endif %}
+              </button>
+
+              <div class="vm-body">
+                <div class="vm-meta">
+                  <span class="vm-category">
+                    {% if video.category %}
+                      {{ video.category.name }}
+                    {% else %}
+                      Memory
+                    {% endif %}
+                  </span>
+
+                  <span class="vm-number">
+                    {{ forloop.counter|stringformat:"02d" }}
+                  </span>
+                </div>
+
+                <h2 class="vm-title">
+                  {{ video.title }}
+                </h2>
+
+                {% if video.description %}
+                  <p class="vm-description">
+                    {{ video.description }}
+                  </p>
+                {% endif %}
+
+                <button
+                  type="button"
+                  class="vm-watch"
+                  data-vm-open
+                  data-vm-src="{% if video.video_file %}{{ video.video_file.url }}{% endif %}"
+                  data-vm-title="{{ video.title|escape }}"
+                  data-vm-category="{% if video.category %}{{ video.category.name|escape }}{% else %}Memory{% endif %}"
+                  data-vm-date="{{ video.created_at|date:'d M Y' }}"
+                  data-vm-desc="{{ video.description|default:''|escape }}"
+                  data-vm-poster="{% if video.thumbnail %}{{ video.thumbnail.url }}{% endif %}"
+                  data-vm-index="{{ forloop.counter0 }}"
+                >
+                  Watch Memory
+                  <span aria-hidden="true">→</span>
+                </button>
+              </div>
+            </article>
+          {% empty %}
+            <div class="vm-empty">
+              <h2>No videos yet</h2>
+              <p>Add videos through Django Admin.</p>
+            </div>
+          {% endfor %}
+        </div>
+
+        <!-- Load More Videos -->
+        <div class="vm-load-more-wrap">
+          <button
+            type="button"
+            id="vm-load-more"
+            class="vm-load-more-btn"
+            {% if not has_more %}hidden{% endif %}
+          >
+            Load More Videos
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Reusable Shared Footer Component -->
+  {% include "includes/footer.html" %}
+
+  <!-- =====================================================
+       PREMIUM SPLIT VIDEO PLAYER MODAL (GALLERY UI REFERENCE)
+       ===================================================== -->
+  <div id="vm-modal" class="vertical-viewer-overlay vmp-modal" hidden>
+    <div
+      class="vertical-viewer-shell vmp-shell"
+      id="vmp-shell"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="vmp-info-title"
+    >
+
+      <!-- Close Button (Top Right of Shell) -->
+      <button
+        type="button"
+        class="vertical-viewer-close cm-popup-close vmp-close"
+        id="vm-modal-close"
+        data-vm-close
+        aria-label="Close video"
+      >
+        <svg class="lightbox-close-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path d="M18 6L6 18M6 6l12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <!-- LEFT COLUMN: VIDEO MAIN WORKSPACE (STAGE + THUMBNAIL RAIL) -->
+      <div class="vertical-viewer-main vmp-main">
+
+        <!-- Stage Container -->
+        <div class="vertical-viewer-stage vmp-stage" id="vmp-stage">
+          <div class="vmp-player" id="vmp-player" tabindex="-1">
+            <video
+              id="vm-player"
+              class="vmp-video"
+              playsinline
+              webkit-playsinline
+              preload="metadata"
+            >
+              Your browser does not support HTML5 video.
+            </video>
+
+            <!-- Loading Spinner -->
+            <div class="vmp-loader" id="vmp-loader" hidden>
+              <div class="vmp-spinner" aria-hidden="true"></div>
+              <span class="vmp-sr-only">Loading video</span>
+            </div>
+
+            <!-- Error Message State -->
+            <div class="vmp-error" id="vmp-error" hidden>
+              <p class="vmp-error-title">Unable to play this video.</p>
+              <button type="button" class="vmp-retry" id="vmp-retry">Try again</button>
+            </div>
+
+            <!-- Big Center Play / Replay Button -->
+            <button type="button" class="vmp-center" id="vmp-center" aria-label="Play video">
+              <svg class="vmp-icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M8 5.5v13l11-6.5-11-6.5Z"/>
+              </svg>
+              <svg class="vmp-icon-replay" viewBox="0 0 24 24" fill="currentColor" hidden aria-hidden="true">
+                <path d="M12 6V3L8 7l4 4V8a4 4 0 1 1-4 4H6a6 6 0 1 0 6-6Z"/>
+              </svg>
+            </button>
+
+            <!-- Floating Video Control Bar -->
+            <div class="vmp-controls" id="vmp-controls">
+              <!-- Full-Width Seek / Progress Bar -->
+              <div
+                class="vmp-progress"
+                id="vmp-progress"
+                role="slider"
+                aria-label="Seek time"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="0"
+                tabindex="0"
+              >
+                <div class="vmp-progress-hit">
+                  <div class="vmp-progress-track">
+                    <div class="vmp-progress-buffered" id="vmp-buffered"></div>
+                    <div class="vmp-progress-played" id="vmp-played"></div>
+                    <div class="vmp-progress-handle" id="vmp-handle"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Control Toolbar -->
+              <div class="vmp-toolbar">
+                <!-- Left: Play/Pause, Rewind 10, Forward 10, Time -->
+                <div class="vmp-cluster vmp-start">
+                  <button type="button" class="vmp-btn vmp-btn-play" id="vmp-play" aria-label="Play video">
+                    <svg class="vmp-icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M8 5.5v13l11-6.5-11-6.5Z"/>
+                    </svg>
+                    <svg class="vmp-icon-pause" viewBox="0 0 24 24" fill="currentColor" hidden aria-hidden="true">
+                      <path d="M7 5h3.5v14H7V5Zm6.5 0H17v14h-3.5V5Z"/>
+                    </svg>
+                  </button>
+
+                  <button type="button" class="vmp-btn" id="vmp-back" aria-label="Seek backward 10 seconds" title="Rewind 10s">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                      <path d="M3 3v5h5"/>
+                      <text x="12" y="15.5" text-anchor="middle" fill="currentColor" stroke="none" font-size="7.5" font-weight="800" font-family="sans-serif">10</text>
+                    </svg>
+                  </button>
+
+                  <button type="button" class="vmp-btn" id="vmp-fwd" aria-label="Seek forward 10 seconds" title="Forward 10s">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M21 12a9 9 0 1 1-9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                      <path d="M21 3v5h-5"/>
+                      <text x="12" y="15.5" text-anchor="middle" fill="currentColor" stroke="none" font-size="7.5" font-weight="800" font-family="sans-serif">10</text>
+                    </svg>
+                  </button>
+
+                  <div class="vmp-time-display">
+                    <span class="vmp-time" id="vmp-time-current">00:00</span>
+                    <span class="vmp-time-divider">/</span>
+                    <span class="vmp-time" id="vmp-time-duration">00:00</span>
+                  </div>
+                </div>
+
+                <!-- Right: Volume, Speed, PiP, Fullscreen -->
+                <div class="vmp-cluster vmp-end">
+                  <div class="vmp-volume" id="vmp-volume">
+                    <button type="button" class="vmp-btn" id="vmp-mute" aria-label="Mute video" aria-pressed="false">
+                      <svg class="vmp-vol-high" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M4 10v4h3.2L12 18.5V5.5L7.2 10H4Z"/>
+                        <path d="M15.2 8.6a4.4 4.4 0 0 1 0 6.8M17.6 6.2a7.4 7.4 0 0 1 0 11.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                      </svg>
+                      <svg class="vmp-vol-low" viewBox="0 0 24 24" fill="currentColor" hidden aria-hidden="true">
+                        <path d="M4 10v4h3.2L12 18.5V5.5L7.2 10H4Z"/>
+                        <path d="M15.2 9.2a3.6 3.6 0 0 1 0 5.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                      </svg>
+                      <svg class="vmp-vol-mute" viewBox="0 0 24 24" fill="currentColor" hidden aria-hidden="true">
+                        <path d="M4 10v4h3.2L12 18.5V5.5L7.2 10H4Z"/>
+                        <path d="M16 9.5 20.5 14M20.5 9.5 16 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                    <div class="vmp-volume-slider-wrap" id="vmp-volume-slider-wrap">
+                      <input
+                        id="vmp-volume-slider"
+                        class="vmp-volume-slider"
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.02"
+                        value="0.85"
+                        aria-label="Volume"
+                      >
+                    </div>
+                  </div>
+
+                  <div class="vmp-speed" id="vmp-speed-wrap">
+                    <button
+                      type="button"
+                      class="vmp-btn vmp-speed-btn"
+                      id="vmp-speed"
+                      aria-label="Playback speed"
+                      aria-expanded="false"
+                      aria-haspopup="true"
+                    >
+                      <span id="vmp-speed-label">1x</span>
+                    </button>
+                    <div class="vmp-speed-menu" id="vmp-speed-menu" hidden>
+                      <button type="button" class="vmp-speed-opt" data-speed="0.5">0.5x</button>
+                      <button type="button" class="vmp-speed-opt" data-speed="0.75">0.75x</button>
+                      <button type="button" class="vmp-speed-opt is-active" data-speed="1">1x</button>
+                      <button type="button" class="vmp-speed-opt" data-speed="1.25">1.25x</button>
+                      <button type="button" class="vmp-speed-opt" data-speed="1.5">1.5x</button>
+                      <button type="button" class="vmp-speed-opt" data-speed="2">2x</button>
+                    </div>
+                  </div>
+
+                  <button type="button" class="vmp-btn" id="vmp-pip" aria-label="Picture in Picture" title="Picture in Picture">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                      <rect x="12" y="9" width="8" height="6" rx="1" fill="currentColor" fill-opacity="0.35"></rect>
+                    </svg>
+                  </button>
+
+                  <button type="button" class="vmp-btn" id="vmp-fs" aria-label="Toggle fullscreen" title="Fullscreen (F)">
+                    <svg class="vmp-fs-enter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M8 3H4v4M16 3h4v4M8 21H4v-4M16 21h4v-4"/>
+                    </svg>
+                    <svg class="vmp-fs-exit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" hidden aria-hidden="true">
+                      <path d="M4 8h4V4M20 8h-4V4M4 16h4v4M20 16h-4v4"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Thumbnail Rail (matching Gallery) -->
+        <div class="vertical-viewer-thumbs vmp-thumbs" id="vmp-thumbs" aria-label="Video thumbnails">
+          {% for video in videos %}
+            <button
+              type="button"
+              class="vertical-viewer-thumb vmp-thumb {% if forloop.first %}active{% endif %}"
+              data-vmp-thumb-idx="{{ forloop.counter0 }}"
+              aria-label="Play {{ video.title }}"
+            >
+              {% if video.thumbnail %}
+                <img src="{{ video.thumbnail.url }}" alt="{{ video.title }}" class="vertical-viewer-thumb-img vmp-thumb-img">
+              {% else %}
+                <div class="vmp-thumb-fallback">▶</div>
+              {% endif %}
+            </button>
+          {% endfor %}
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: METADATA & CONTROLS PANEL (matching Gallery) -->
+      <div class="vertical-viewer-footer vmp-sidebar">
+
+        <!-- Metadata Section -->
+        <div class="vertical-viewer-metadata vmp-meta-panel">
+          <div class="vmp-poster-preview" id="vmp-poster-preview">
+            <img src="" alt="" id="vmp-preview-thumb" class="vmp-preview-thumb" hidden>
+          </div>
+
+          <span class="vertical-viewer-category vmp-info-category" id="vmp-info-category">COLLEGE LIFE</span>
+
+          <h2 class="vertical-viewer-title vmp-info-title" id="vmp-info-title">Video Memory</h2>
+
+          <span class="vertical-viewer-date vmp-info-date" id="vmp-info-date">17 Aug 2026</span>
+
+          <p class="vertical-viewer-description vmp-info-description" id="vmp-info-description">Friends make every journey better.</p>
+        </div>
+
+        <!-- Navigation Controls: Previous / Counter / Next -->
+        <div class="vertical-viewer-controls vmp-nav-controls">
+          <button
+            type="button"
+            class="vertical-viewer-btn vmp-nav-btn"
+            id="vmp-prev-btn"
+            aria-label="Previous video"
+          >
+            <span class="vertical-viewer-arrow" aria-hidden="true">←</span>
+            <span>Previous</span>
+          </button>
+
+          <span class="vertical-viewer-counter vmp-counter" id="vmp-counter" aria-live="polite">
+            01 / 01
+          </span>
+
+          <button
+            type="button"
+            class="vertical-viewer-btn vmp-nav-btn"
+            id="vmp-next-btn"
+            aria-label="Next video"
+          >
+            <span>Next</span>
+            <span class="vertical-viewer-arrow" aria-hidden="true">→</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script src="{% static 'js/main.js' %}?v=4.1"></script>
+  <script src="{% static 'js/videos.js' %}?v=4.1"></script>
+
+</body>
+</html>

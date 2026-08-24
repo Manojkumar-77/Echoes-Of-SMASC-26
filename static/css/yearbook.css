@@ -1,0 +1,2573 @@
+/* ==========================================================================
+   COLLEGE MEMORIES '26
+   YEARBOOK — CLASS ORBIT
+   ========================================================================== */
+
+:root {
+  --yb-bg: #080808;
+  --yb-surface: #111111;
+  --yb-surface-2: #171717;
+  --yb-surface-3: #1d1c19;
+
+  --yb-text: #f4efe5;
+  --yb-muted: #9a958c;
+  --yb-dim: #68645d;
+
+  --yb-gold: #d7b377;
+  --yb-gold-light: #e6c584;
+  --yb-gold-dark: #95713a;
+
+  --yb-border: rgba(215, 179, 119, 0.25);
+  --yb-border-soft: rgba(255, 255, 255, 0.1);
+
+  --yb-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --yb-ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+
+/* ==========================================================================
+   PAGE
+   ========================================================================== */
+
+body {
+  overflow-x: hidden;
+}
+
+#main-content {
+  overflow-x: hidden;
+}
+
+.yb-section {
+  position: relative;
+
+  min-height: 620px;
+
+  padding:
+    clamp(40px, 5vw, 72px)
+    0
+    clamp(64px, 7vw, 100px);
+
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(215, 179, 119, 0.035),
+      transparent 36%
+    ),
+    var(--yb-bg);
+
+  overflow: hidden;
+}
+
+
+/* ==========================================================================
+   HERO
+   ========================================================================== */
+
+.yb-hero {
+  text-align: center;
+}
+
+.yb-hero .container {
+  text-align: center;
+}
+
+.yb-hero .section-tag,
+.yb-hero .hero-title,
+.yb-hero .hero-description {
+  text-align: center;
+}
+
+
+/* ==========================================================================
+   SEARCH
+   ========================================================================== */
+
+.yb-controls-toolbar {
+  position: relative;
+
+  z-index: 30;
+
+  display: flex;
+
+  justify-content: center;
+
+  width: 100%;
+
+  margin-bottom:
+    clamp(32px, 4vw, 52px);
+}
+
+.yb-search-wrap {
+  position: relative;
+
+  width:
+    min(
+      100%,
+      470px
+    );
+}
+
+.yb-search-icon {
+  position: absolute;
+
+  top: 50%;
+  left: 19px;
+
+  transform:
+    translateY(-50%);
+
+  color:
+    var(--yb-gold);
+
+  pointer-events: none;
+
+  z-index: 2;
+}
+
+.yb-search-input {
+  width: 100%;
+
+  height: 48px;
+
+  padding:
+    0
+    50px;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.11
+    );
+
+  border-radius:
+    999px;
+
+  outline: none;
+
+  background:
+    rgba(
+      18,
+      18,
+      18,
+      0.88
+    );
+
+  color:
+    var(--yb-text);
+
+  font:
+    inherit;
+
+  font-size:
+    0.92rem;
+
+  box-shadow:
+    0
+    13px
+    35px
+    rgba(
+      0,
+      0,
+      0,
+      0.22
+    );
+
+  backdrop-filter:
+    blur(18px);
+
+  transition:
+    border-color
+      220ms ease,
+    box-shadow
+      220ms ease,
+    background-color
+      220ms ease;
+}
+
+.yb-search-input::placeholder {
+  color:
+    #817c73;
+}
+
+.yb-search-input:focus {
+  border-color:
+    rgba(
+      215,
+      179,
+      119,
+      0.55
+    );
+
+  background:
+    #121212;
+
+  box-shadow:
+    0
+    0
+    0
+    3px
+    rgba(
+      215,
+      179,
+      119,
+      0.07
+    ),
+    0
+    18px
+    44px
+    rgba(
+      0,
+      0,
+      0,
+      0.25
+    );
+}
+
+
+/* ==========================================================================
+   SEARCH DROPDOWN
+   ========================================================================== */
+
+.yb-search-dropdown {
+  position: absolute;
+
+  top:
+    calc(
+      100% + 10px
+    );
+
+  left: 0;
+  right: 0;
+
+  z-index: 200;
+
+  max-height: 350px;
+
+  overflow-y: auto;
+
+  padding: 7px;
+
+  border:
+    1px solid
+    var(--yb-border);
+
+  border-radius:
+    18px;
+
+  background:
+    rgba(
+      15,
+      15,
+      15,
+      0.98
+    );
+
+  box-shadow:
+    0
+    24px
+    70px
+    rgba(
+      0,
+      0,
+      0,
+      0.5
+    );
+
+  backdrop-filter:
+    blur(24px);
+}
+
+.yb-search-dropdown[hidden] {
+  display: none;
+}
+
+.yb-search-result {
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 10px;
+
+  border: 0;
+
+  border-radius: 12px;
+
+  background: transparent;
+
+  color:
+    var(--yb-text);
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background-color
+      170ms ease,
+    transform
+      170ms ease;
+}
+
+.yb-search-result:hover {
+  background:
+    rgba(
+      215,
+      179,
+      119,
+      0.08
+    );
+
+  transform:
+    translateX(2px);
+}
+
+.yb-search-result img {
+  width: 44px;
+  height: 44px;
+
+  flex: 0 0 44px;
+
+  object-fit: cover;
+
+  border-radius: 10px;
+
+  border:
+    1px solid
+    rgba(
+      215,
+      179,
+      119,
+      0.25
+    );
+}
+
+.yb-search-result-copy {
+  min-width: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.yb-search-result-copy strong {
+  color:
+    var(--yb-text);
+
+  font-size:
+    0.88rem;
+
+  overflow: hidden;
+
+  text-overflow:
+    ellipsis;
+
+  white-space:
+    nowrap;
+}
+
+.yb-search-result-copy small {
+  color:
+    var(--yb-gold);
+
+  font-size:
+    0.76rem;
+}
+
+.yb-search-empty {
+  padding: 22px;
+
+  color:
+    var(--yb-muted);
+
+  text-align: center;
+
+  font-size:
+    0.88rem;
+}
+
+
+/* ==========================================================================
+   STAGE CONTAINER
+   ========================================================================== */
+
+.yearbook-stage-container {
+  position: relative;
+
+  width: 100%;
+
+  min-height:
+    430px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+
+/* ==========================================================================
+   3D STAGE
+   ========================================================================== */
+
+.yearbook-3d-stage {
+  position: relative;
+
+  width:
+    min(
+      100%,
+      1120px
+    );
+
+  height:
+    430px;
+
+  perspective:
+    1500px;
+
+  perspective-origin:
+    center center;
+
+  overflow: visible;
+
+  touch-action:
+    pan-y;
+
+  cursor: grab;
+
+  user-select: none;
+
+  -webkit-user-select:
+    none;
+
+  -webkit-tap-highlight-color:
+    transparent;
+
+  contain:
+    layout style;
+}
+
+.yearbook-3d-stage.is-dragging {
+  cursor: grabbing;
+}
+
+.yearbook-cylinder {
+  position: absolute;
+
+  inset: 0;
+
+  transform-style:
+    preserve-3d;
+
+  pointer-events:
+    auto;
+}
+
+
+/* ==========================================================================
+   CAROUSEL SLOT
+   ========================================================================== */
+
+.yearbook-slot {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width:
+    clamp(
+      230px,
+      18vw,
+      280px
+    );
+
+  height:
+    370px;
+
+  transform-origin:
+    center center;
+
+  border:
+    1px solid
+    rgba(
+      215,
+      179,
+      119,
+      0.18
+    );
+
+  border-radius:
+    22px;
+
+  overflow: hidden;
+
+  background:
+    #111111;
+
+  box-shadow:
+    0
+    22px
+    50px
+    rgba(
+      0,
+      0,
+      0,
+      0.35
+    );
+
+  will-change:
+    transform,
+    opacity,
+    filter;
+
+  backface-visibility:
+    hidden;
+
+  -webkit-backface-visibility:
+    hidden;
+
+  transform-style:
+    preserve-3d;
+
+  transition:
+    border-color
+      180ms ease,
+    box-shadow
+      220ms ease;
+}
+
+.yearbook-slot.is-active {
+  border-color:
+    rgba(
+      215,
+      179,
+      119,
+      0.72
+    );
+
+  box-shadow:
+    0
+    28px
+    70px
+    rgba(
+      0,
+      0,
+      0,
+      0.55
+    ),
+    0
+    0
+    35px
+    rgba(
+      215,
+      179,
+      119,
+      0.08
+    );
+}
+
+
+/* ==========================================================================
+   SLOT PHOTO
+   ========================================================================== */
+
+.yb-slot-photo {
+  position: relative;
+
+  height:
+    265px;
+
+  overflow: hidden;
+
+  background:
+    #171717;
+}
+
+.yb-slot-photo::after {
+  content: "";
+
+  position: absolute;
+
+  inset: auto 0 0;
+
+  height: 34%;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(
+        17,
+        17,
+        17,
+        0.72
+      ),
+      transparent
+    );
+}
+
+.yb-slot-photo img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  object-position:
+    center 28%;
+
+  pointer-events: none;
+
+  user-select: none;
+
+  -webkit-user-drag:
+    none;
+
+  backface-visibility:
+    hidden;
+
+  transform:
+    translateZ(0)
+    scale(1.001);
+
+  transition:
+    transform
+      550ms
+      var(--yb-ease-smooth);
+}
+
+.yearbook-slot.is-active
+.yb-slot-photo img {
+  transform:
+    translateZ(0)
+    scale(1.025);
+}
+
+
+/* ==========================================================================
+   INDEX TAG
+   ========================================================================== */
+
+.yb-slot-index-tag {
+  position: absolute;
+
+  top: 12px;
+  left: 12px;
+
+  z-index: 5;
+
+  min-width: 38px;
+
+  padding:
+    6px
+    9px;
+
+  border:
+    1px solid
+    rgba(
+      215,
+      179,
+      119,
+      0.36
+    );
+
+  border-radius:
+    999px;
+
+  background:
+    rgba(
+      18,
+      15,
+      10,
+      0.84
+    );
+
+  color:
+    var(--yb-gold);
+
+  font-size:
+    0.66rem;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.06em;
+
+  text-align: center;
+
+  backdrop-filter:
+    blur(10px);
+}
+
+
+/* ==========================================================================
+   SLOT BODY
+   ========================================================================== */
+
+.yb-slot-body {
+  height:
+    calc(
+      100% - 265px
+    );
+
+  display: flex;
+
+  flex-direction: column;
+
+  padding:
+    14px
+    15px
+    12px;
+
+  background:
+    #121212;
+}
+
+.yb-slot-name {
+  margin: 0;
+
+  color:
+    var(--yb-text);
+
+  font-family:
+    "Cinzel",
+    Georgia,
+    serif;
+
+  font-size:
+    1.08rem;
+
+  font-weight: 600;
+
+  line-height: 1.18;
+}
+
+.yb-slot-nickname {
+  min-height:
+    20px;
+
+  margin-top:
+    7px;
+
+  color:
+    var(--yb-gold);
+
+  font-family:
+    Georgia,
+    serif;
+
+  font-size:
+    0.8rem;
+
+  font-style:
+    italic;
+}
+
+
+/* ==========================================================================
+   VIEW PROFILE BUTTON
+   ========================================================================== */
+
+.yb-slot-cta {
+  width: 100%;
+
+  height: 34px;
+
+  margin-top: auto;
+
+  border:
+    1px solid
+    rgba(
+      215,
+      179,
+      119,
+      0.3
+    );
+
+  border-radius:
+    999px;
+
+  background:
+    transparent;
+
+  color:
+    var(--yb-gold);
+
+  font-size:
+    0.68rem;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.04em;
+
+  cursor: pointer;
+
+  transition:
+    transform
+      180ms
+      var(--yb-ease),
+    background-color
+      180ms ease,
+    color
+      180ms ease,
+    border-color
+      180ms ease;
+}
+
+.yearbook-slot.is-active
+.yb-slot-cta {
+  background:
+    var(--yb-gold);
+
+  border-color:
+    var(--yb-gold);
+
+  color:
+    #15120d;
+}
+
+.yb-slot-cta:hover {
+  transform:
+    translateY(-1px);
+
+  background:
+    var(--yb-gold-light);
+
+  border-color:
+    var(--yb-gold-light);
+
+  color:
+    #15120d;
+}
+
+
+/* ==========================================================================
+   LEFT / RIGHT NAVIGATION
+   ========================================================================== */
+
+.yb-nav-btn {
+  position: absolute;
+
+  top: 50%;
+
+  z-index: 120;
+
+  width: 52px;
+  height: 52px;
+
+  display: grid;
+
+  place-items: center;
+
+  padding: 0;
+
+  border:
+    1px solid
+    rgba(
+      215,
+      179,
+      119,
+      0.34
+    );
+
+  border-radius:
+    50%;
+
+  background:
+    rgba(
+      13,
+      13,
+      13,
+      0.88
+    );
+
+  color:
+    var(--yb-gold);
+
+  box-shadow:
+    0
+    14px
+    34px
+    rgba(
+      0,
+      0,
+      0,
+      0.32
+    );
+
+  backdrop-filter:
+    blur(15px);
+
+  transform:
+    translateY(-50%);
+
+  cursor: pointer;
+
+  transition:
+    transform
+      200ms
+      var(--yb-ease),
+    background-color
+      200ms ease,
+    border-color
+      200ms ease,
+    color
+      200ms ease;
+}
+
+.yb-nav-btn:hover {
+  transform:
+    translateY(-50%)
+    scale(1.07);
+
+  background:
+    var(--yb-gold);
+
+  border-color:
+    var(--yb-gold);
+
+  color:
+    #111111;
+}
+
+.yb-nav-btn:active {
+  transform:
+    translateY(-50%)
+    scale(0.94);
+}
+
+.yb-nav-prev {
+  left:
+    max(
+      10px,
+      calc(
+        50% - 610px
+      )
+    );
+}
+
+.yb-nav-next {
+  right:
+    max(
+      10px,
+      calc(
+        50% - 610px
+      )
+    );
+}
+
+
+/* ==========================================================================
+   BODY LOCK
+   ========================================================================== */
+
+body.yearbook-modal-open {
+  overflow: hidden;
+}
+
+
+/* ==========================================================================
+   MODAL ROOT
+   ========================================================================== */
+
+.yb-morph-modal {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 99999;
+
+  display: grid;
+
+  place-items: center;
+
+  padding:
+    28px;
+
+  opacity: 0;
+
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    opacity
+      330ms ease,
+    visibility
+      330ms ease;
+}
+
+.yb-morph-modal[hidden] {
+  display: none;
+}
+
+.yb-morph-modal.is-open {
+  opacity: 1;
+
+  visibility: visible;
+
+  pointer-events: auto;
+}
+
+
+/* ==========================================================================
+   MODAL BACKDROP
+   ========================================================================== */
+
+.yb-morph-backdrop {
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    rgba(
+      0,
+      0,
+      0,
+      0.72
+    );
+
+  backdrop-filter:
+    blur(15px);
+
+  opacity: 0;
+
+  transition:
+    opacity
+      400ms ease;
+}
+
+.yb-morph-modal.is-open
+.yb-morph-backdrop {
+  opacity: 1;
+}
+
+
+/* ==========================================================================
+   MODAL CARD
+   ========================================================================== */
+
+.yb-morph-card {
+  position: relative;
+
+  width:
+    min(
+      1040px,
+      calc(
+        100vw - 72px
+      )
+    );
+
+  height:
+    min(
+      610px,
+      calc(
+        100dvh - 72px
+      )
+    );
+
+  min-height:
+    520px;
+
+  max-height:
+    calc(
+      100dvh - 42px
+    );
+
+  overflow: hidden;
+
+  isolation: isolate;
+
+  border:
+    1px solid
+    rgba(
+      215,
+      179,
+      119,
+      0.26
+    );
+
+  border-radius:
+    30px;
+
+  background:
+    #121212;
+
+  box-shadow:
+    0
+    45px
+    120px
+    rgba(
+      0,
+      0,
+      0,
+      0.72
+    ),
+    0
+    0
+    0
+    1px
+    rgba(
+      255,
+      255,
+      255,
+      0.025
+    )
+    inset;
+
+  transform:
+    translate3d(
+      0,
+      24px,
+      0
+    )
+    scale(0.94);
+
+  opacity: 0;
+
+  will-change:
+    transform,
+    opacity;
+
+  touch-action:
+    pan-y;
+
+  transition:
+    transform
+      560ms
+      var(--yb-ease),
+    opacity
+      360ms ease;
+}
+
+.yb-morph-modal.is-open
+.yb-morph-card {
+  transform:
+    translate3d(
+      0,
+      0,
+      0
+    )
+    scale(1);
+
+  opacity: 1;
+}
+
+
+/* ==========================================================================
+   PROFILE PHOTO — CLOSED STATE
+   ========================================================================== */
+
+.yb-morph-profile-pic {
+  position: absolute;
+
+  top: 4px;
+  left: 4px;
+
+  z-index: 5;
+
+  width:
+    calc(
+      100% - 8px
+    );
+
+  height:
+    calc(
+      100% - 8px
+    );
+
+  overflow: hidden;
+
+  border:
+    0 solid
+    var(--yb-gold);
+
+  border-radius:
+    26px;
+
+  background:
+    #171717;
+
+  box-shadow:
+    none;
+
+  will-change:
+    width,
+    height,
+    top,
+    left,
+    border-radius;
+
+  transition:
+    width
+      620ms
+      var(--yb-ease),
+    height
+      620ms
+      var(--yb-ease),
+    top
+      620ms
+      var(--yb-ease),
+    left
+      620ms
+      var(--yb-ease),
+    border-radius
+      620ms
+      var(--yb-ease),
+    box-shadow
+      520ms ease;
+}
+
+
+/* ==========================================================================
+   PROFILE PHOTO — DESKTOP OPEN STATE
+   ========================================================================== */
+
+@media (min-width: 821px) {
+
+  .yb-morph-modal.is-open
+  .yb-morph-profile-pic {
+    top: 4px;
+    left: 4px;
+
+    width:
+      calc(
+        44% - 6px
+      );
+
+    height:
+      calc(
+        100% - 8px
+      );
+
+    border-radius:
+      26px
+      0
+      0
+      26px;
+
+    box-shadow:
+      20px
+      0
+      60px
+      rgba(
+        0,
+        0,
+        0,
+        0.24
+      );
+  }
+}
+
+
+/* ==========================================================================
+   VERTICAL PARALLAX SLIDE STACK IN YEARBOOK MODAL
+   ========================================================================== */
+
+.yb-profile-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.yb-profile-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  will-change: transform, opacity, filter;
+  transition: opacity 420ms cubic-bezier(0.16, 1, 0.3, 1), filter 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: center center;
+}
+
+.yb-profile-slide-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.yb-modal-image,
+.yb-profile-slide-img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center 28%;
+
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+
+  will-change: transform;
+  transform: scale(1.06);
+}
+
+.yb-profile-slide.is-active {
+  z-index: 10;
+  opacity: 1;
+  filter: blur(0);
+}
+
+.yb-profile-slide.is-prev,
+.yb-profile-slide.is-next {
+  z-index: 2;
+  opacity: 0.45;
+  filter: blur(2px);
+}
+
+/* Right Content Micro-motion */
+.yb-morph-content.is-exiting-up .yb-modal-role,
+.yb-morph-content.is-exiting-up .yb-modal-name,
+.yb-morph-content.is-exiting-up .yb-modal-nickname,
+.yb-morph-content.is-exiting-up .yb-modal-quote,
+.yb-morph-content.is-exiting-up .yb-modal-bio-wrap,
+.yb-morph-content.is-exiting-up .yb-modal-socials {
+  opacity: 0;
+  transform: translateY(-20px);
+  filter: blur(4px);
+  transition: opacity 160ms ease, transform 160ms ease, filter 160ms ease;
+}
+
+.yb-morph-content.is-exiting-down .yb-modal-role,
+.yb-morph-content.is-exiting-down .yb-modal-name,
+.yb-morph-content.is-exiting-down .yb-modal-nickname,
+.yb-morph-content.is-exiting-down .yb-modal-quote,
+.yb-morph-content.is-exiting-down .yb-modal-bio-wrap,
+.yb-morph-content.is-exiting-down .yb-modal-socials {
+  opacity: 0;
+  transform: translateY(20px);
+  filter: blur(4px);
+  transition: opacity 160ms ease, transform 160ms ease, filter 160ms ease;
+}
+
+.yb-modal-role,
+.yb-modal-name,
+.yb-modal-nickname,
+.yb-modal-quote,
+.yb-modal-bio-wrap,
+.yb-modal-socials {
+  transition:
+    opacity 320ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+
+/* ==========================================================================
+   INFORMATION PANEL — CLOSED
+   ========================================================================== */
+
+.yb-morph-bottom {
+  position: absolute;
+
+  z-index: 10;
+
+  left: 4px;
+  right: 4px;
+
+  top: 84%;
+  bottom: 4px;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(
+      215,
+      179,
+      119,
+      0.16
+    );
+
+  border-radius:
+    26px;
+
+  background:
+    rgba(
+      19,
+      19,
+      19,
+      0.97
+    );
+
+  box-shadow:
+    inset
+    0
+    1px
+    0
+    rgba(
+      255,
+      255,
+      255,
+      0.025
+    );
+
+  will-change:
+    top,
+    left,
+    right,
+    bottom;
+
+  transition:
+    top
+      600ms
+      var(--yb-ease),
+    left
+      620ms
+      var(--yb-ease),
+    right
+      620ms
+      var(--yb-ease),
+    bottom
+      620ms
+      var(--yb-ease),
+    border-radius
+      560ms
+      var(--yb-ease);
+}
+
+
+/* ==========================================================================
+   INFORMATION PANEL — DESKTOP SPLIT
+   ========================================================================== */
+
+@media (min-width: 821px) {
+
+  .yb-morph-modal.is-open
+  .yb-morph-bottom {
+    left: 44%;
+    right: 4px;
+
+    top: 4px;
+    bottom: 4px;
+
+    border-radius:
+      0
+      26px
+      26px
+      0;
+
+    background:
+      radial-gradient(
+        circle
+        at 10% 9%,
+        rgba(
+          215,
+          179,
+          119,
+          0.065
+        ),
+        transparent
+        32%
+      ),
+      rgba(
+        18,
+        18,
+        18,
+        0.99
+      );
+
+    border-color:
+      rgba(
+        215,
+        179,
+        119,
+        0.22
+      );
+  }
+}
+
+
+/* ==========================================================================
+   MODAL CONTENT
+   ========================================================================== */
+
+.yb-morph-content {
+  width: 100%;
+  height: 100%;
+
+  box-sizing:
+    border-box;
+
+  display: flex;
+
+  flex-direction:
+    column;
+
+  overflow-x:
+    hidden;
+
+  overflow-y:
+    auto;
+
+  padding:
+    52px
+    48px
+    24px
+    46px;
+
+  overscroll-behavior:
+    contain;
+
+  scrollbar-width:
+    thin;
+
+  scrollbar-color:
+    rgba(
+      215,
+      179,
+      119,
+      0.3
+    )
+    transparent;
+
+  touch-action:
+    pan-y;
+}
+
+.yb-morph-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.yb-morph-content::-webkit-scrollbar-thumb {
+  background:
+    rgba(
+      215,
+      179,
+      119,
+      0.28
+    );
+
+  border-radius:
+    999px;
+}
+
+
+/* ==========================================================================
+   MODAL ROLE
+   ========================================================================== */
+
+.yb-modal-role {
+  display: inline-block;
+
+  width:
+    fit-content;
+
+  margin-bottom:
+    9px;
+
+  color:
+    var(--yb-gold);
+
+  font-size:
+    0.7rem;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.15em;
+
+  text-transform:
+    uppercase;
+}
+
+
+/* ==========================================================================
+   MODAL NAME
+   ========================================================================== */
+
+.yb-modal-name {
+  margin: 0;
+
+  max-width:
+    calc(
+      100% - 60px
+    );
+
+  color:
+    var(--yb-text);
+
+  font-family:
+    "Cinzel",
+    Georgia,
+    serif;
+
+  font-size:
+    clamp(
+      1.9rem,
+      3vw,
+      2.65rem
+    );
+
+  font-weight: 600;
+
+  line-height:
+    1.08;
+
+  letter-spacing:
+    -0.025em;
+}
+
+
+/* ==========================================================================
+   NICKNAME
+   ========================================================================== */
+
+.yb-modal-nickname {
+  margin-top:
+    8px;
+
+  color:
+    var(--yb-gold);
+
+  font-family:
+    Georgia,
+    serif;
+
+  font-size:
+    0.98rem;
+
+  font-style:
+    italic;
+}
+
+
+/* ==========================================================================
+   QUOTE
+   ========================================================================== */
+
+.yb-modal-quote {
+  position: relative;
+
+  max-width:
+    94%;
+
+  margin:
+    28px
+    0
+    0;
+
+  padding-left:
+    18px;
+
+  border-left:
+    2px solid
+    var(--yb-gold);
+
+  color:
+    #b5b0a8;
+
+  font-size:
+    1rem;
+
+  font-style:
+    italic;
+
+  line-height:
+    1.65;
+}
+
+
+/* ==========================================================================
+   BIO
+   ========================================================================== */
+
+.yb-modal-bio-wrap {
+  margin-top:
+    25px;
+
+  max-width:
+    96%;
+}
+
+.yb-modal-bio-label {
+  display: block;
+
+  margin-bottom:
+    8px;
+
+  color:
+    #74716b;
+
+  font-size:
+    0.67rem;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.14em;
+
+  text-transform:
+    uppercase;
+}
+
+.yb-modal-bio {
+  margin: 0;
+
+  color:
+    #b5b0a8;
+
+  font-size:
+    0.92rem;
+
+  line-height:
+    1.72;
+}
+
+
+/* ==========================================================================
+   SOCIALS
+   ========================================================================== */
+
+.yb-modal-socials {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 9px;
+
+  margin-top:
+    24px;
+}
+
+.yb-social-link {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-height:
+    36px;
+
+  padding:
+    0
+    15px;
+
+  border:
+    1px solid
+    rgba(
+      215,
+      179,
+      119,
+      0.3
+    );
+
+  border-radius:
+    999px;
+
+  color:
+    var(--yb-gold);
+
+  font-size:
+    0.74rem;
+
+  font-weight: 600;
+
+  text-decoration:
+    none;
+
+  transition:
+    transform
+      180ms
+      var(--yb-ease),
+    background-color
+      180ms ease,
+    color
+      180ms ease;
+}
+
+.yb-social-link:hover {
+  transform:
+    translateY(-2px);
+
+  background:
+    var(--yb-gold);
+
+  color:
+    #15120d;
+}
+
+
+/* ==========================================================================
+   MODAL FOOTER
+   ========================================================================== */
+
+.yb-modal-footer {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    auto
+    1fr;
+
+  align-items: center;
+
+  gap: 16px;
+
+  margin-top: auto;
+
+  padding-top:
+    20px;
+
+  border-top:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.07
+    );
+}
+
+.yb-modal-nav {
+  min-width:
+    88px;
+
+  height:
+    36px;
+
+  padding:
+    0
+    15px;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.12
+    );
+
+  border-radius:
+    999px;
+
+  background:
+    transparent;
+
+  color:
+    #d4d0c9;
+
+  font-size:
+    0.72rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    transform
+      180ms
+      var(--yb-ease),
+    border-color
+      180ms ease,
+    background-color
+      180ms ease,
+    color
+      180ms ease;
+}
+
+.yb-modal-prev {
+  justify-self:
+    start;
+}
+
+.yb-modal-next {
+  justify-self:
+    end;
+}
+
+.yb-modal-nav:hover {
+  transform:
+    translateY(-1px);
+
+  border-color:
+    var(--yb-gold);
+
+  background:
+    rgba(
+      215,
+      179,
+      119,
+      0.08
+    );
+
+  color:
+    var(--yb-gold);
+}
+
+.yb-modal-counter {
+  color:
+    #817d76;
+
+  font-size:
+    0.75rem;
+
+  font-weight: 600;
+
+  letter-spacing:
+    0.06em;
+}
+
+
+/* ==========================================================================
+   CLOSE BUTTON
+   ========================================================================== */
+
+/* CLOSE BUTTON: Handled by unified .cm-popup-close system in global.css */
+
+
+/* ==========================================================================
+   LAPTOP
+   ========================================================================== */
+
+@media (
+  min-width: 821px
+)
+and (
+  max-width: 1100px
+) {
+
+  .yb-morph-card {
+    width:
+      min(
+        920px,
+        calc(
+          100vw - 40px
+        )
+      );
+
+    height:
+      min(
+        560px,
+        calc(
+          100dvh - 48px
+        )
+      );
+
+    min-height:
+      490px;
+  }
+
+  .yb-morph-modal.is-open
+  .yb-morph-profile-pic {
+    width:
+      calc(
+        42% - 5px
+      );
+  }
+
+  .yb-morph-modal.is-open
+  .yb-morph-bottom {
+    left: 42%;
+  }
+
+  .yb-morph-content {
+    padding:
+      48px
+      32px
+      22px;
+  }
+
+  .yb-modal-name {
+    font-size:
+      clamp(
+        1.65rem,
+        2.8vw,
+        2.2rem
+      );
+  }
+}
+
+
+/* ==========================================================================
+   TABLET / MOBILE
+   ========================================================================== */
+
+@media (
+  max-width: 820px
+) {
+
+  .yb-section {
+    min-height:
+      590px;
+
+    padding-top:
+      34px;
+  }
+
+  .yb-controls-toolbar {
+    margin-bottom:
+      22px;
+  }
+
+  .yb-search-wrap {
+    width:
+      min(
+        100%,
+        420px
+      );
+  }
+
+  .yearbook-stage-container {
+    min-height:
+      410px;
+  }
+
+  .yearbook-3d-stage {
+    height:
+      410px;
+  }
+
+  .yearbook-slot {
+    width:
+      235px;
+
+    height:
+      350px;
+
+    border-radius:
+      20px;
+  }
+
+  .yb-slot-photo {
+    height:
+      248px;
+  }
+
+  .yb-slot-body {
+    height:
+      calc(
+        100% - 248px
+      );
+
+    padding:
+      12px
+      13px
+      10px;
+  }
+
+  .yb-nav-btn {
+    width:
+      44px;
+
+    height:
+      44px;
+  }
+
+  .yb-nav-prev {
+    left: 6px;
+  }
+
+  .yb-nav-next {
+    right: 6px;
+  }
+
+
+  /* ------------------------------------------------------------------------
+     Mobile modal
+     ------------------------------------------------------------------------ */
+
+  .yb-morph-modal {
+    padding:
+      14px;
+  }
+
+  .yb-morph-card {
+    width: 100%;
+
+    max-width:
+      520px;
+
+    height:
+      min(
+        720px,
+        calc(
+          100dvh - 28px
+        )
+      );
+
+    min-height:
+      0;
+
+    border-radius:
+      26px;
+  }
+
+  .yb-morph-profile-pic {
+    top: 4px;
+    left: 4px;
+
+    width:
+      calc(
+        100% - 8px
+      );
+
+    height:
+      calc(
+        100% - 8px
+      );
+
+    border-radius:
+      22px;
+  }
+
+  /*
+   * Mobile popup:
+   * image morphs into top portrait panel.
+   */
+
+  .yb-morph-modal.is-open
+  .yb-morph-profile-pic {
+    top: 4px;
+    left: 4px;
+
+    width:
+      calc(
+        100% - 8px
+      );
+
+    height:
+      39%;
+
+    border-radius:
+      22px
+      22px
+      0
+      0;
+
+    box-shadow:
+      0
+      18px
+      45px
+      rgba(
+        0,
+        0,
+        0,
+        0.22
+      );
+  }
+
+  .yb-morph-bottom {
+    left: 4px;
+    right: 4px;
+
+    top: 82%;
+    bottom: 4px;
+
+    border-radius:
+      22px;
+  }
+
+  .yb-morph-modal.is-open
+  .yb-morph-bottom {
+    left: 4px;
+    right: 4px;
+
+    top: 36%;
+    bottom: 4px;
+
+    border-radius:
+      22px;
+  }
+
+  .yb-morph-content {
+    padding:
+      35px
+      22px
+      18px;
+  }
+
+  .yb-modal-name {
+    max-width:
+      calc(
+        100% - 46px
+      );
+
+    font-size:
+      clamp(
+        1.5rem,
+        6vw,
+        1.85rem
+      );
+  }
+
+  .yb-modal-role {
+    font-size:
+      0.63rem;
+  }
+
+  .yb-modal-quote {
+    margin-top:
+      19px;
+
+    font-size:
+      0.9rem;
+  }
+
+  .yb-modal-bio-wrap {
+    margin-top:
+      18px;
+  }
+
+  .yb-modal-footer {
+    gap: 8px;
+
+    padding-top:
+      14px;
+  }
+
+  .yb-modal-nav {
+    min-width:
+      76px;
+
+    padding:
+      0
+      11px;
+
+    font-size:
+      0.67rem;
+  }
+
+  .yb-morph-close {
+    top: 13px;
+    right: 13px;
+
+    width:
+      38px;
+
+    height:
+      38px;
+  }
+}
+
+
+/* ==========================================================================
+   SMALL MOBILE
+   ========================================================================== */
+
+@media (
+  max-width: 480px
+) {
+
+  .yb-section {
+    min-height:
+      535px;
+
+    padding-top:
+      28px;
+  }
+
+  .yb-search-input {
+    height:
+      46px;
+
+    font-size:
+      0.84rem;
+  }
+
+  .yearbook-stage-container {
+    min-height:
+      375px;
+  }
+
+  .yearbook-3d-stage {
+    height:
+      375px;
+  }
+
+  .yearbook-slot {
+    width:
+      min(
+        220px,
+        67vw
+      );
+
+    height:
+      330px;
+  }
+
+  .yb-slot-photo {
+    height:
+      232px;
+  }
+
+  .yb-slot-body {
+    height:
+      calc(
+        100% - 232px
+      );
+  }
+
+  .yb-slot-name {
+    font-size:
+      0.97rem;
+  }
+
+  .yb-nav-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .yb-nav-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .yb-morph-modal {
+    padding: 8px;
+  }
+
+  .yb-morph-card {
+    height:
+      calc(
+        100dvh - 16px
+      );
+
+    border-radius:
+      22px;
+  }
+
+  .yb-morph-modal.is-open
+  .yb-morph-profile-pic {
+    height: 37%;
+  }
+
+  .yb-morph-modal.is-open
+  .yb-morph-bottom {
+    top: 34%;
+  }
+
+  .yb-morph-content {
+    padding:
+      32px
+      17px
+      14px;
+  }
+
+  .yb-modal-name {
+    font-size:
+      1.42rem;
+  }
+
+  .yb-modal-quote {
+    margin-top:
+      16px;
+  }
+
+  .yb-modal-bio-wrap {
+    margin-top:
+      15px;
+  }
+
+  .yb-modal-socials {
+    margin-top:
+      16px;
+  }
+
+  .yb-modal-footer {
+    grid-template-columns:
+      auto
+      1fr
+      auto;
+  }
+
+  .yb-modal-nav {
+    min-width:
+      67px;
+
+    padding:
+      0
+      8px;
+  }
+
+  .yb-modal-counter {
+    text-align: center;
+
+    font-size:
+      0.67rem;
+  }
+}
+
+
+/* ==========================================================================
+   LIGHT MODE SUPPORT
+   ========================================================================== */
+
+html[data-theme="light"]
+.yb-section,
+body.light-mode
+.yb-section {
+  --yb-bg: #f5f1e8;
+  --yb-surface: #f7f2e8;
+  --yb-surface-2: #eee8dc;
+
+  --yb-text: #1c1915;
+  --yb-muted: #746e65;
+
+  background:
+    radial-gradient(
+      circle
+      at 50% 42%,
+      rgba(
+        174,
+        128,
+        55,
+        0.07
+      ),
+      transparent
+      38%
+    ),
+    #f5f1e8;
+}
+
+html[data-theme="light"]
+.yearbook-slot,
+body.light-mode
+.yearbook-slot {
+  background:
+    #f3eee4;
+
+  border-color:
+    rgba(
+      151,
+      108,
+      45,
+      0.23
+    );
+
+  box-shadow:
+    0
+    22px
+    44px
+    rgba(
+      50,
+      41,
+      29,
+      0.14
+    );
+}
+
+html[data-theme="light"]
+.yb-slot-body,
+body.light-mode
+.yb-slot-body {
+  background:
+    #f3eee4;
+}
+
+html[data-theme="light"]
+.yb-slot-name,
+body.light-mode
+.yb-slot-name {
+  color:
+    #1b1814;
+}
+
+html[data-theme="light"]
+.yb-search-input,
+body.light-mode
+.yb-search-input {
+  background:
+    rgba(
+      250,
+      247,
+      240,
+      0.94
+    );
+
+  border-color:
+    rgba(
+      130,
+      100,
+      53,
+      0.2
+    );
+
+  color:
+    #1d1914;
+}
+
+
+/* ==========================================================================
+   PERFORMANCE
+   ========================================================================== */
+
+.yearbook-slot,
+.yb-slot-photo img,
+.yb-morph-card,
+.yb-morph-profile-pic,
+.yb-morph-bottom,
+.yb-morph-content {
+  -webkit-font-smoothing:
+    antialiased;
+
+  backface-visibility:
+    hidden;
+
+  -webkit-backface-visibility:
+    hidden;
+}
+
+.yearbook-slot {
+  contain:
+    layout paint style;
+}
+
+
+/* ==========================================================================
+   REDUCED MOTION
+   ========================================================================== */
+
+@media (
+  prefers-reduced-motion:
+  reduce
+) {
+
+  .yearbook-slot,
+  .yb-slot-photo img,
+  .yb-nav-btn,
+  .yb-slot-cta,
+  .yb-morph-modal,
+  .yb-morph-backdrop,
+  .yb-morph-card,
+  .yb-morph-profile-pic,
+  .yb-morph-bottom,
+  .yb-morph-content,
+  .yb-modal-nav,
+  .yb-social-link {
+    transition-duration:
+      0.01ms !important;
+
+    animation-duration:
+      0.01ms !important;
+
+    animation-iteration-count:
+      1 !important;
+
+    scroll-behavior:
+      auto !important;
+  }
+}
