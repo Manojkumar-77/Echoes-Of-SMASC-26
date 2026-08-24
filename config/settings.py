@@ -61,12 +61,15 @@ if raw_allowed_hosts is not None:
 elif DEBUG:
     ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', '192.168.1.11']
 else:
-    ALLOWED_HOSTS = []
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com']
 
 # Automatically support Render PaaS external hostname if present
 render_hostname = os.getenv('RENDER_EXTERNAL_HOSTNAME')
 if render_hostname and render_hostname not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(render_hostname)
+
+if '.onrender.com' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('.onrender.com')
 
 raw_csrf_origins = os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS') or os.getenv('CSRF_TRUSTED_ORIGINS')
 if raw_csrf_origins is not None:
@@ -78,7 +81,9 @@ elif DEBUG:
         'http://192.168.1.11:8000',
     ]
 else:
-    CSRF_TRUSTED_ORIGINS = []
+    CSRF_TRUSTED_ORIGINS = [
+        'https://*.onrender.com',
+    ]
 
 if render_hostname:
     render_csrf = f"https://{render_hostname}"
