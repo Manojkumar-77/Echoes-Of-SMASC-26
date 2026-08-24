@@ -1,0 +1,894 @@
+[
+{
+  "model": "core.category",
+  "pk": 1,
+  "fields": {
+    "name": "College Life",
+    "slug": "college-life",
+    "description": "Class Room Description"
+  }
+},
+{
+  "model": "core.category",
+  "pk": 2,
+  "fields": {
+    "name": "Event",
+    "slug": "event",
+    "description": "Funny College Event"
+  }
+},
+{
+  "model": "core.category",
+  "pk": 3,
+  "fields": {
+    "name": "Scale Testing Category",
+    "slug": "",
+    "description": ""
+  }
+},
+{
+  "model": "core.photo",
+  "pk": 1,
+  "fields": {
+    "title": "First Day",
+    "caption": "The beginning of our three-year journey",
+    "alt_text": "BCA classmates together on their first day of college",
+    "category": 1,
+    "image": "gallery/IMG_5620.jpg",
+    "uploaded_by": null,
+    "status": "approved",
+    "event_date": null,
+    "is_featured": true,
+    "show_in_atlas": true,
+    "is_active": true,
+    "show_gallery": true,
+    "show_home": false,
+    "show_timeline": false,
+    "show_scrapbook": false,
+    "show_selected_memories": false,
+    "show_about": false,
+    "gallery_order": 0,
+    "home_order": 0,
+    "timeline_order": 0,
+    "scrapbook_order": 0,
+    "selected_order": 0,
+    "about_order": 0,
+    "created_at": "2026-08-05T17:10:02.522Z",
+    "updated_at": "2026-08-17T18:57:22.407Z"
+  }
+},
+{
+  "model": "core.photo",
+  "pk": 2,
+  "fields": {
+    "title": "Culturals",
+    "caption": "Example",
+    "alt_text": "BCA classmates together on their first day of college",
+    "category": 1,
+    "image": "gallery/IMG_5584.jpg",
+    "uploaded_by": null,
+    "status": "approved",
+    "event_date": null,
+    "is_featured": true,
+    "show_in_atlas": false,
+    "is_active": true,
+    "show_gallery": true,
+    "show_home": false,
+    "show_timeline": false,
+    "show_scrapbook": false,
+    "show_selected_memories": false,
+    "show_about": false,
+    "gallery_order": 0,
+    "home_order": 0,
+    "timeline_order": 0,
+    "scrapbook_order": 1,
+    "selected_order": 0,
+    "about_order": 0,
+    "created_at": "2026-08-07T16:04:42.856Z",
+    "updated_at": "2026-08-18T08:29:26.400Z"
+  }
+},
+{
+  "model": "core.photo",
+  "pk": 23,
+  "fields": {
+    "title": "Testing Event",
+    "caption": "Friends make every journey better.",
+    "alt_text": "BCA classmates together on their first day of college",
+    "category": 2,
+    "image": "gallery/manoj.png",
+    "uploaded_by": 2,
+    "status": "approved",
+    "event_date": "2026-08-17",
+    "is_featured": false,
+    "show_in_atlas": true,
+    "is_active": true,
+    "show_gallery": true,
+    "show_home": false,
+    "show_timeline": false,
+    "show_scrapbook": false,
+    "show_selected_memories": false,
+    "show_about": false,
+    "gallery_order": 0,
+    "home_order": 0,
+    "timeline_order": 0,
+    "scrapbook_order": 0,
+    "selected_order": 0,
+    "about_order": 0,
+    "created_at": "2026-08-17T18:16:38.460Z",
+    "updated_at": "2026-08-18T13:59:16.885Z"
+  }
+},
+{
+  "model": "core.photo",
+  "pk": 500,
+  "fields": {
+    "title": "One Last Image",
+    "caption": "We walked through these gates as strangers, but somewhere along the way, we became a family. These aren't just faces in a crowd; they are the people who made every assignment, every stressful exam, and every regular day completely worth it. ❤️🎓",
+    "alt_text": "Final Click 📸",
+    "category": 1,
+    "image": "gallery/IMG_6502_2qlxTZq.JPG.jpeg",
+    "uploaded_by": 3,
+    "status": "approved",
+    "event_date": "2026-04-29",
+    "is_featured": true,
+    "show_in_atlas": true,
+    "is_active": true,
+    "show_gallery": true,
+    "show_home": false,
+    "show_timeline": false,
+    "show_scrapbook": true,
+    "show_selected_memories": true,
+    "show_about": false,
+    "gallery_order": 0,
+    "home_order": 0,
+    "timeline_order": 0,
+    "scrapbook_order": 0,
+    "selected_order": 0,
+    "about_order": 0,
+    "created_at": "2026-08-21T17:57:25.566Z",
+    "updated_at": "2026-08-21T17:57:25.566Z"
+  }
+},
+{
+  "model": "core.timelineevent",
+  "pk": 1,
+  "fields": {
+    "title": "Cultural",
+    "description": "One Last Click",
+    "image": "timeline/IMG_5617.jpg",
+    "category": 1,
+    "event_date": "2026-02-19",
+    "display_order": 3,
+    "is_featured": false,
+    "created_at": "2026-08-07T11:43:10.424Z"
+  }
+},
+{
+  "model": "core.timelineevent",
+  "pk": 2,
+  "fields": {
+    "title": "Cultural",
+    "description": "Finale",
+    "image": "timeline/IMG_5631.jpg",
+    "category": 1,
+    "event_date": "2026-08-07",
+    "display_order": 1,
+    "is_featured": false,
+    "created_at": "2026-08-07T11:53:46.389Z"
+  }
+},
+{
+  "model": "core.timelineevent",
+  "pk": 3,
+  "fields": {
+    "title": "Cultural",
+    "description": "Fam-Friends",
+    "image": "timeline/IMG_5608.jpg",
+    "category": 1,
+    "event_date": "2026-08-12",
+    "display_order": 2,
+    "is_featured": false,
+    "created_at": "2026-08-14T18:17:59.751Z"
+  }
+},
+{
+  "model": "core.timelineevent",
+  "pk": 5,
+  "fields": {
+    "title": "Cultural",
+    "description": "Friends Dont Lie",
+    "image": "timeline/IMG_5620.jpg",
+    "category": 1,
+    "event_date": "2026-08-12",
+    "display_order": 4,
+    "is_featured": false,
+    "created_at": "2026-08-14T19:00:46.776Z"
+  }
+},
+{
+  "model": "core.student",
+  "pk": 1,
+  "fields": {
+    "name": "Manoj Kumar S",
+    "nickname": "Mano",
+    "role": "Funny Character",
+    "quote": "Nammatha",
+    "bio": "Nothing To Say",
+    "image": "yearbook/manoj.png",
+    "instagram_url": "",
+    "linkedin_url": "",
+    "display_order": 1,
+    "is_featured": true,
+    "created_at": "2026-08-07T12:33:43.905Z",
+    "updated_at": "2026-08-17T17:40:15.201Z"
+  }
+},
+{
+  "model": "core.student",
+  "pk": 2,
+  "fields": {
+    "name": "Praveen",
+    "nickname": "GG",
+    "role": "The Explorer",
+    "quote": "Collect moments, not things.",
+    "bio": "Always ready for the next adventure.",
+    "image": "yearbook/praveen.jpg",
+    "instagram_url": "https://www.instagram.com/__._.kyojuro._.__/",
+    "linkedin_url": "",
+    "display_order": 2,
+    "is_featured": true,
+    "created_at": "2026-08-14T17:36:52.554Z",
+    "updated_at": "2026-08-17T15:36:45.134Z"
+  }
+},
+{
+  "model": "core.student",
+  "pk": 3,
+  "fields": {
+    "name": "jeeva L",
+    "nickname": "Power House",
+    "role": "The Vibe Maker",
+    "quote": "Good vibes make great memories.",
+    "bio": "Bringing energy wherever I go.",
+    "image": "yearbook/jeeva.jpg",
+    "instagram_url": "",
+    "linkedin_url": "",
+    "display_order": 4,
+    "is_featured": true,
+    "created_at": "2026-08-17T15:38:23.333Z",
+    "updated_at": "2026-08-17T15:51:20.233Z"
+  }
+},
+{
+  "model": "core.student",
+  "pk": 4,
+  "fields": {
+    "name": "Rakesh S",
+    "nickname": "Rocky",
+    "role": "The Dreamer",
+    "quote": "Dream big, start small.",
+    "bio": "Chasing goals one step at a time.",
+    "image": "yearbook/rakesh.jpg",
+    "instagram_url": "https://www.instagram.com/mr_rakesh._._/",
+    "linkedin_url": "",
+    "display_order": 3,
+    "is_featured": true,
+    "created_at": "2026-08-17T15:40:12.564Z",
+    "updated_at": "2026-08-17T15:51:20.259Z"
+  }
+},
+{
+  "model": "core.student",
+  "pk": 5,
+  "fields": {
+    "name": "Jayalakshmi M",
+    "nickname": "Sirippazagi",
+    "role": "The Smiler",
+    "quote": "Smile now, remember forever.",
+    "bio": "Finding happiness in simple moments.",
+    "image": "yearbook/jaya.jpg",
+    "instagram_url": "https://www.instagram.com/jayasri_2401/",
+    "linkedin_url": "",
+    "display_order": 6,
+    "is_featured": true,
+    "created_at": "2026-08-17T15:42:02.205Z",
+    "updated_at": "2026-08-17T15:51:20.261Z"
+  }
+},
+{
+  "model": "core.student",
+  "pk": 6,
+  "fields": {
+    "name": "Tharun S",
+    "nickname": "Deva",
+    "role": "The Memory Keeper",
+    "quote": "Memories never go out of style.",
+    "bio": "Saving the moments worth remembering.",
+    "image": "yearbook/tharun.jpg",
+    "instagram_url": "https://www.instagram.com/shivan__bakthan___/",
+    "linkedin_url": "",
+    "display_order": 5,
+    "is_featured": true,
+    "created_at": "2026-08-17T15:43:26.286Z",
+    "updated_at": "2026-08-17T15:51:20.262Z"
+  }
+},
+{
+  "model": "core.student",
+  "pk": 7,
+  "fields": {
+    "name": "Dilli Raj E",
+    "nickname": "Ennaval",
+    "role": "The Learner",
+    "quote": "Stay curious, keep growing.",
+    "bio": "Learning something new every day.",
+    "image": "yearbook/dilli.jpg",
+    "instagram_url": "https://www.instagram.com/itz_me_dilli_offical/",
+    "linkedin_url": "",
+    "display_order": 7,
+    "is_featured": true,
+    "created_at": "2026-08-17T15:45:15.931Z",
+    "updated_at": "2026-08-17T15:51:20.263Z"
+  }
+},
+{
+  "model": "core.student",
+  "pk": 8,
+  "fields": {
+    "name": "Surya Dharshini K",
+    "nickname": "Akka",
+    "role": "The Chill One",
+    "quote": "Less stress, more memories.",
+    "bio": "Calm mind, happy life, good company.",
+    "image": "yearbook/surya.jpg",
+    "instagram_url": "https://www.instagram.com/suri_just__silence/",
+    "linkedin_url": "",
+    "display_order": 8,
+    "is_featured": true,
+    "created_at": "2026-08-17T15:47:37.757Z",
+    "updated_at": "2026-08-17T15:51:20.264Z"
+  }
+},
+{
+  "model": "core.student",
+  "pk": 9,
+  "fields": {
+    "name": "Roja A",
+    "nickname": "Rosuh!!!",
+    "role": "The Motivator",
+    "quote": "Make every moment count.",
+    "bio": "Turning ordinary days into meaningful ones.",
+    "image": "yearbook/roja.jpg",
+    "instagram_url": "https://www.instagram.com/sparkle_roja_345/",
+    "linkedin_url": "",
+    "display_order": 9,
+    "is_featured": true,
+    "created_at": "2026-08-17T15:49:01.214Z",
+    "updated_at": "2026-08-17T15:51:20.265Z"
+  }
+},
+{
+  "model": "core.student",
+  "pk": 10,
+  "fields": {
+    "name": "Rishi Siddharth N",
+    "nickname": "Rishi",
+    "role": "The Buddy",
+    "quote": "Friends make every journey better.",
+    "bio": "Always there when the squad needs me.",
+    "image": "yearbook/rishi.jpg",
+    "instagram_url": "",
+    "linkedin_url": "",
+    "display_order": 10,
+    "is_featured": true,
+    "created_at": "2026-08-17T15:50:32.421Z",
+    "updated_at": "2026-08-17T15:51:20.266Z"
+  }
+},
+{
+  "model": "core.video",
+  "pk": 1,
+  "fields": {
+    "title": "Trip Edit",
+    "description": "Kadugu",
+    "video_file": "videos/Trip_Edit.mp4",
+    "thumbnail": "video_thumbnails/pfp.jpeg",
+    "category": 1,
+    "duration": "",
+    "display_order": 0,
+    "is_featured": true,
+    "created_at": "2026-08-07T13:28:34.488Z",
+    "updated_at": "2026-08-22T12:39:58.467Z"
+  }
+},
+{
+  "model": "core.heroslide",
+  "pk": 6,
+  "fields": {
+    "title": "Hero-1",
+    "subtitle": "",
+    "image": "hero/Hero-1.jpeg",
+    "display_order": 1,
+    "is_active": true,
+    "created_at": "2026-08-14T13:21:35.488Z",
+    "updated_at": "2026-08-22T10:35:03.093Z"
+  }
+},
+{
+  "model": "core.heroslide",
+  "pk": 7,
+  "fields": {
+    "title": "Hero-2",
+    "subtitle": "",
+    "image": "hero/Hero-2.jpeg",
+    "display_order": 5,
+    "is_active": true,
+    "created_at": "2026-08-14T13:29:44.846Z",
+    "updated_at": "2026-08-22T10:51:36.415Z"
+  }
+},
+{
+  "model": "core.heroslide",
+  "pk": 8,
+  "fields": {
+    "title": "Hero-7",
+    "subtitle": "",
+    "image": "hero/Hero-3.jpeg",
+    "display_order": 11,
+    "is_active": true,
+    "created_at": "2026-08-14T13:33:53.887Z",
+    "updated_at": "2026-08-22T10:49:53.783Z"
+  }
+},
+{
+  "model": "core.heroslide",
+  "pk": 9,
+  "fields": {
+    "title": "Hero-4",
+    "subtitle": "",
+    "image": "hero/Hero-4.jpeg",
+    "display_order": 6,
+    "is_active": true,
+    "created_at": "2026-08-14T13:37:13.462Z",
+    "updated_at": "2026-08-22T10:49:53.778Z"
+  }
+},
+{
+  "model": "core.heroslide",
+  "pk": 10,
+  "fields": {
+    "title": "Hero-5",
+    "subtitle": "",
+    "image": "hero/Hero-5.jpeg",
+    "display_order": 10,
+    "is_active": true,
+    "created_at": "2026-08-14T13:39:55.719Z",
+    "updated_at": "2026-08-22T10:49:53.782Z"
+  }
+},
+{
+  "model": "core.heroslide",
+  "pk": 11,
+  "fields": {
+    "title": "Hero-6",
+    "subtitle": "",
+    "image": "hero/Hero-6.jpeg",
+    "display_order": 8,
+    "is_active": true,
+    "created_at": "2026-08-14T13:40:38.332Z",
+    "updated_at": "2026-08-22T10:49:53.780Z"
+  }
+},
+{
+  "model": "core.heroslide",
+  "pk": 12,
+  "fields": {
+    "title": "Hero-3",
+    "subtitle": "",
+    "image": "hero/Hero-7.png",
+    "display_order": 7,
+    "is_active": true,
+    "created_at": "2026-08-14T13:40:54.971Z",
+    "updated_at": "2026-08-22T10:49:53.779Z"
+  }
+},
+{
+  "model": "core.heroslide",
+  "pk": 13,
+  "fields": {
+    "title": "Hero-8",
+    "subtitle": "",
+    "image": "hero/Hero-8.jpeg",
+    "display_order": 9,
+    "is_active": true,
+    "created_at": "2026-08-14T13:41:13.269Z",
+    "updated_at": "2026-08-22T10:49:53.781Z"
+  }
+},
+{
+  "model": "core.heroslide",
+  "pk": 14,
+  "fields": {
+    "title": "Hero-9",
+    "subtitle": "",
+    "image": "hero/Hero-9.jpeg",
+    "display_order": 3,
+    "is_active": true,
+    "created_at": "2026-08-14T13:53:42.977Z",
+    "updated_at": "2026-08-22T10:49:53.751Z"
+  }
+},
+{
+  "model": "core.heroslide",
+  "pk": 15,
+  "fields": {
+    "title": "Hero-10",
+    "subtitle": "",
+    "image": "hero/Hero-10.jpeg",
+    "display_order": 4,
+    "is_active": true,
+    "created_at": "2026-08-14T13:53:58.279Z",
+    "updated_at": "2026-08-22T10:49:53.776Z"
+  }
+},
+{
+  "model": "core.heroslide",
+  "pk": 18,
+  "fields": {
+    "title": "Hero-11",
+    "subtitle": "",
+    "image": "hero/Hero-11.jpeg",
+    "display_order": 2,
+    "is_active": true,
+    "created_at": "2026-08-22T10:07:29.382Z",
+    "updated_at": "2026-08-22T10:51:36.424Z"
+  }
+},
+{
+  "model": "core.heroslide",
+  "pk": 19,
+  "fields": {
+    "title": "Hero-12",
+    "subtitle": "",
+    "image": "hero/Hero-12.jpeg",
+    "display_order": 12,
+    "is_active": true,
+    "created_at": "2026-08-22T11:04:24.947Z",
+    "updated_at": "2026-08-22T11:04:38.034Z"
+  }
+},
+{
+  "model": "core.aboutpage",
+  "pk": 1,
+  "fields": {
+    "story_badge": "THE ARCHIVE STORY",
+    "story_title": "Three Years. Countless Memories. One Story.",
+    "story_paragraph_1": "College Memories ’26 is a digital archive created to preserve the people, journeys, celebrations and everyday moments that defined our three years of college life.",
+    "story_paragraph_2": "It is more than a gallery of photographs. It is a collection of friendships, laughter, lessons and memories that will continue to stay with us long after graduation.",
+    "story_paragraph_3": "Built as a lightweight and permanent digital archive, this platform allows every member of our batch to revisit our journey anytime and anywhere.",
+    "story_image": "about/IMG_6280.JPG.jpeg",
+    "story_image_alt": "BCA Class of 2026 final group photo",
+    "class_info_title": "Class Information",
+    "class_info_text": "Bachelor of Computer Applications (BCA)\r\nClass of 2026\r\nThree years of friendship and memories",
+    "archive_title": "The Archive",
+    "archive_text": "A photography gallery, video collection, timeline, digital scrapbook and student yearbook.",
+    "accessibility_title": "Accessible Anywhere",
+    "accessibility_text": "Designed to remain fast, responsive and accessible across mobile phones, tablets, laptops and desktops.",
+    "creator_name": "Manoj Kumar S",
+    "creator_role": "Lead Developer & Creator",
+    "creator_description": "Designed and developed for the BCA Class of 2026 to preserve our college memories in a clean, responsive and lasting digital archive.",
+    "creator_image": "about/pfp.jpeg",
+    "creator_image_alt": "Manoj Kumar S",
+    "created_for_text": "Created for: BCA Class of 2026",
+    "thanks_badge": "GRATITUDE & ACKNOWLEDGEMENT",
+    "thanks_title": "Special Thanks",
+    "thanks_text": "We extend our heartfelt gratitude to our HOD, faculty members, class coordinators, mentors and every classmate who contributed photographs, videos, captions and memories to this archive.",
+    "updated_at": "2026-08-21T17:31:21.705Z",
+    "background_photos": [
+      23,
+      2,
+      1
+    ]
+  }
+},
+{
+  "model": "core.contactpage",
+  "pk": 1,
+  "fields": {
+    "intro_badge": "GET IN TOUCH",
+    "intro_title": "Let’s Keep the Memories Connected.",
+    "intro_description": "For feedback, missing memories, corrections, photo submissions, or archive-related queries, get in touch with us.",
+    "email": "manojkumarsdeveloper07@gmail.com",
+    "phone": "",
+    "location": "BCA Department, Class of 2026",
+    "social_label_1": "Instagram",
+    "social_url_1": "",
+    "social_label_2": "GitHub",
+    "social_url_2": "",
+    "success_message": "Thank you for reaching out! Your message has been sent successfully.",
+    "updated_at": "2026-08-15T11:00:50.620Z"
+  }
+},
+{
+  "model": "core.contactmessage",
+  "pk": 1,
+  "fields": {
+    "name": "Mobile Tester",
+    "email": "mobile@test.com",
+    "subject": "LAN Test",
+    "category": "General",
+    "message": "Testing LAN connectivity from phone.",
+    "created_at": "2026-08-21T19:33:19.866Z",
+    "is_read": false
+  }
+},
+{
+  "model": "core.selectedgalleryphoto",
+  "pk": 110,
+  "fields": {
+    "photo": 23,
+    "order": 1,
+    "is_active": true,
+    "created_at": "2026-08-18T10:59:13.274Z",
+    "updated_at": "2026-08-18T13:59:16.890Z"
+  }
+},
+{
+  "model": "core.selectedgalleryphoto",
+  "pk": 111,
+  "fields": {
+    "photo": 1,
+    "order": 2,
+    "is_active": true,
+    "created_at": "2026-08-18T10:59:15.431Z",
+    "updated_at": "2026-08-18T10:59:15.431Z"
+  }
+},
+{
+  "model": "core.selectedgalleryphoto",
+  "pk": 112,
+  "fields": {
+    "photo": 2,
+    "order": 3,
+    "is_active": true,
+    "created_at": "2026-08-18T10:59:17.056Z",
+    "updated_at": "2026-08-18T10:59:17.056Z"
+  }
+},
+{
+  "model": "core.selectedgalleryphoto",
+  "pk": 113,
+  "fields": {
+    "photo": 500,
+    "order": 4,
+    "is_active": true,
+    "created_at": "2026-08-21T17:57:25.572Z",
+    "updated_at": "2026-08-21T17:57:25.572Z"
+  }
+},
+{
+  "model": "core.scrapbookplacement",
+  "pk": 4,
+  "fields": {
+    "photo": 1,
+    "section": "film",
+    "custom_title": "",
+    "custom_caption": "",
+    "rotation": 0,
+    "film_strip": 2,
+    "display_order": 6,
+    "is_active": true,
+    "created_at": "2026-08-17T13:45:54.686Z",
+    "updated_at": "2026-08-18T12:10:13.139Z"
+  }
+},
+{
+  "model": "core.scrapbookplacement",
+  "pk": 5,
+  "fields": {
+    "photo": 2,
+    "section": "film",
+    "custom_title": "",
+    "custom_caption": "",
+    "rotation": 2,
+    "film_strip": 2,
+    "display_order": 5,
+    "is_active": true,
+    "created_at": "2026-08-17T19:04:28.522Z",
+    "updated_at": "2026-08-18T12:10:13.135Z"
+  }
+},
+{
+  "model": "core.scrapbookplacement",
+  "pk": 9,
+  "fields": {
+    "photo": 23,
+    "section": "film",
+    "custom_title": "",
+    "custom_caption": "",
+    "rotation": 0,
+    "film_strip": 1,
+    "display_order": 0,
+    "is_active": true,
+    "created_at": "2026-08-18T08:42:14.469Z",
+    "updated_at": "2026-08-18T13:59:16.891Z"
+  }
+},
+{
+  "model": "core.scrapbookplacement",
+  "pk": 16,
+  "fields": {
+    "photo": 23,
+    "section": "film",
+    "custom_title": "",
+    "custom_caption": "",
+    "rotation": 0,
+    "film_strip": 2,
+    "display_order": 4,
+    "is_active": true,
+    "created_at": "2026-08-18T10:27:37.714Z",
+    "updated_at": "2026-08-18T12:10:13.131Z"
+  }
+},
+{
+  "model": "core.scrapbookplacement",
+  "pk": 17,
+  "fields": {
+    "photo": 2,
+    "section": "film",
+    "custom_title": "",
+    "custom_caption": "",
+    "rotation": 0,
+    "film_strip": 1,
+    "display_order": 2,
+    "is_active": true,
+    "created_at": "2026-08-18T10:27:37.741Z",
+    "updated_at": "2026-08-18T12:07:36.049Z"
+  }
+},
+{
+  "model": "core.scrapbookplacement",
+  "pk": 18,
+  "fields": {
+    "photo": 1,
+    "section": "pinned",
+    "custom_title": "",
+    "custom_caption": "",
+    "rotation": 0,
+    "film_strip": null,
+    "display_order": 7,
+    "is_active": false,
+    "created_at": "2026-08-18T10:27:37.768Z",
+    "updated_at": "2026-08-21T18:01:13.364Z"
+  }
+},
+{
+  "model": "core.scrapbookplacement",
+  "pk": 19,
+  "fields": {
+    "photo": 2,
+    "section": "pinned",
+    "custom_title": "",
+    "custom_caption": "",
+    "rotation": 0,
+    "film_strip": null,
+    "display_order": 8,
+    "is_active": false,
+    "created_at": "2026-08-18T10:38:07.374Z",
+    "updated_at": "2026-08-18T12:10:13.145Z"
+  }
+},
+{
+  "model": "core.scrapbookplacement",
+  "pk": 21,
+  "fields": {
+    "photo": 1,
+    "section": "film",
+    "custom_title": "",
+    "custom_caption": "",
+    "rotation": 0,
+    "film_strip": 1,
+    "display_order": 3,
+    "is_active": true,
+    "created_at": "2026-08-18T10:55:47.706Z",
+    "updated_at": "2026-08-18T12:10:13.121Z"
+  }
+},
+{
+  "model": "core.scrapbookplacement",
+  "pk": 71,
+  "fields": {
+    "photo": 23,
+    "section": "pinned",
+    "custom_title": "",
+    "custom_caption": "",
+    "rotation": 0,
+    "film_strip": null,
+    "display_order": 8,
+    "is_active": false,
+    "created_at": "2026-08-18T13:56:21.513Z",
+    "updated_at": "2026-08-18T18:02:54.299Z"
+  }
+},
+{
+  "model": "core.scrapbookplacement",
+  "pk": 72,
+  "fields": {
+    "photo": 2,
+    "section": "mosaic",
+    "custom_title": "",
+    "custom_caption": "",
+    "rotation": 0,
+    "film_strip": null,
+    "display_order": 9,
+    "is_active": true,
+    "created_at": "2026-08-18T13:56:22.678Z",
+    "updated_at": "2026-08-18T13:56:22.678Z"
+  }
+},
+{
+  "model": "core.scrapbookplacement",
+  "pk": 73,
+  "fields": {
+    "photo": 500,
+    "section": "final",
+    "custom_title": "Final Click 📸",
+    "custom_caption": "We walked through these gates as strangers, but somewhere along the way, we became a family. These aren't just faces in a crowd; they are the people who made every assignment, every stressful exam, and every regular day completely worth it. ❤️🎓",
+    "rotation": 0,
+    "film_strip": null,
+    "display_order": 3,
+    "is_active": true,
+    "created_at": "2026-08-21T17:58:04.466Z",
+    "updated_at": "2026-08-21T18:01:21.890Z"
+  }
+},
+{
+  "model": "core.scrapbookplacement",
+  "pk": 74,
+  "fields": {
+    "photo": 500,
+    "section": "mosaic",
+    "custom_title": "",
+    "custom_caption": "",
+    "rotation": 0,
+    "film_strip": null,
+    "display_order": 10,
+    "is_active": true,
+    "created_at": "2026-08-21T18:19:45.566Z",
+    "updated_at": "2026-08-21T18:19:45.566Z"
+  }
+},
+{
+  "model": "core.scrapbookplacement",
+  "pk": 75,
+  "fields": {
+    "photo": 23,
+    "section": "mosaic",
+    "custom_title": "",
+    "custom_caption": "",
+    "rotation": 0,
+    "film_strip": null,
+    "display_order": 11,
+    "is_active": true,
+    "created_at": "2026-08-21T18:19:46.659Z",
+    "updated_at": "2026-08-21T18:19:46.659Z"
+  }
+},
+{
+  "model": "core.scrapbookplacement",
+  "pk": 76,
+  "fields": {
+    "photo": 1,
+    "section": "mosaic",
+    "custom_title": "",
+    "custom_caption": "",
+    "rotation": 0,
+    "film_strip": null,
+    "display_order": 12,
+    "is_active": true,
+    "created_at": "2026-08-21T18:19:47.915Z",
+    "updated_at": "2026-08-22T12:42:49.263Z"
+  }
+}
+]

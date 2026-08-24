@@ -694,3 +694,13 @@ class Phase2ConnectivityAndDataFlowTest(TestCase):
             storage.exists(shared_name),
             "Shared physical file MUST be deleted after last referencing record is deleted"
         )
+
+    def test_seed_initial_data_command_safety(self):
+        """seed_initial_data must skip loading if data exists, avoiding overwriting existing data."""
+        from io import StringIO
+        from django.core.management import call_command
+        out = StringIO()
+        call_command("seed_initial_data", stdout=out)
+        output = out.getvalue()
+        self.assertIn("Database already contains CMS data", output)
+
