@@ -22,3 +22,21 @@ accesslog = "-"
 errorlog = "-"
 loglevel = os.getenv("GUNICORN_LOG_LEVEL", "info")
 
+
+def on_starting(server):
+    """
+    Automatic production safeguard: Runs database migrations and seeding
+    before Gunicorn worker processes are spawned, ensuring tables exist even if
+    the deployment platform executes Gunicorn directly.
+    """
+    try:
+        import django
+        from django.core.management import call_command
+        django.setup()
+        call_command('migrate', interactive=False)
+        call_command('seed_initial_data')
+        server.log.info("Startup database migrations and initial seeding verified.")
+    except Exception as e:
+        server.log.warning(f"Startup migration warning: {e}")
+
+

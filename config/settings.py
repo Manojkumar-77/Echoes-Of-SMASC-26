@@ -147,24 +147,23 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
-# Database
-# Default: Local SQLite for zero-config development & testing
-# Production: Configurable via DATABASE_URL or DB_HOST/DB_NAME/DB_USER/DB_PASSWORD
+# Database Configuration
 database_url = os.getenv('DATABASE_URL')
 if database_url:
     import urllib.parse
     parsed_db = urllib.parse.urlparse(database_url)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql' if parsed_db.scheme in ('postgres', 'postgresql') else 'django.db.backends.sqlite3',
-            'NAME': parsed_db.path.lstrip('/'),
-            'USER': parsed_db.username or '',
-            'PASSWORD': parsed_db.password or '',
-            'HOST': parsed_db.hostname or '',
-            'PORT': str(parsed_db.port or 5432) if parsed_db.port else '5432',
-            'CONN_MAX_AGE': int(os.getenv('DB_CONN_MAX_AGE', '600')),
-        }
+    db_config = {
+        'ENGINE': 'django.db.backends.postgresql' if parsed_db.scheme in ('postgres', 'postgresql') else 'django.db.backends.sqlite3',
+        'NAME': parsed_db.path.lstrip('/'),
+        'USER': parsed_db.username or '',
+        'PASSWORD': parsed_db.password or '',
+        'HOST': parsed_db.hostname or '',
+        'PORT': str(parsed_db.port or 5432) if parsed_db.port else '5432',
+        'CONN_MAX_AGE': int(os.getenv('DB_CONN_MAX_AGE', '600')),
     }
+    if db_config['ENGINE'] == 'django.db.backends.postgresql' and not DEBUG:
+        db_config['OPTIONS'] = {'sslmode': 'prefer'}
+    DATABASES = {'default': db_config}
 elif os.getenv('DB_HOST'):
     DATABASES = {
         'default': {
@@ -178,10 +177,13 @@ elif os.getenv('DB_HOST'):
         }
     }
 else:
+    # If persistent disk is available on Render, persist SQLite database across redeployments
+    render_disk_dir = Path("/opt/render/project/src/media")
+    sqlite_path = (render_disk_dir / "db.sqlite3") if (render_disk_dir.exists() and not DEBUG) else (BASE_DIR / "db.sqlite3")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'NAME': sqlite_path,
         }
     }
 
