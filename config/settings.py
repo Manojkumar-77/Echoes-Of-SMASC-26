@@ -14,24 +14,48 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load environment variables from .env if present (do not override system environment in production)
 load_dotenv(BASE_DIR / ".env", override=False)
 
+# Helper to read boolean env vars cleanly
+def _get_bool_env(primary, secondary=None, default=True):
+    val = os.getenv(primary)
+    if val is None or not val.strip():
+        if secondary:
+            val = os.getenv(secondary)
+    if val is None or not val.strip():
+        return default
+    val_clean = val.strip().lower()
+    if val_clean in ('false', '0', 'f', 'no', 'off'):
+        return False
+    if val_clean in ('true', '1', 't', 'yes', 'on'):
+        return True
+    return default
+
+import sys
+IS_TESTING = 'test' in sys.argv
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DJANGO_DEBUG', 'True').lower() in ('true', '1', 't')
+if IS_TESTING:
+    DEBUG = True
+else:
+    DEBUG = _get_bool_env('DJANGO_DEBUG', 'DEBUG', default=True)
 
 # SECURITY WARNING: keep the secret key used in production secret!
-raw_secret_key = os.getenv('DJANGO_SECRET_KEY')
-if not DEBUG and (not raw_secret_key or raw_secret_key.startswith('django-insecure-')):
+raw_secret_key = (os.getenv('DJANGO_SECRET_KEY') or os.getenv('SECRET_KEY') or '').strip()
+if not DEBUG and not IS_TESTING and (not raw_secret_key or raw_secret_key.startswith('django-insecure-')):
     from django.core.exceptions import ImproperlyConfigured
     raise ImproperlyConfigured(
-        "DJANGO_SECRET_KEY environment variable is required and must not be a default insecure key when DEBUG=False."
+        "DJANGO_SECRET_KEY (or SECRET_KEY) environment variable is required and must not be a default insecure key when DEBUG=False."
     )
 
 SECRET_KEY = raw_secret_key or 'django-insecure-*u@3!ey_3nggvd)ayr97ob)thal_42$jiuo4whct*9!t%e+jk2'
 
 
+
+
+
 # Production-Safe ALLOWED_HOSTS:
 # - In development (DEBUG=True), supports localhost, 127.0.0.1, [::1], and local LAN testing IP (192.168.1.11).
-# - In production (DEBUG=False), requires explicit DJANGO_ALLOWED_HOSTS environment variable.
-raw_allowed_hosts = os.getenv('DJANGO_ALLOWED_HOSTS')
+# - In production (DEBUG=False), requires explicit DJANGO_ALLOWED_HOSTS or ALLOWED_HOSTS environment variable.
+raw_allowed_hosts = os.getenv('DJANGO_ALLOWED_HOSTS') or os.getenv('ALLOWED_HOSTS')
 if raw_allowed_hosts is not None:
     ALLOWED_HOSTS = [host.strip() for host in raw_allowed_hosts.split(',') if host.strip()]
 elif DEBUG:
@@ -41,10 +65,10 @@ else:
 
 # Automatically support Render PaaS external hostname if present
 render_hostname = os.getenv('RENDER_EXTERNAL_HOSTNAME')
-if render_hostname:
+if render_hostname and render_hostname not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(render_hostname)
 
-raw_csrf_origins = os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS')
+raw_csrf_origins = os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS') or os.getenv('CSRF_TRUSTED_ORIGINS')
 if raw_csrf_origins is not None:
     CSRF_TRUSTED_ORIGINS = [url.strip() for url in raw_csrf_origins.split(',') if url.strip()]
 elif DEBUG:
@@ -237,35 +261,40 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Django Unfold Admin Theme & Navigation Configuration
 from django.urls import reverse_lazy
-from django.templatetags.static import static
+
+
+def _unfold_static(path):
+    from django.templatetags.static import static
+    return static(path)
+
 
 UNFOLD = {
     "SITE_HEADER": "Echoes Of SMASC '26",
     "SITE_TITLE": "Echoes Of SMASC '26",
     "INDEX_TITLE": "Echoes Of SMASC '26 Administration",
     "SITE_ICON": {
-        "light": lambda request: static("branding/03_RESPONSIVE_ICONS/ES26_256x256.png"),
-        "dark": lambda request: static("branding/03_RESPONSIVE_ICONS/ES26_256x256.png"),
+        "light": lambda request: _unfold_static("branding/03_RESPONSIVE_ICONS/ES26_256x256.png"),
+        "dark": lambda request: _unfold_static("branding/03_RESPONSIVE_ICONS/ES26_256x256.png"),
     },
     "SITE_LOGO": {
-        "light": lambda request: static("branding/02_LOGO_VARIANTS/ES26_ROUNDED_512.png"),
-        "dark": lambda request: static("branding/02_LOGO_VARIANTS/ES26_ROUNDED_512.png"),
+        "light": lambda request: _unfold_static("branding/02_LOGO_VARIANTS/ES26_ROUNDED_512.png"),
+        "dark": lambda request: _unfold_static("branding/02_LOGO_VARIANTS/ES26_ROUNDED_512.png"),
     },
     "SITE_FAVICONS": [
         {
             "rel": "icon",
             "type": "image/x-icon",
-            "href": lambda request: static("branding/04_FAVICONS_PWA/favicon.ico"),
+            "href": lambda request: _unfold_static("branding/04_FAVICONS_PWA/favicon.ico"),
         },
     ],
     "SHOW_HISTORY": True,
     "SHOW_VIEW_ON_SITE": True,
     "THEME": "dark",
     "STYLES": [
-        lambda request: static("admin/css/image-preview.css"),
+        lambda request: _unfold_static("admin/css/image-preview.css"),
     ],
     "SCRIPTS": [
-        lambda request: static("admin/js/image-preview.js"),
+        lambda request: _unfold_static("admin/js/image-preview.js"),
     ],
     "COLORS": {
         "primary": {
