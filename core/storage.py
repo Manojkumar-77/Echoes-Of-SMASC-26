@@ -36,3 +36,16 @@ class ProductionManifestStaticFilesStorage(CompressedManifestStaticFilesStorage)
     """
     manifest_strict = False
 
+    def stored_name(self, name):
+        try:
+            return super().stored_name(name)
+        except ValueError:
+            return name
+
+    def url(self, name, force=False):
+        try:
+            return super().url(name, force)
+        except ValueError:
+            return StaticFilesStorage.url(self, name)
+
+
