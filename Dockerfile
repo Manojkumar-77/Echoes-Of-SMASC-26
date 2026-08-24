@@ -7,6 +7,8 @@ FROM python:3.13-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_ROOT_USER_ACTION=ignore \
     PORT=8000 \
     DJANGO_DEBUG=False \
     DJANGO_SECRET_KEY=docker-build-temporary-secret-key-for-collectstatic-only

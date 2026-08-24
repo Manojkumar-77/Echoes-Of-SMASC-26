@@ -1591,20 +1591,7 @@ def contact(request):
 
 def health_check(request):
     """
-    Lightweight health check endpoint for Render / PaaS liveness probes.
-    Returns HTTP 200 with database connectivity status in JSON payload.
+    Ultra-lightweight health check endpoint for Render / PaaS liveness probes.
+    Returns HTTP 200 independently of database status or asset loading.
     """
-    db_ok = True
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT 1")
-    except Exception:
-        db_ok = False
-
-    return JsonResponse(
-        {
-            "status": "ok" if db_ok else "warming_up",
-            "database": "connected" if db_ok else "disconnected",
-        },
-        status=200,
-    )
+    return JsonResponse({"status": "ok"}, status=200)
