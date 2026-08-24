@@ -2,8 +2,8 @@ services:
   - type: web
     name: echoes-of-smasc-26
     runtime: python
-    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
-    startCommand: "python manage.py migrate && python manage.py seed_initial_data && gunicorn config.wsgi:application -c gunicorn.conf.py"
+    buildCommand: "pip install --upgrade pip && pip install -r requirements.txt && python manage.py collectstatic --noinput"
+    startCommand: "python manage.py migrate --noinput && python manage.py seed_initial_data && gunicorn config.wsgi:application -c gunicorn.conf.py"
     healthCheckPath: /health/
     envVars:
       - key: DJANGO_DEBUG
