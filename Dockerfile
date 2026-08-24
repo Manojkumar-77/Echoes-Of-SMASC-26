@@ -8,7 +8,8 @@ FROM python:3.13-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PORT=8000 \
-    DJANGO_DEBUG=False
+    DJANGO_DEBUG=False \
+    DJANGO_SECRET_KEY=docker-build-temporary-secret-key-for-collectstatic-only
 
 # Set working directory
 WORKDIR /app
@@ -35,6 +36,12 @@ RUN mkdir -p /app/media /app/staticfiles /app/backups \
 # Copy application source code
 COPY --chown=appuser:appgroup . /app/
 
+# Make entrypoint script executable
+RUN chmod +x /app/entrypoint.sh
+
+# Collect static files during Docker image build
+RUN python manage.py collectstatic --noinput --clear
+
 # Switch to non-root user
 USER appuser
 
@@ -45,6 +52,8 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl -f http://localhost:${PORT}/health/ || exit 1
 
-# Launch production Gunicorn server
+# Set entrypoint and launch production Gunicorn server
+ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["gunicorn", "-c", "gunicorn.conf.py", "config.wsgi:application"]
+
 
