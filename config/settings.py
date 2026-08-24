@@ -36,7 +36,7 @@ IS_TESTING = 'test' in sys.argv
 if IS_TESTING:
     DEBUG = True
 else:
-    DEBUG = _get_bool_env('DJANGO_DEBUG', 'DEBUG', default=True)
+    DEBUG = _get_bool_env('DJANGO_DEBUG', 'DEBUG', default=False)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 raw_secret_key = (os.getenv('DJANGO_SECRET_KEY') or os.getenv('SECRET_KEY') or '').strip()
