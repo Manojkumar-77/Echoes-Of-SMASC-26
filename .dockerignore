@@ -51,9 +51,6 @@ dumps/
 # Generated Staticfiles (Generated inside container or on deployment via collectstatic)
 staticfiles/
 
-# Media Archive (CRITICAL: Media is mounted via persistent volume or object storage, NOT baked into Docker image)
-media/
-
 # Node / Frontend Artifacts
 node_modules/
 

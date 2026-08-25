@@ -19,7 +19,6 @@ env/
 db.sqlite3
 db.sqlite3-journal
 staticfiles/
-media/
 local_settings.py
 
 # Secrets
