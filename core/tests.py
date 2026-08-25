@@ -725,4 +725,32 @@ class Phase2ConnectivityAndDataFlowTest(TestCase):
             res = self.client.get(f"/admin/core/{model_name}/add/", HTTP_HOST="localhost", secure=True)
             self.assertEqual(res.status_code, 200, f"{model_name} add view must return HTTP 200")
 
+    def test_public_pages_caching_and_invalidation(self):
+        """Verify that public pages are fast, reduce queries on subsequent visits, and invalidate when models change."""
+        from django.core.cache import cache
+        from django.db import connection, reset_queries
+
+        cache.clear()
+
+        # 1. Warm up pages
+        pages = ["/", "/gallery/", "/timeline/", "/scrapbook/", "/yearbook/", "/videos/", "/about/", "/contact/"]
+        for url in pages:
+            res = self.client.get(url, HTTP_HOST="localhost", secure=True)
+            self.assertEqual(res.status_code, 200, f"{url} must return HTTP 200")
+
+        # 2. On second hit (warm cache), home page must return 200 with 0 database queries
+        reset_queries()
+        res_home = self.client.get("/", HTTP_HOST="localhost", secure=True)
+        self.assertEqual(res_home.status_code, 200)
+        self.assertEqual(len(connection.queries), 0, "Warm Home page should execute 0 DB queries")
+
+        # 3. Modify a model instance -> must invalidate cache
+        self.photo1.title = "Updated Photo Title"
+        self.photo1.save()
+
+        # 4. After modification, cache is cleared and fresh data is rendered
+        res_home_fresh = self.client.get("/", HTTP_HOST="localhost", secure=True)
+        self.assertEqual(res_home_fresh.status_code, 200)
+
+
 

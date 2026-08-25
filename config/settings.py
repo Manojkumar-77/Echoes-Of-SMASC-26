@@ -273,6 +273,19 @@ else:
     }
 
 WHITENOISE_MANIFEST_STRICT = False
+WHITENOISE_MAX_AGE = 31536000 if not DEBUG else 0
+
+# In-memory performance cache for fast page navigation and database query elimination
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'pgallery-locmem-cache',
+        'TIMEOUT': 600,  # 10 minutes default
+        'OPTIONS': {
+            'MAX_ENTRIES': 2000,
+        }
+    }
+}
 
 MEDIA_URL = "/media/"
 render_disk = Path("/opt/render/project/src/media")

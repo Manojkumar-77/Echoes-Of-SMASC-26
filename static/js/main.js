@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeroScrollLink();
   initBackToBeginning();
   initScrollReveal();
+  initInstantNavigation();
 });
 
 /**
@@ -237,4 +238,55 @@ function initScrollReveal() {
   setTimeout(() => {
     revealElements.forEach(el => el.classList.add('active'));
   }, 1500);
+}
+
+/**
+ * Instant Link Prefetching on Hover/Touch
+ * Preloads internal navigation pages in the background when the user hovers or touches a link.
+ * Result: When clicked, the destination page renders immediately from browser cache without perceived lag.
+ */
+function initInstantNavigation() {
+  const prefetchedUrls = new Set();
+  const isSupported = 'fetch' in window;
+  if (!isSupported) return;
+
+  function prefetchUrl(url) {
+    if (!url || prefetchedUrls.has(url)) return;
+    try {
+      const parsed = new URL(url, window.location.origin);
+      if (parsed.origin !== window.location.origin) return;
+      if (parsed.pathname.startsWith('/admin') || parsed.pathname.startsWith('/api')) return;
+      if (parsed.pathname === window.location.pathname && parsed.search === window.location.search) return;
+
+      prefetchedUrls.add(url);
+
+      const link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = url;
+      link.as = 'document';
+      document.head.appendChild(link);
+    } catch (e) {}
+  }
+
+  let hoverTimer = null;
+
+  document.addEventListener('mouseover', (e) => {
+    const link = e.target.closest('a[href]');
+    if (!link) return;
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+
+    clearTimeout(hoverTimer);
+    hoverTimer = setTimeout(() => {
+      prefetchUrl(link.href);
+    }, 65);
+  }, { passive: true });
+
+  document.addEventListener('touchstart', (e) => {
+    const link = e.target.closest('a[href]');
+    if (!link) return;
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+    prefetchUrl(link.href);
+  }, { passive: true });
 }

@@ -5,6 +5,7 @@ from django.core.mail import send_mail
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
+from django.core.cache import cache
 from django.db.models import Count, Min, Max, Q
 from django.conf import settings
 import logging
@@ -33,147 +34,153 @@ from .models import (
 
 
 def home(request):
-    hero_slides = list(
-        HeroSlide.objects
-        .filter(is_active=True)
-        .order_by(
-            "display_order",
-            "created_at",
-        )
-    )
+    cache_key = "home_page_context"
+    context = cache.get(cache_key)
 
-    # ========================================================
-    # FEATURED BEST MOMENTS PHOTOGRAPHS (CMS is_featured=True)
-    # ========================================================
-    featured_photos = list(
-        Photo.objects
-        .filter(
-            status="approved",
-            is_active=True,
-            is_featured=True,
+    if context is None:
+        hero_slides = list(
+            HeroSlide.objects
+            .filter(is_active=True)
+            .order_by(
+                "display_order",
+                "created_at",
+            )
         )
-        .select_related("category")
-        .order_by("home_order", "-created_at")
-    )
 
-    # Fallback to approved photos if none are explicitly marked featured yet
-    if not featured_photos:
+        # ========================================================
+        # FEATURED BEST MOMENTS PHOTOGRAPHS (CMS is_featured=True)
+        # ========================================================
         featured_photos = list(
+            Photo.objects
+            .filter(
+                status="approved",
+                is_active=True,
+                is_featured=True,
+            )
+            .select_related("category")
+            .order_by("home_order", "-created_at")
+        )
+
+        # Fallback to approved photos if none are explicitly marked featured yet
+        if not featured_photos:
+            featured_photos = list(
+                Photo.objects
+                .filter(
+                    status="approved",
+                    is_active=True,
+                )
+                .select_related("category")
+                .order_by("home_order", "-created_at")[:12]
+            )
+
+        featured_memories = []
+        for photo in featured_photos:
+            image_url = photo.image.url if photo.image else "/static/branding/02_LOGO_VARIANTS/ES26_ROUNDED_512.png"
+
+            featured_memories.append(
+                {
+                    "id": photo.id,
+                    "type": "Photo",
+                    "title": photo.title,
+                    "image_url": image_url,
+                    "category": (
+                        photo.category.name
+                        if photo.category
+                        else "Memory"
+                    ),
+                    "caption": photo.caption or "",
+                    "date_sort": (
+                        photo.event_date
+                        or (
+                            photo.created_at.date()
+                            if photo.created_at
+                            else None
+                        )
+                    ),
+                    "date_display": (
+                        photo.event_date.strftime("%b %Y")
+                        if photo.event_date
+                        else (
+                            photo.created_at.strftime("%b %Y")
+                            if photo.created_at
+                            else ""
+                        )
+                    ),
+                    "display_order": photo.home_order or 9999,
+                    "created_at": photo.created_at,
+                }
+            )
+
+        latest_photos = list(
             Photo.objects
             .filter(
                 status="approved",
                 is_active=True,
             )
             .select_related("category")
-            .order_by("home_order", "-created_at")[:12]
+            .order_by("-created_at")[:8]
         )
 
-    featured_memories = []
-    for photo in featured_photos:
-        image_url = photo.image.url if photo.image else "/static/branding/02_LOGO_VARIANTS/ES26_ROUNDED_512.png"
-
-        featured_memories.append(
-            {
-                "id": photo.id,
-                "type": "Photo",
-                "title": photo.title,
-                "image_url": image_url,
-                "category": (
-                    photo.category.name
-                    if photo.category
-                    else "Memory"
-                ),
-                "caption": photo.caption or "",
-                "date_sort": (
-                    photo.event_date
-                    or (
-                        photo.created_at.date()
-                        if photo.created_at
-                        else None
-                    )
-                ),
-                "date_display": (
-                    photo.event_date.strftime("%b %Y")
-                    if photo.event_date
-                    else (
-                        photo.created_at.strftime("%b %Y")
-                        if photo.created_at
-                        else ""
-                    )
-                ),
-                "display_order": photo.home_order or 9999,
-                "created_at": photo.created_at,
-            }
+        featured_events = list(
+            TimelineEvent.objects
+            .filter(is_featured=True)
+            .select_related("category")
+            .order_by(
+                "display_order",
+                "event_date",
+            )
         )
 
-    latest_photos = (
-        Photo.objects
-        .filter(
-            status="approved",
-            is_active=True,
+        featured_students = list(
+            Student.objects
+            .filter(is_featured=True)
+            .order_by(
+                "display_order",
+                "name",
+            )[:4]
         )
-        .select_related("category")
-        .order_by("-created_at")[:8]
-    )
 
-    featured_events = (
-        TimelineEvent.objects
-        .filter(is_featured=True)
-        .select_related("category")
-        .order_by(
-            "display_order",
-            "event_date",
+        featured_videos = list(
+            Video.objects
+            .filter(is_featured=True)
+            .select_related("category")
+            .order_by(
+                "display_order",
+                "-created_at",
+            )
         )
-    )
 
-    featured_students = (
-        Student.objects
-        .filter(is_featured=True)
-        .order_by(
-            "display_order",
-            "name",
-        )[:4]
-    )
-
-    featured_videos = (
-        Video.objects
-        .filter(is_featured=True)
-        .select_related("category")
-        .order_by(
-            "display_order",
-            "-created_at",
-        )
-    )
-
-    context = {
-        "hero_slides": hero_slides,
-        "featured_memories": featured_memories,
-        "featured_photos": featured_memories,
-        "latest_photos": latest_photos,
-        "featured_events": featured_events,
-        "featured_students": featured_students,
-        "featured_videos": featured_videos,
-        "photo_count": (
-            Photo.objects
-            .filter(status="approved", is_active=True)
-            .count()
-        ),
-        "timeline_count": (
-            TimelineEvent.objects.count()
-        ),
-        "student_count": (
-            Student.objects.count()
-        ),
-        "video_count": (
-            Video.objects.count()
-        ),
-    }
+        context = {
+            "hero_slides": hero_slides,
+            "featured_memories": featured_memories,
+            "featured_photos": featured_memories,
+            "latest_photos": latest_photos,
+            "featured_events": featured_events,
+            "featured_students": featured_students,
+            "featured_videos": featured_videos,
+            "photo_count": (
+                Photo.objects
+                .filter(status="approved", is_active=True)
+                .count()
+            ),
+            "timeline_count": (
+                TimelineEvent.objects.count()
+            ),
+            "student_count": (
+                Student.objects.count()
+            ),
+            "video_count": (
+                Video.objects.count()
+            ),
+        }
+        cache.set(cache_key, context, timeout=600)
 
     return render(
         request,
         "index.html",
         context,
     )
+
 
 
 # ============================================================
@@ -232,88 +239,56 @@ def gallery(request):
         page_num = 1
 
     # ========================================================
-    # CATEGORIES
+    # CATEGORIES & ATLAS METADATA (Cached)
     # ========================================================
+    meta_cache_key = "gallery_page_meta"
+    meta_data = cache.get(meta_cache_key)
 
-    # Annotated with photo counts and date ranges via the DB.
-    # No in-memory photo list required for Atlas construction.
-
-    categories_qs = (
-        Category.objects
-        .filter(
-            photos__status="approved",
-            photos__is_active=True,
-            photos__show_gallery=True,
+    if meta_data is None:
+        categories_qs = (
+            Category.objects
+            .filter(
+                photos__status="approved",
+                photos__is_active=True,
+                photos__show_gallery=True,
+            )
+            .annotate(
+                photo_count=Count(
+                    "photos",
+                    filter=Q(
+                        photos__status="approved",
+                        photos__is_active=True,
+                        photos__show_gallery=True,
+                    ),
+                    distinct=True,
+                ),
+                min_event_date=Min(
+                    "photos__event_date",
+                    filter=Q(
+                        photos__status="approved",
+                        photos__is_active=True,
+                        photos__show_gallery=True,
+                    ),
+                ),
+                max_event_date=Max(
+                    "photos__event_date",
+                    filter=Q(
+                        photos__status="approved",
+                        photos__is_active=True,
+                        photos__show_gallery=True,
+                    ),
+                ),
+            )
+            .distinct()
+            .order_by("name")
         )
-        .annotate(
-            photo_count=Count(
-                "photos",
-                filter=Q(
-                    photos__status="approved",
-                    photos__is_active=True,
-                    photos__show_gallery=True,
-                ),
-                distinct=True,
-            ),
-            min_event_date=Min(
-                "photos__event_date",
-                filter=Q(
-                    photos__status="approved",
-                    photos__is_active=True,
-                    photos__show_gallery=True,
-                ),
-            ),
-            max_event_date=Max(
-                "photos__event_date",
-                filter=Q(
-                    photos__status="approved",
-                    photos__is_active=True,
-                    photos__show_gallery=True,
-                ),
-            ),
-        )
-        .distinct()
-        .order_by("name")
-    )
 
-    categories = list(categories_qs)
+        categories = list(categories_qs)
 
-    # ========================================================
-    # MEMORY ATLAS PORTALS
-    # ========================================================
-
-    atlas_portals = []
-    category_map = {}
-
-    for category in categories:
-
-        # --------------------------------------------------------
-        # DATE RANGE (from DB annotations — no full photo load)
-        # --------------------------------------------------------
-
-        min_date = category.min_event_date
-        max_date = category.max_event_date
-
-        if min_date and max_date:
-            min_year = min_date.year
-            max_year = max_date.year
-
-            if min_year == max_year:
-                date_range = str(min_year)
-            else:
-                date_range = f"{min_year} — {max_year}"
-
-        else:
-            date_range = "2024 — 2026"
-
-        # --------------------------------------------------------
-        # ATLAS COVER PHOTOS (small targeted query, max 4)
-        # --------------------------------------------------------
-
-        atlas_cover_photos = list(
+        # Single consolidated query for all active atlas cover photos
+        all_atlas_covers = list(
             Photo.objects
             .filter(
-                category=category,
                 status="approved",
                 is_active=True,
                 show_gallery=True,
@@ -321,27 +296,79 @@ def gallery(request):
             )
             .select_related("category")
             .order_by("-created_at", "-id")
-            [:4]
         )
 
-        portal_data = {
-            "category": category,
-            "photo_count": category.photo_count,
-            "date_range": date_range,
-            "cover_photos": atlas_cover_photos,
-            "index_num": f"{len(atlas_portals) + 1:02d}",
+        atlas_by_category = {}
+        for cover in all_atlas_covers:
+            if cover.category_id:
+                atlas_by_category.setdefault(cover.category_id, []).append(cover)
+
+        atlas_portals = []
+        category_map = {}
+
+        for category in categories:
+            min_date = category.min_event_date
+            max_date = category.max_event_date
+
+            if min_date and max_date:
+                min_year = min_date.year
+                max_year = max_date.year
+
+                if min_year == max_year:
+                    date_range = str(min_year)
+                else:
+                    date_range = f"{min_year} — {max_year}"
+            else:
+                date_range = "2024 — 2026"
+
+            atlas_cover_photos = atlas_by_category.get(category.id, [])[:4]
+
+            portal_data = {
+                "category": category,
+                "photo_count": category.photo_count,
+                "date_range": date_range,
+                "cover_photos": atlas_cover_photos,
+                "index_num": f"{len(atlas_portals) + 1:02d}",
+            }
+
+            atlas_portals.append(portal_data)
+            category_map[category.slug] = portal_data
+
+        total_photo_count = sum(
+            p.photo_count for p in categories
+        )
+
+        selected_memories = list(
+            SelectedGalleryPhoto.objects
+            .filter(
+                is_active=True,
+                photo__status="approved",
+                photo__is_active=True,
+            )
+            .select_related(
+                "photo",
+                "photo__category",
+            )
+            .order_by(
+                "order",
+                "created_at",
+            )[:10]
+        )
+
+        meta_data = {
+            "categories": categories,
+            "atlas_portals": atlas_portals,
+            "category_map": category_map,
+            "total_photo_count": total_photo_count,
+            "selected_memories": selected_memories,
         }
+        cache.set(meta_cache_key, meta_data, timeout=600)
 
-        atlas_portals.append(portal_data)
-        category_map[category.slug] = portal_data
-
-    # ========================================================
-    # TOTAL PHOTO COUNT
-    # ========================================================
-
-    total_photo_count = sum(
-        p.photo_count for p in categories
-    )
+    categories = meta_data["categories"]
+    atlas_portals = meta_data["atlas_portals"]
+    category_map = meta_data["category_map"]
+    total_photo_count = meta_data["total_photo_count"]
+    selected_memories = meta_data["selected_memories"]
 
     # ========================================================
     # MAIN GALLERY STREAM (server-side paginated)
@@ -382,61 +409,24 @@ def gallery(request):
         else None
     )
 
-    # ========================================================
-    # SELECTED MEMORIES
-    # ========================================================
-
-    selected_memories = list(
-        SelectedGalleryPhoto.objects
-        .filter(
-            is_active=True,
-            photo__status="approved",
-            photo__is_active=True,
-        )
-        .select_related(
-            "photo",
-            "photo__category",
-        )
-        .order_by(
-            "order",
-            "created_at",
-        )[:10]
-    )
-
-    # ========================================================
-    # RENDER
-    # ========================================================
-
     return render(
         request,
         "gallery.html",
         {
             "photos": stream_photos,
-
             "categories": categories,
-
             "atlas_portals": atlas_portals,
-
             "active_category": active_category,
-
-            "selected_category_slug": (
-                selected_category_slug
-            ),
-
-            "total_photo_count": (
-                total_photo_count
-            ),
-
-            "selected_memories": (
-                selected_memories
-            ),
-
+            "selected_category_slug": selected_category_slug,
+            "total_photo_count": total_photo_count,
+            "selected_memories": selected_memories,
             # Pagination context
             "has_more": has_more,
             "next_page": next_page,
             "current_page": page_num,
         },
     )
+
 
 
 # ============================================================
@@ -532,138 +522,117 @@ def gallery_photos_api(request):
 
 
 def timeline(request):
-    all_events = list(
-        TimelineEvent.objects
-        .select_related("category")
-        .order_by(
-            "display_order",
-            "event_date",
+    cache_key = "timeline_page_context"
+    context = cache.get(cache_key)
+
+    if context is None:
+        all_events = list(
+            TimelineEvent.objects
+            .select_related("category")
+            .order_by(
+                "display_order",
+                "event_date",
+            )
         )
-    )
 
-    categories = list(
-        Category.objects
-        .filter(
-            timeline_events__isnull=False
+        categories = list(
+            Category.objects
+            .filter(
+                timeline_events__isnull=False
+            )
+            .distinct()
+            .order_by("name")
         )
-        .distinct()
-        .order_by("name")
-    )
 
-    timeline_groups = []
+        timeline_groups = []
 
-    # ========================================================
-    # CATEGORIZED TIMELINE EVENTS
-    # ========================================================
+        # ========================================================
+        # CATEGORIZED TIMELINE EVENTS
+        # ========================================================
 
-    for category in categories:
-        category_events = [
+        for category in categories:
+            category_events = [
+                event
+                for event in all_events
+                if event.category_id == category.id
+            ]
+
+            if not category_events:
+                continue
+
+            primary_event = category_events[0]
+            image_events = []
+            seen_images = set()
+
+            for event in category_events:
+                if not event.image:
+                    continue
+
+                image_key = event.image.name
+                if image_key in seen_images:
+                    continue
+
+                seen_images.add(image_key)
+                image_events.append(event)
+
+                if len(image_events) == 4:
+                    break
+
+            timeline_groups.append(
+                {
+                    "category": category,
+                    "primary_event": primary_event,
+                    "image_events": image_events,
+                }
+            )
+
+        # ========================================================
+        # UNCATEGORIZED TIMELINE EVENTS
+        # ========================================================
+
+        uncategorized_events = [
             event
             for event in all_events
-            if event.category_id
-            == category.id
+            if event.category_id is None
         ]
 
-        if not category_events:
-            continue
+        if uncategorized_events:
+            primary_event = uncategorized_events[0]
+            image_events = []
+            seen_images = set()
 
-        primary_event = (
-            category_events[0]
-        )
+            for event in uncategorized_events:
+                if not event.image:
+                    continue
 
-        image_events = []
+                image_key = event.image.name
+                if image_key in seen_images:
+                    continue
 
-        seen_images = set()
+                seen_images.add(image_key)
+                image_events.append(event)
 
-        for event in category_events:
-            if not event.image:
-                continue
+                if len(image_events) == 4:
+                    break
 
-            image_key = (
-                event.image.name
+            timeline_groups.append(
+                {
+                    "category": None,
+                    "primary_event": primary_event,
+                    "image_events": image_events,
+                }
             )
 
-            if image_key in seen_images:
-                continue
-
-            seen_images.add(
-                image_key
-            )
-
-            image_events.append(
-                event
-            )
-
-            if len(image_events) == 4:
-                break
-
-        timeline_groups.append(
-            {
-                "category": category,
-                "primary_event": primary_event,
-                "image_events": image_events,
-            }
-        )
-
-    # ========================================================
-    # UNCATEGORIZED TIMELINE EVENTS
-    # ========================================================
-
-    uncategorized_events = [
-        event
-        for event in all_events
-        if event.category_id is None
-    ]
-
-    if uncategorized_events:
-        primary_event = (
-            uncategorized_events[0]
-        )
-
-        image_events = []
-
-        seen_images = set()
-
-        for event in uncategorized_events:
-            if not event.image:
-                continue
-
-            image_key = (
-                event.image.name
-            )
-
-            if image_key in seen_images:
-                continue
-
-            seen_images.add(
-                image_key
-            )
-
-            image_events.append(
-                event
-            )
-
-            if len(image_events) == 4:
-                break
-
-        timeline_groups.append(
-            {
-                "category": None,
-                "primary_event": primary_event,
-                "image_events": image_events,
-            }
-        )
+        context = {
+            "timeline_groups": timeline_groups,
+            "categories": categories,
+        }
+        cache.set(cache_key, context, timeout=600)
 
     return render(
         request,
         "timeline.html",
-        {
-            "timeline_groups": (
-                timeline_groups
-            ),
-
-            "categories": categories,
-        },
+        context,
     )
 
 
@@ -686,89 +655,261 @@ def scrapbook(request):
         - final
     """
 
-    # ========================================================
-    # 1. LEGACY / SCRATCH ITEMS
-    # ========================================================
+    cache_key = "scrapbook_page_context"
+    context = cache.get(cache_key)
 
-    items = (
-        ScrapbookItem.objects
-        .select_related("category")
-        .order_by(
-            "display_order",
-            "-created_at",
+    if context is None:
+        # ========================================================
+        # 1. LEGACY / SCRATCH ITEMS
+        # ========================================================
+
+        items = list(
+            ScrapbookItem.objects
+            .select_related("category")
+            .order_by(
+                "display_order",
+                "-created_at",
+            )
         )
-    )
 
-    # ========================================================
-    # 2. ACTIVE SCRAPBOOK PLACEMENTS (EXPLICIT ONLY)
-    # ========================================================
+        # ========================================================
+        # 2. ACTIVE SCRAPBOOK PLACEMENTS (EXPLICIT ONLY)
+        # ========================================================
 
-    placements = list(
-        ScrapbookPlacement.objects
-        .filter(
-            is_active=True,
-            photo__status="approved",
-            photo__is_active=True,
+        placements = list(
+            ScrapbookPlacement.objects
+            .filter(
+                is_active=True,
+                photo__status="approved",
+                photo__is_active=True,
+            )
+            .select_related(
+                "photo",
+                "photo__category",
+            )
+            .order_by(
+                "section",
+                "display_order",
+                "-created_at",
+            )
         )
-        .select_related(
-            "photo",
-            "photo__category",
-        )
-        .order_by(
-            "section",
-            "display_order",
-            "-created_at",
-        )
-    )
 
-    pinned_placements = [
-        placement
-        for placement in placements
-        if placement.section == "pinned"
-    ]
+        pinned_placements = [
+            placement
+            for placement in placements
+            if placement.section == "pinned"
+        ]
 
-    film_placements = [
-        placement
-        for placement in placements
-        if placement.section == "film"
-    ]
+        film_placements = [
+            placement
+            for placement in placements
+            if placement.section == "film"
+        ]
 
-    mosaic_placements = [
-        placement
-        for placement in placements
-        if placement.section == "mosaic"
-    ]
+        mosaic_placements = [
+            placement
+            for placement in placements
+            if placement.section == "mosaic"
+        ]
 
-    final_placements = [
-        placement
-        for placement in placements
-        if placement.section == "final"
-    ]
+        final_placements = [
+            placement
+            for placement in placements
+            if placement.section == "final"
+        ]
 
-    # Helper for formatting memory date
-    def _get_photo_date(photo):
-        if not photo:
+        # Helper for formatting memory date
+        def _get_photo_date(photo):
+            if not photo:
+                return ""
+            if photo.event_date:
+                return photo.event_date.strftime("%b %Y")
+            if photo.created_at:
+                return photo.created_at.strftime("%b %Y")
             return ""
-        if photo.event_date:
-            return photo.event_date.strftime("%b %Y")
-        if photo.created_at:
-            return photo.created_at.strftime("%b %Y")
-        return ""
 
-    # ========================================================
-    # PINNED ITEMS (EXPLICIT ONLY, NO FALLBACK, NO REPEAT)
-    # ========================================================
+        # ========================================================
+        # PINNED ITEMS (EXPLICIT ONLY, NO FALLBACK, NO REPEAT)
+        # ========================================================
 
-    pinned_items = []
+        pinned_items = []
 
-    if pinned_placements:
-        seen_photo_ids = set()
-        for placement in pinned_placements:
-            if not placement.photo or placement.photo.id in seen_photo_ids:
-                continue
-            seen_photo_ids.add(placement.photo.id)
-            pinned_items.append(
-                {
+        if pinned_placements:
+            seen_photo_ids = set()
+            for placement in pinned_placements:
+                if not placement.photo or placement.photo.id in seen_photo_ids:
+                    continue
+                seen_photo_ids.add(placement.photo.id)
+                pinned_items.append(
+                    {
+                        "photo": placement.photo,
+                        "id": placement.photo.id if placement.photo else placement.id,
+                        "title": (
+                            placement.custom_title
+                            or placement.photo.title
+                        ),
+                        "caption": (
+                            placement.custom_caption
+                            or placement.photo.caption
+                        ),
+                        "image_url": (
+                            placement.photo.image.url
+                            if placement.photo and placement.photo.image
+                            else ""
+                        ),
+                        "category": (
+                            placement.photo.category.name
+                            if placement.photo and placement.photo.category
+                            else "Fragment"
+                        ),
+                        "date": _get_photo_date(placement.photo),
+                        "rotation": (
+                            placement.rotation
+                            or 0
+                        ),
+                        "display_order": (
+                            placement.display_order
+                        ),
+                        "placement_id": (
+                            placement.id
+                        ),
+                    }
+                )
+
+        # ========================================================
+        # FILM STRIP (EXPLICIT STRIP 1 & STRIP 2, MAX 10 EACH)
+        # ========================================================
+
+        film_strip1_placements = [
+            p for p in placements
+            if p.section == "film" and p.film_strip == 1
+        ]
+
+        film_strip2_placements = [
+            p for p in placements
+            if p.section == "film" and p.film_strip == 2
+        ]
+
+        row1_base = []
+        row2_base = []
+        strip1_seen = set()
+        strip2_seen = set()
+
+        if film_strip1_placements:
+            for index, placement in enumerate(film_strip1_placements, start=1):
+                if not placement.photo or placement.photo.id in strip1_seen:
+                    continue
+                strip1_seen.add(placement.photo.id)
+                row1_base.append(
+                    {
+                        "photo": placement.photo,
+                        "id": placement.photo.id if placement.photo else placement.id,
+                        "title": (
+                            placement.custom_title
+                            or placement.photo.title
+                        ),
+                        "caption": (
+                            placement.custom_caption
+                            or placement.photo.caption
+                        ),
+                        "image_url": (
+                            placement.photo.image.url
+                            if placement.photo and placement.photo.image
+                            else ""
+                        ),
+                        "category": (
+                            placement.photo.category.name
+                            if placement.photo and placement.photo.category
+                            else "Reel"
+                        ),
+                        "date": _get_photo_date(placement.photo),
+                        "display_num": f"{index:02d}",
+                    }
+                )
+
+        if film_strip2_placements:
+            for index, placement in enumerate(film_strip2_placements, start=11):
+                if not placement.photo or placement.photo.id in strip2_seen:
+                    continue
+                strip2_seen.add(placement.photo.id)
+                row2_base.append(
+                    {
+                        "photo": placement.photo,
+                        "id": placement.photo.id if placement.photo else placement.id,
+                        "title": (
+                            placement.custom_title
+                            or placement.photo.title
+                        ),
+                        "caption": (
+                            placement.custom_caption
+                            or placement.photo.caption
+                        ),
+                        "image_url": (
+                            placement.photo.image.url
+                            if placement.photo and placement.photo.image
+                            else ""
+                        ),
+                        "category": (
+                            placement.photo.category.name
+                            if placement.photo and placement.photo.category
+                            else "Reel"
+                        ),
+                        "date": _get_photo_date(placement.photo),
+                        "display_num": f"{index:02d}",
+                    }
+                )
+
+        film_row1 = row1_base
+        film_row2 = row2_base
+
+        # ========================================================
+        # MEMORY MOSAIC / MEMORY FRAGMENTS (EXPLICIT ONLY, NO FALLBACK, NO REPEAT)
+        # ========================================================
+
+        mosaic_items = []
+
+        if mosaic_placements:
+            seen_photo_ids = set()
+            for placement in mosaic_placements:
+                if not placement.photo or placement.photo.id in seen_photo_ids:
+                    continue
+                seen_photo_ids.add(placement.photo.id)
+                mosaic_items.append(
+                    {
+                        "photo": placement.photo,
+                        "id": placement.photo.id,
+                        "title": (
+                            placement.custom_title
+                            or placement.photo.title
+                        ),
+                        "caption": (
+                            placement.custom_caption
+                            or placement.photo.caption
+                        ),
+                        "image_url": (
+                            placement.photo.image.url
+                            if placement.photo and placement.photo.image
+                            else ""
+                        ),
+                        "category": (
+                            placement.photo.category.name
+                            if placement.photo and placement.photo.category
+                            else "Fragment"
+                        ),
+                        "date": _get_photo_date(placement.photo),
+                    }
+                )
+
+        # ========================================================
+        # FINAL MEMORY (EXPLICIT ONLY, NO FALLBACK)
+        # ========================================================
+
+        final_item = None
+
+        if final_placements:
+            placement = final_placements[0]
+            if placement.photo:
+                final_item = {
                     "photo": placement.photo,
                     "id": placement.photo.id if placement.photo else placement.id,
                     "title": (
@@ -787,178 +928,20 @@ def scrapbook(request):
                     "category": (
                         placement.photo.category.name
                         if placement.photo and placement.photo.category
-                        else "Fragment"
-                    ),
-                    "date": _get_photo_date(placement.photo),
-                    "rotation": (
-                        placement.rotation
-                        or 0
-                    ),
-                    "display_order": (
-                        placement.display_order
-                    ),
-                    "placement_id": (
-                        placement.id
-                    ),
-                }
-            )
-
-    # ========================================================
-    # FILM STRIP (EXPLICIT STRIP 1 & STRIP 2, MAX 10 EACH)
-    # ========================================================
-
-    film_strip1_placements = [
-        p for p in placements
-        if p.section == "film" and p.film_strip == 1
-    ]
-
-    film_strip2_placements = [
-        p for p in placements
-        if p.section == "film" and p.film_strip == 2
-    ]
-
-    row1_base = []
-    row2_base = []
-    strip1_seen = set()
-    strip2_seen = set()
-
-    if film_strip1_placements:
-        for index, placement in enumerate(film_strip1_placements, start=1):
-            if not placement.photo or placement.photo.id in strip1_seen:
-                continue
-            strip1_seen.add(placement.photo.id)
-            row1_base.append(
-                {
-                    "photo": placement.photo,
-                    "id": placement.photo.id if placement.photo else placement.id,
-                    "title": (
-                        placement.custom_title
-                        or placement.photo.title
-                    ),
-                    "caption": (
-                        placement.custom_caption
-                        or placement.photo.caption
-                    ),
-                    "image_url": (
-                        placement.photo.image.url
-                        if placement.photo and placement.photo.image
-                        else ""
-                    ),
-                    "category": (
-                        placement.photo.category.name
-                        if placement.photo and placement.photo.category
-                        else "Reel"
-                    ),
-                    "date": _get_photo_date(placement.photo),
-                    "display_num": f"{index:02d}",
-                }
-            )
-
-    if film_strip2_placements:
-        for index, placement in enumerate(film_strip2_placements, start=11):
-            if not placement.photo or placement.photo.id in strip2_seen:
-                continue
-            strip2_seen.add(placement.photo.id)
-            row2_base.append(
-                {
-                    "photo": placement.photo,
-                    "id": placement.photo.id if placement.photo else placement.id,
-                    "title": (
-                        placement.custom_title
-                        or placement.photo.title
-                    ),
-                    "caption": (
-                        placement.custom_caption
-                        or placement.photo.caption
-                    ),
-                    "image_url": (
-                        placement.photo.image.url
-                        if placement.photo and placement.photo.image
-                        else ""
-                    ),
-                    "category": (
-                        placement.photo.category.name
-                        if placement.photo and placement.photo.category
-                        else "Reel"
-                    ),
-                    "date": _get_photo_date(placement.photo),
-                    "display_num": f"{index:02d}",
-                }
-            )
-
-    film_row1 = row1_base
-    film_row2 = row2_base
-
-    # ========================================================
-    # MEMORY MOSAIC / MEMORY FRAGMENTS (EXPLICIT ONLY, NO FALLBACK, NO REPEAT)
-    # ========================================================
-
-    mosaic_items = []
-
-    if mosaic_placements:
-        seen_photo_ids = set()
-        for placement in mosaic_placements:
-            if not placement.photo or placement.photo.id in seen_photo_ids:
-                continue
-            seen_photo_ids.add(placement.photo.id)
-            mosaic_items.append(
-                {
-                    "photo": placement.photo,
-                    "id": placement.photo.id,
-                    "title": (
-                        placement.custom_title
-                        or placement.photo.title
-                    ),
-                    "caption": (
-                        placement.custom_caption
-                        or placement.photo.caption
-                    ),
-                    "image_url": (
-                        placement.photo.image.url
-                        if placement.photo and placement.photo.image
-                        else ""
-                    ),
-                    "category": (
-                        placement.photo.category.name
-                        if placement.photo and placement.photo.category
-                        else "Fragment"
+                        else "Class Photo"
                     ),
                     "date": _get_photo_date(placement.photo),
                 }
-            )
 
-    # ========================================================
-    # FINAL MEMORY (EXPLICIT ONLY, NO FALLBACK)
-    # ========================================================
-
-    final_item = None
-
-    if final_placements:
-        placement = final_placements[0]
-        if placement.photo:
-            final_item = {
-                "photo": placement.photo,
-                "id": placement.photo.id if placement.photo else placement.id,
-                "title": (
-                    placement.custom_title
-                    or placement.photo.title
-                ),
-                "caption": (
-                    placement.custom_caption
-                    or placement.photo.caption
-                ),
-                "image_url": (
-                    placement.photo.image.url
-                    if placement.photo and placement.photo.image
-                    else ""
-                ),
-                "category": (
-                    placement.photo.category.name
-                    if placement.photo and placement.photo.category
-                    else "Class Photo"
-                ),
-                "date": _get_photo_date(placement.photo),
-            }
+        context = {
+            "items": items,
+            "pinned_items": pinned_items,
+            "film_row1": film_row1,
+            "film_row2": film_row2,
+            "mosaic_items": mosaic_items,
+            "final_item": final_item,
+        }
+        cache.set(cache_key, context, timeout=600)
 
     # ========================================================
     # RENDER
@@ -967,23 +950,7 @@ def scrapbook(request):
     return render(
         request,
         "scrapbook.html",
-        {
-            "items": items,
-
-            "pinned_items": (
-                pinned_items
-            ),
-
-            "film_row1": film_row1,
-
-            "film_row2": film_row2,
-
-            "mosaic_items": (
-                mosaic_items
-            ),
-
-            "final_item": final_item,
-        },
+        context,
     )
 
 
@@ -993,128 +960,112 @@ def scrapbook(request):
 
 
 def yearbook(request):
-    students = list(
-        Student.objects
-        .all()
-        .order_by(
-            "display_order",
-            "name",
-        )
-    )
+    cache_key = "yearbook_page_context"
+    context = cache.get(cache_key)
 
-    # ========================================================
-    # ACTIVE ALPHABET INDEX
-    # ========================================================
-
-    active_letters = set()
-
-    for student in students:
-        if not student.name:
-            continue
-
-        first_character = (
-            student.name
-            .strip()[0]
-            .upper()
+    if context is None:
+        students = list(
+            Student.objects
+            .all()
+            .order_by(
+                "display_order",
+                "name",
+            )
         )
 
-        if first_character.isalpha():
-            active_letters.add(
-                first_character
+        # ========================================================
+        # ACTIVE ALPHABET INDEX
+        # ========================================================
+
+        active_letters = set()
+
+        for student in students:
+            if not student.name:
+                continue
+
+            first_character = (
+                student.name
+                .strip()[0]
+                .upper()
             )
 
-    sorted_active_letters = sorted(
-        list(active_letters)
-    )
+            if first_character.isalpha():
+                active_letters.add(
+                    first_character
+                )
 
-    all_alphabet = [
-        chr(character)
-        for character in range(
-            65,
-            91,
-        )
-    ]
-
-    # ========================================================
-    # STRUCTURED STUDENT DATA
-    # ========================================================
-
-    size_patterns = [
-        "featured",
-        "medium",
-        "small",
-        "medium",
-        "small",
-    ]
-
-    structured_students = []
-
-    for index, student in enumerate(
-        students
-    ):
-        size_class = (
-            size_patterns[
-                index
-                % len(size_patterns)
-            ]
+        sorted_active_letters = sorted(
+            list(active_letters)
         )
 
-        first_letter = (
-            student.name
-            .strip()[0]
-            .upper()
-            if student.name
-            else "A"
-        )
+        all_alphabet = [
+            chr(character)
+            for character in range(
+                65,
+                91,
+            )
+        ]
 
-        structured_students.append(
-            {
-                "object": student,
+        # ========================================================
+        # STRUCTURED STUDENT DATA
+        # ========================================================
 
-                "size_class": (
-                    size_class
-                ),
+        size_patterns = [
+            "featured",
+            "medium",
+            "small",
+            "medium",
+            "small",
+        ]
 
-                "first_letter": (
-                    first_letter
-                ),
+        structured_students = []
 
-                "index_num": (
-                    f"{index + 1:03d}"
-                ),
-            }
-        )
+        for index, student in enumerate(
+            students
+        ):
+            size_class = (
+                size_patterns[
+                    index
+                    % len(size_patterns)
+                ]
+            )
+
+            first_letter = (
+                student.name
+                .strip()[0]
+                .upper()
+                if student.name
+                else "A"
+            )
+
+            structured_students.append(
+                {
+                    "object": student,
+                    "size_class": size_class,
+                    "first_letter": first_letter,
+                    "index_num": f"{index + 1:03d}",
+                }
+            )
+
+        context = {
+            "students": students,
+            "structured_students": structured_students,
+            "active_letters": sorted_active_letters,
+            "all_alphabet": all_alphabet,
+            "total_student_count": len(students),
+        }
+        cache.set(cache_key, context, timeout=600)
 
     return render(
         request,
         "yearbook.html",
-        {
-            "students": students,
-
-            "structured_students": (
-                structured_students
-            ),
-
-            "active_letters": (
-                sorted_active_letters
-            ),
-
-            "all_alphabet": (
-                all_alphabet
-            ),
-
-            "total_student_count": (
-                len(students)
-            ),
-        },
+        context,
     )
 
 
 # ============================================================
 # VIDEOS
 # ============================================================
-
-
 
 
 _VIDEOS_PAGE_SIZE = 24
@@ -1127,6 +1078,19 @@ def videos(request):
     except (ValueError, TypeError):
         page_num = 1
 
+    cat_cache_key = "videos_page_categories"
+    video_categories = cache.get(cat_cache_key)
+    if video_categories is None:
+        video_categories = list(
+            Category.objects
+            .filter(
+                videos__isnull=False
+            )
+            .distinct()
+            .order_by("name")
+        )
+        cache.set(cat_cache_key, video_categories, timeout=600)
+
     video_queryset = (
         Video.objects
         .select_related("category")
@@ -1134,15 +1098,6 @@ def videos(request):
             "display_order",
             "-created_at",
         )
-    )
-
-    video_categories = list(
-        Category.objects
-        .filter(
-            videos__isnull=False
-        )
-        .distinct()
-        .order_by("name")
     )
 
     paginator = Paginator(video_queryset, _VIDEOS_PAGE_SIZE)
@@ -1160,9 +1115,7 @@ def videos(request):
         "videos.html",
         {
             "videos": list(page_obj),
-
             "video_categories": video_categories,
-
             # Pagination context
             "has_more": has_more,
             "next_page": next_page,
@@ -1254,129 +1207,122 @@ def videos_api(request):
 
 
 def about(request):
-    about_cfg = (
-        AboutPage.get_solo()
-    )
+    cache_key = "about_page_context"
+    context = cache.get(cache_key)
 
-    # ========================================================
-    # ADMIN-SELECTED DRIFT WALL
-    # ========================================================
-
-    source_photos = list(
-        about_cfg
-        .background_photos
-        .filter(
-            status="approved",
-            is_active=True,
-        )
-        .select_related("category")
-    )
-
-    # ========================================================
-    # VALID IMAGE URLS
-    # ========================================================
-
-    valid_urls = []
-
-    for photo in source_photos:
-        if (
-            not photo.image
-            or not getattr(
-                photo.image,
-                "url",
-                None,
-            )
-        ):
-            continue
-
-        url_string = str(
-            photo.image.url
-        ).strip()
-
-        if (
-            url_string
-            and url_string
-            not in valid_urls
-        ):
-            valid_urls.append(
-                url_string
-            )
-
-    # ========================================================
-    # BUILD DRIFT COLUMNS
-    # ========================================================
-
-    columns_count = 5
-
-    items_per_column = 10
-
-    drift_columns = []
-
-    if valid_urls:
-        drift_columns = [
-            []
-            for _ in range(
-                columns_count
-            )
-        ]
-
-        url_count = len(
-            valid_urls
+    if context is None:
+        about_cfg = (
+            AboutPage.get_solo()
         )
 
-        for column_index in range(
-            columns_count
-        ):
-            for tile_index in range(
-                items_per_column
+        # ========================================================
+        # ADMIN-SELECTED DRIFT WALL
+        # ========================================================
+
+        source_photos = list(
+            about_cfg
+            .background_photos
+            .filter(
+                status="approved",
+                is_active=True,
+            )
+            .select_related("category")
+        )
+
+        # ========================================================
+        # VALID IMAGE URLS
+        # ========================================================
+
+        valid_urls = []
+
+        for photo in source_photos:
+            if (
+                not photo.image
+                or not getattr(
+                    photo.image,
+                    "url",
+                    None,
+                )
             ):
-                sequence_index = (
-                    (
-                        column_index * 3
-                    )
-                    + tile_index
-                ) % url_count
+                continue
 
-                drift_columns[
-                    column_index
-                ].append(
-                    valid_urls[
-                        sequence_index
-                    ]
+            url_string = str(
+                photo.image.url
+            ).strip()
+
+            if (
+                url_string
+                and url_string
+                not in valid_urls
+            ):
+                valid_urls.append(
+                    url_string
                 )
 
-    context = {
-        "about": about_cfg,
+        # ========================================================
+        # BUILD DRIFT COLUMNS
+        # ========================================================
 
-        "drift_columns": (
-            drift_columns
-        ),
+        columns_count = 5
+        items_per_column = 10
+        drift_columns = []
 
-        "valid_photo_urls": (
-            valid_urls
-        ),
+        if valid_urls:
+            drift_columns = [
+                []
+                for _ in range(
+                    columns_count
+                )
+            ]
 
-        "photo_count": (
-            Photo.objects
-            .filter(status="approved")
-            .count()
-        ),
+            url_count = len(
+                valid_urls
+            )
 
-        "timeline_count": (
-            TimelineEvent.objects
-            .count()
-        ),
+            for column_index in range(
+                columns_count
+            ):
+                for tile_index in range(
+                    items_per_column
+                ):
+                    sequence_index = (
+                        (
+                            column_index * 3
+                        )
+                        + tile_index
+                    ) % url_count
 
-        "student_count": (
-            Student.objects
-            .count()
-        ),
+                    drift_columns[
+                        column_index
+                    ].append(
+                        valid_urls[
+                            sequence_index
+                        ]
+                    )
 
-        "video_count": (
-            Video.objects
-            .count()
-        ),
-    }
+        context = {
+            "about": about_cfg,
+            "drift_columns": drift_columns,
+            "valid_photo_urls": valid_urls,
+            "photo_count": (
+                Photo.objects
+                .filter(status="approved")
+                .count()
+            ),
+            "timeline_count": (
+                TimelineEvent.objects
+                .count()
+            ),
+            "student_count": (
+                Student.objects
+                .count()
+            ),
+            "video_count": (
+                Video.objects
+                .count()
+            ),
+        }
+        cache.set(cache_key, context, timeout=600)
 
     return render(
         request,
@@ -1391,9 +1337,11 @@ def about(request):
 
 
 def contact(request):
-    contact_cfg = (
-        ContactPage.get_solo()
-    )
+    contact_cfg = cache.get("contact_page_cfg")
+    if contact_cfg is None:
+        contact_cfg = ContactPage.get_solo()
+        cache.set("contact_page_cfg", contact_cfg, timeout=600)
+
 
     form_data = {}
 

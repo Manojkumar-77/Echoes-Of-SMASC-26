@@ -1541,4 +1541,24 @@ def cleanup_deleted_files(sender, instance, **kwargs):
     for field_name in MEDIA_MODEL_FIELDS[sender]:
         field_file = getattr(instance, field_name, None)
         if field_file:
-            cleanup_storage_file_safely(field_file, excluding_instance=instance)
+            cleanup_storage_file_safely(field_file, excluding_instance=instance)
+
+
+@receiver(post_save)
+@receiver(post_delete)
+def invalidate_public_cache(sender, **kwargs):
+    """
+    Automatically invalidate public page caches when any CMS content is created, updated, or deleted.
+    """
+    from django.core.cache import cache
+    cache_models = (
+        Photo, Category, HeroSlide, TimelineEvent,
+        ScrapbookItem, ScrapbookPlacement, Student,
+        Video, AboutPage, ContactPage, SelectedGalleryPhoto
+    )
+    if sender in cache_models:
+        try:
+            cache.clear()
+        except Exception:
+            pass
+
