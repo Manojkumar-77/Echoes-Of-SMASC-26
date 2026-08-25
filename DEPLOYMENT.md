@@ -1,101 +1,131 @@
-# ECHOES OF SMASC '26 — DEPLOYMENT GUIDE
+# ECHOES OF SMASC '26 — PRODUCTION DEPLOYMENT GUIDE (RENDER + POSTGRESQL)
 
 ---
 
-## 1. ARCHITECTURE OVERVIEW
+## 1. ARCHITECTURE & DISCOVERY
 
-- **Application**: Django 4.2.25 on Python 3.13
-- **WSGI Server**: Gunicorn 22.0.0 (`gthread` worker model, 120s timeout, 550MB upload headroom)
-- **Static Assets**: WhiteNoise 6.6.0 with `CompressedManifestStaticFilesStorage`
-- **Database**: PostgreSQL 16 (production) with SQLite fallback (development)
-- **Storage Backend**: Storage-abstracted supporting persistent disk (`FileSystemStorage`) and S3-compatible cloud storage (`S3Boto3Storage`)
-- **Health Monitoring**: `/health/` endpoint returning HTTP 200 `{"status": "ok", "database": "connected"}`
+- **Application Name**: Echoes Of SMASC '26 (`P-Gallery`)
+- **Framework**: Django 4.2.25 on Python 3.13
+- **WSGI Application**: `config.wsgi:application`
+- **ASGI Application**: `config.asgi:application`
+- **App Server**: Gunicorn 23.0.0 (Threaded `gthread` concurrency, 120s timeout)
+- **Production Database**: PostgreSQL 16+ via `DATABASE_URL` (`psycopg2-binary==2.9.12`, `CONN_MAX_AGE=600`, `sslmode: prefer`)
+- **Static Assets**: WhiteNoise 6.12.0 with `core.storage.ProductionManifestStaticFilesStorage`
+- **Media Persistence**: 
+  - Render persistent disk mounted at `/opt/render/project/src/media`
+  - Optional cloud object storage (AWS S3 / Cloudflare R2 / MinIO via `USE_S3=True`)
+- **Liveness Monitoring**: `/health/` returning HTTP 200 `{"status": "ok", "database": "connected"}`
 
 ---
 
-## 2. PRODUCTION DEPLOYMENT TARGETS
+## 2. PRODUCTION DEPLOYMENT ON RENDER
 
-### Target A: Render (Recommended 1-Click Blueprint)
+### Method A: 1-Click Blueprint (`render.yaml`) (Recommended)
 
-The repository includes a ready [`render.yaml`](file:///c:/P-Gallery/render.yaml) blueprint specification:
-
-1. Push this repository to GitHub:
+1. Push the repository to GitHub:
    ```bash
-   git remote add origin https://github.com/<your-username>/echoes-of-smasc-26.git
-   git branch -M main
-   git push -u origin main
+   git add .
+   git commit -m "feat(deploy): production-ready Render and PostgreSQL configuration"
+   git push origin main
    ```
-2. In Render Dashboard: **New** $\rightarrow$ **Blueprint** $\rightarrow$ Select `echoes-of-smasc-26`.
-3. Render automatically provisions:
-   - Python 3.13 Web Service with Gunicorn & WhiteNoise
+2. In the Render Dashboard: Click **New +** $\rightarrow$ **Blueprint**.
+3. Connect your GitHub repository `Manojkumar-77/Echoes-Of-SMASC-26`.
+4. Render automatically provisions:
+   - Python Web Service (`echoes-of-smasc-26`)
    - Managed PostgreSQL Database (`pgallery-db`)
    - 10 GB persistent media disk mounted at `/opt/render/project/src/media`
-   - Zero-config auto-SSL HTTPS certificate.
+   - Automated HTTPS SSL certificate.
 
 ---
 
-### Target B: Docker Compose (Linux VPS / AWS EC2 / DigitalOcean)
+### Method B: Manual Service Creation via Render Dashboard
 
-The repository includes a production-hardened [`Dockerfile`](file:///c:/P-Gallery/Dockerfile) and [`docker-compose.yml`](file:///c:/P-Gallery/docker-compose.yml):
+If configuring manually without Blueprint:
 
-```bash
-# 1. Clone repository to server:
-git clone <your-repo-url> echoes-of-smasc-26 && cd echoes-of-smasc-26
+#### 1. Create Managed PostgreSQL Database
+- In Render Dashboard: **New +** $\rightarrow$ **PostgreSQL**.
+- Name: `pgallery-db`
+- Database: `pgallery`
+- User: `pgallery_user`
+- Plan: Free or Starter
+- Copy the **Internal Database URL** once created.
 
-# 2. Configure production .env:
-cp .env.example .env
-nano .env  # Set DJANGO_SECRET_KEY, DJANGO_ALLOWED_HOSTS, DB_PASSWORD
-
-# 3. Build and launch container stack:
-docker compose build --no-cache
-docker compose up -d
-
-# 4. Apply database migrations & collect static files:
-docker compose exec web python manage.py migrate
-docker compose exec web python manage.py collectstatic --noinput
-
-# 5. Create superuser:
-docker compose exec web python manage.py createsuperuser
-
-# 6. Verify health check:
-curl -f http://localhost:8000/health/
-```
-
----
-
-## 3. PRODUCTION ENVIRONMENT VARIABLES
-
-| Variable | Required | Description | Example |
-| :--- | :---: | :--- | :--- |
-| `DJANGO_DEBUG` | Yes | Set to `False` in production | `False` |
-| `DJANGO_SECRET_KEY` | Yes | Minimum 50-character random key | `django-insecure-...` |
-| `DJANGO_ALLOWED_HOSTS` | Yes | Comma-separated list of allowed domains/IPs | `yourdomain.edu.in,*.onrender.com` |
-| `DJANGO_CSRF_TRUSTED_ORIGINS` | Optional | Trusted HTTPS origins for CSRF | `https://yourdomain.edu.in` |
-| `DATABASE_URL` | Yes (Prod) | PostgreSQL connection URI | `postgresql://user:pass@host:5432/dbname` |
-| `USE_S3` | Optional | Set `True` for AWS S3 / Cloudflare R2 / MinIO | `False` |
-| `AWS_STORAGE_BUCKET_NAME` | If S3 | S3 bucket name | `smasc-gallery-media` |
-| `AWS_ACCESS_KEY_ID` | If S3 | Cloud storage access key | `AKIA...` |
-| `AWS_SECRET_ACCESS_KEY` | If S3 | Cloud storage secret key | `wJalrX...` |
-| `PORT` | Auto | Injected by PaaS (Render / Heroku) | `8000` |
+#### 2. Create Web Service
+- In Render Dashboard: **New +** $\rightarrow$ **Web Service**.
+- Connect your GitHub repository `Manojkumar-77/Echoes-Of-SMASC-26`.
+- **Runtime**: `Python`
+- **Build Command**:
+  ```bash
+  pip install --upgrade pip && pip install -r requirements.txt && python manage.py collectstatic --noinput --clear
+  ```
+- **Start Command**:
+  ```bash
+  python manage.py migrate --noinput && python manage.py seed_initial_data && gunicorn config.wsgi:application -c gunicorn.conf.py
+  ```
+- **Health Check Path**: `/health/`
 
 ---
 
-## 4. PERSISTENT MEDIA STORAGE NOTES
+## 3. REQUIRED PRODUCTION ENVIRONMENT VARIABLES
 
-- **Local Docker Mode**: Media is mounted to persistent named volume `pgallery_media_volume`.
-- **Render Mode**: Media is mounted to persistent disk `media-disk` at `/opt/render/project/src/media`.
-- **S3 Mode**: Media is uploaded directly to cloud object storage when `USE_S3=True`.
-- **Upload Validation Limits**: Image $\le$ 25 MB, Video $\le$ 500 MB (Individual file validation, zero cumulative storage quotas).
+Configure these under **Environment** in the Render Dashboard:
+
+| Key | Value | Purpose |
+| :--- | :--- | :--- |
+| `DJANGO_DEBUG` | `False` | Disables debug mode and activates security headers |
+| `DJANGO_SECRET_KEY` | *(50+ char random string)* | Cryptographic signing key |
+| `DATABASE_URL` | *(PostgreSQL Internal URL)* | PostgreSQL database connection string |
+| `PYTHON_VERSION` | `3.13.1` | Pinned Python runtime |
+| `DJANGO_ALLOWED_HOSTS` | `echoes-of-smasc-26.onrender.com` | Allowed host header domain |
+| `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://echoes-of-smasc-26.onrender.com` | Allowed CSRF origins for forms/admin |
+| `DJANGO_SECURE_SSL_REDIRECT` | `True` | Forces HTTPS redirection |
+
+### Optional Cloud Object Storage (S3 / Cloudflare R2):
+| Key | Example Value | Purpose |
+| :--- | :--- | :--- |
+| `USE_S3` | `True` | Enables S3 storage backend |
+| `AWS_STORAGE_BUCKET_NAME` | `pgallery-media` | Storage bucket name |
+| `AWS_ACCESS_KEY_ID` | `AKIA...` | Cloud access key |
+| `AWS_SECRET_ACCESS_KEY` | `wJalrX...` | Cloud secret key |
+| `AWS_S3_ENDPOINT_URL` | `https://<account_id>.r2.cloudflarestorage.com` | S3 custom endpoint |
+| `AWS_S3_CUSTOM_DOMAIN` | `media.yourdomain.edu.in` | Optional CDN domain |
+
+---
+
+## 4. CREATING THE DJANGO SUPERUSER
+
+Once deployed:
+1. Open Render Dashboard $\rightarrow$ Select `echoes-of-smasc-26` $\rightarrow$ Click **Shell**.
+2. Run:
+   ```bash
+   python manage.py createsuperuser
+   ```
+3. Enter your administrator username, email, and password.
+4. Log into the Unfold CMS Admin at: `https://<your-service>.onrender.com/admin/`.
 
 ---
 
 ## 5. POST-DEPLOYMENT VERIFICATION CHECKLIST
 
-- [ ] `curl -f https://<your-domain>/health/` returns `{"status": "ok", "database": "connected"}`
-- [ ] Homepage `/` loads with all hero slides and featured photos
-- [ ] Gallery `/gallery/` renders 30 photos with AJAX "Load More" functioning
-- [ ] Videos `/videos/` renders video grid with custom player streaming
-- [ ] Admin `/admin/` loads with Unfold CMS theme
-- [ ] Static assets compile cleanly (`python manage.py collectstatic --noinput`)
-- [ ] Automated test suite passes (`python manage.py test core`)
+- [ ] Liveness probe: `curl -f https://<your-service>.onrender.com/health/` returns `200 OK`
+- [ ] Homepage `/` loads with dark theme and clear hero typography
+- [ ] Static assets `/static/css/global.css` load with HTTP 200
+- [ ] Photos Gallery `/gallery/` renders with filter pills and lightbox modal
+- [ ] Classmate Yearbook `/yearbook/` renders student profile cards
+- [ ] Scrapbook `/scrapbook/` renders memory grids
+- [ ] Timeline `/timeline/` renders milestone events
+- [ ] Video Archive `/videos/` streams video playback
+- [ ] Contact Form `/contact/` submits successfully with CSRF protection
+- [ ] Admin `/admin/` allows logging in, uploading photos, and managing records
 
+---
+
+## 6. TROUBLESHOOTING MATRIX
+
+| Issue | Cause | Solution |
+| :--- | :--- | :--- |
+| `DisallowedHost` (HTTP 400) | `ALLOWED_HOSTS` missing domain | `config/settings.py` automatically includes `.onrender.com` wildcard and `RENDER_EXTERNAL_HOSTNAME`. |
+| `CSRF verification failed` (HTTP 403) | `CSRF_TRUSTED_ORIGINS` missing scheme | Ensure `DJANGO_CSRF_TRUSTED_ORIGINS` includes `https://` prefix. |
+| `no such table: core_heroslide` | App started before database migrations ran | Ensure start command includes `python manage.py migrate --noinput` ahead of `gunicorn`. |
+| `GET /static/... 404` | Missing `STATIC_ROOT` compilation | Run `python manage.py collectstatic --noinput --clear` during build step. |
+| `GET /media/... 404` | Media URL gated behind `DEBUG=True` | `config/urls.py` uses unconditional `re_path` media serving. |
