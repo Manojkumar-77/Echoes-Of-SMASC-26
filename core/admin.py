@@ -367,6 +367,13 @@ class PhotoAdminForm(forms.ModelForm):
                     self.fields["scrapbook_custom_caption"].initial = placement.custom_caption
             except Exception:
                 pass
+        else:
+            if "status" in self.fields:
+                self.fields["status"].initial = "approved"
+            if "is_active" in self.fields:
+                self.fields["is_active"].initial = True
+            if "show_gallery" in self.fields:
+                self.fields["show_gallery"].initial = True
 
     # ------------------------------------------------------------------------
     # VALIDATION

@@ -294,6 +294,12 @@ if render_disk.exists() and not DEBUG:
 else:
     MEDIA_ROOT = BASE_DIR / "media"
 
+# Ensure MEDIA_ROOT directory exists on disk for persistent disk / local filesystem storage
+try:
+    MEDIA_ROOT.mkdir(parents=True, exist_ok=True)
+except Exception:
+    pass
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

@@ -752,5 +752,56 @@ class Phase2ConnectivityAndDataFlowTest(TestCase):
         res_home_fresh = self.client.get("/", HTTP_HOST="localhost", secure=True)
         self.assertEqual(res_home_fresh.status_code, 200)
 
+    def test_admin_photo_upload_and_public_gallery_serving(self):
+        """Verify that an image uploaded through Django Admin is saved, stored, served via HTTP, and displayed on /gallery/."""
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        from PIL import Image
+        import io
+
+        # 1. Warm up gallery cache
+        self.client.get("/gallery/", HTTP_HOST="localhost", secure=True)
+
+        # 2. Create test image
+        img_io = io.BytesIO()
+        img = Image.new("RGB", (50, 50), color="teal")
+        img.save(img_io, format="JPEG")
+        uploaded_file = SimpleUploadedFile("suite_upload_test.jpg", img_io.getvalue(), content_type="image/jpeg")
+
+        # 3. Post to admin photo add
+        post_data = {
+            "title": "Automated Suite Upload Photo",
+            "caption": "Testing admin photo upload flow",
+            "alt_text": "Suite Upload Alt",
+            "category": self.category.id,
+            "image": uploaded_file,
+            "status": "approved",
+            "is_active": "on",
+            "show_gallery": "on",
+        }
+        res_post = self.client.post("/admin/core/photo/add/", post_data, HTTP_HOST="localhost", secure=True)
+        self.assertEqual(res_post.status_code, 302, "Admin add view must redirect on success")
+
+        # 4. Verify DB record
+        uploaded_photo = Photo.objects.filter(title="Automated Suite Upload Photo").first()
+        self.assertIsNotNone(uploaded_photo, "Photo record must exist in DB")
+        self.assertEqual(uploaded_photo.status, "approved")
+        self.assertTrue(uploaded_photo.is_active)
+        self.assertTrue(uploaded_photo.show_gallery)
+
+        # 5. Verify physical storage
+        self.assertTrue(uploaded_photo.image.storage.exists(uploaded_photo.image.name), "Image must exist in storage")
+
+        # 6. Verify image URL returns HTTP 200
+        res_img = self.client.get(uploaded_photo.image.url, HTTP_HOST="localhost", secure=True)
+        self.assertEqual(res_img.status_code, 200, "Image URL must serve HTTP 200")
+        self.assertEqual(res_img.get("Content-Type"), "image/jpeg")
+
+        # 7. Verify public gallery displays the photo and image URL
+        res_gal = self.client.get("/gallery/", HTTP_HOST="localhost", secure=True)
+        self.assertEqual(res_gal.status_code, 200)
+        self.assertIn("Automated Suite Upload Photo", res_gal.content.decode("utf-8"))
+        self.assertIn(uploaded_photo.image.url, res_gal.content.decode("utf-8"))
+
+
 
 

@@ -93,7 +93,7 @@ class Photo(models.Model):
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
-        default="pending",
+        default="approved",
     )
 
     event_date = models.DateField(
