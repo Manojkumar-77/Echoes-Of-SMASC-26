@@ -147,7 +147,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
-# Database Configuration
+# Database Configuration (Neon PostgreSQL in Production, SQLite in Development)
 database_url = os.getenv('DATABASE_URL')
 is_render = bool(os.getenv('RENDER') or os.getenv('RENDER_EXTERNAL_HOSTNAME') or os.getenv('RENDER_SERVICE_ID'))
 is_build_or_test = any(cmd in sys.argv for cmd in ('collectstatic', 'test', 'makemigrations', 'check'))
@@ -155,17 +155,21 @@ is_build_or_test = any(cmd in sys.argv for cmd in ('collectstatic', 'test', 'mak
 if database_url:
     import urllib.parse
     parsed_db = urllib.parse.urlparse(database_url)
+    query_params = urllib.parse.parse_qs(parsed_db.query)
+    clean_db_name = parsed_db.path.lstrip('/').split('?')[0]
+    ssl_mode = query_params.get('sslmode', ['require' if not DEBUG else 'prefer'])[0]
+
     db_config = {
         'ENGINE': 'django.db.backends.postgresql' if parsed_db.scheme in ('postgres', 'postgresql') else 'django.db.backends.sqlite3',
-        'NAME': parsed_db.path.lstrip('/'),
+        'NAME': clean_db_name,
         'USER': parsed_db.username or '',
         'PASSWORD': parsed_db.password or '',
         'HOST': parsed_db.hostname or '',
         'PORT': str(parsed_db.port or 5432) if parsed_db.port else '5432',
         'CONN_MAX_AGE': int(os.getenv('DB_CONN_MAX_AGE', '600')),
     }
-    if db_config['ENGINE'] == 'django.db.backends.postgresql' and not DEBUG:
-        db_config['OPTIONS'] = {'sslmode': 'prefer'}
+    if db_config['ENGINE'] == 'django.db.backends.postgresql':
+        db_config['OPTIONS'] = {'sslmode': ssl_mode}
     DATABASES = {'default': db_config}
 elif os.getenv('DB_HOST'):
     DATABASES = {
@@ -182,9 +186,9 @@ elif os.getenv('DB_HOST'):
 elif is_render and not is_build_or_test:
     from django.core.exceptions import ImproperlyConfigured
     raise ImproperlyConfigured(
-        "CRITICAL RENDER CONFIGURATION ERROR: Running on Render, but DATABASE_URL is not set!\n"
-        "Please add DATABASE_URL (Internal Connection String of your Render PostgreSQL database) "
-        "under the Environment tab of your Render Web Service."
+        "CRITICAL DATABASE CONFIGURATION ERROR: Running on Render (RENDER environment detected), but DATABASE_URL is not set!\n"
+        "Please add DATABASE_URL (your Neon PostgreSQL Connection URI) under the Environment tab of your Render Web Service.\n"
+        "Format: postgresql://<user>:<password>@<ep-xyz>.us-east-2.aws.neon.tech/<dbname>?sslmode=require"
     )
 else:
     # Development and build-time fallback SQLite database

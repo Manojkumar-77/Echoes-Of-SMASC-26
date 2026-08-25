@@ -10,19 +10,10 @@ db_url = os.getenv('DATABASE_URL')
 if db_url:
     try:
         import psycopg2
-        from urllib.parse import urlparse
-        res = urlparse(db_url)
         print('Polling PostgreSQL connection...')
         for i in range(15):
             try:
-                conn = psycopg2.connect(
-                    dbname=res.path[1:],
-                    user=res.username,
-                    password=res.password,
-                    host=res.hostname,
-                    port=res.port or 5432,
-                    connect_timeout=3
-                )
+                conn = psycopg2.connect(db_url, connect_timeout=5)
                 conn.close()
                 print('PostgreSQL database is ready!')
                 break
