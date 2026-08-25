@@ -704,3 +704,25 @@ class Phase2ConnectivityAndDataFlowTest(TestCase):
         output = out.getvalue()
         self.assertIn("Database already contains CMS data", output)
 
+    def test_django_admin_photo_add_and_change_views(self):
+        """Verify that Photo changelist, add view, and change view render HTTP 200 without template context errors."""
+        # 1. Changelist view
+        res_list = self.client.get("/admin/core/photo/", HTTP_HOST="localhost", secure=True)
+        self.assertEqual(res_list.status_code, 200, "Photo changelist must return HTTP 200")
+
+        # 2. Add view
+        res_add = self.client.get("/admin/core/photo/add/", HTTP_HOST="localhost", secure=True)
+        self.assertEqual(res_add.status_code, 200, "Photo add view must return HTTP 200")
+        self.assertIn("Add photo", res_add.content.decode("utf-8"))
+
+        # 3. Change view
+        res_change = self.client.get(f"/admin/core/photo/{self.photo1.pk}/change/", HTTP_HOST="localhost", secure=True)
+        self.assertEqual(res_change.status_code, 200, "Photo change view must return HTTP 200")
+        self.assertIn("Change photo", res_change.content.decode("utf-8"))
+
+        # 4. Other model add views
+        for model_name in ["heroslide", "student", "timelineevent", "video", "category"]:
+            res = self.client.get(f"/admin/core/{model_name}/add/", HTTP_HOST="localhost", secure=True)
+            self.assertEqual(res.status_code, 200, f"{model_name} add view must return HTTP 200")
+
+
